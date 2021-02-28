@@ -4,11 +4,11 @@ plugins {
     kotlin("jvm") version "1.4.31" apply false
 }
 
-repositories {
-    mavenCentral()
-}
-
 subprojects {
+
+    repositories {
+        mavenCentral()
+    }
 
     group = "com.javatar"
     version = "1.0-SNAPSHOT"
@@ -26,7 +26,7 @@ subprojects {
     }
 
     tasks.withType<KotlinCompile>() {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "11"
     }
 }
 

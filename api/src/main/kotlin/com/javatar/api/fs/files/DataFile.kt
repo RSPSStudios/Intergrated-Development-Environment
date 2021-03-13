@@ -1,7 +1,7 @@
-package com.javatar.fs.files
+package com.javatar.api.fs.files
 
 import com.displee.cache.index.archive.file.File
-import com.javatar.fs.JFile
+import com.javatar.api.fs.JFile
 
 class DataFile(override val id: Int, val file: File?) : JFile {
     override fun write(data: ByteArray): Boolean {

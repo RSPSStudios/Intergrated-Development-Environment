@@ -1,18 +1,23 @@
 package com.javatar.ui.views
 
 import com.displee.cache.CacheLibrary
-import com.javatar.fs.directories.RootDirectory
+import com.javatar.api.fs.directories.RootDirectory
+import com.javatar.api.ui.MenuItemExtension
+import com.javatar.api.ui.ToolTabExtension
 import com.javatar.ui.contextmenu
 import com.javatar.ui.models.CacheConfigurationModel
 import com.javatar.ui.models.EditorModel
+import com.javatar.ui.models.PluginRepositoryModel
 import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
-import javafx.scene.control.Alert
-import javafx.scene.control.TextInputDialog
-import javafx.scene.control.TreeItem
-import javafx.scene.control.TreeView
+import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
 import tornadofx.*
+import java.awt.Desktop
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+
 
 class MainView : View() {
 
@@ -20,11 +25,21 @@ class MainView : View() {
 
     val caches: TreeView<Pair<String, String>> by fxid()
     val editorView: AnchorPane by fxid()
+    val menuBar: MenuBar by fxid()
+    val pluginsMenu: Menu by fxid()
+    val toolTabs: TabPane by fxid()
 
     val configModel: CacheConfigurationModel by di()
     val editorModel: EditorModel by di()
 
+    val pluginRepository: PluginRepositoryModel by di()
+
     init {
+
+        pluginRepository.manager.getExtensions(MenuItemExtension::class.java)
+            .forEach { it.createMenuItem(pluginsMenu, menuBar) }
+        pluginRepository.manager.getExtensions(ToolTabExtension::class.java)
+            .forEach { it.createToolTab(toolTabs) }
 
         editorView.add(editorModel.editorPane)
 
@@ -80,4 +95,34 @@ class MainView : View() {
             alert(Alert.AlertType.ERROR, "Could not find cache.").show()
         }
     }
+
+    @FXML
+    fun pluginRepo() {
+        find<PluginRepository>().openModal()
+    }
+
+    @FXML
+    fun openPluginLocation() {
+        val location = config.string("pf4j.pluginsDir", System.getProperty("pf4j.pluginsDir"))
+        val path = Path.of(location)
+        if (!Files.exists(path)) {
+            Files.createDirectory(path)
+        }
+        if (Desktop.isDesktopSupported()) {
+            val desktop = Desktop.getDesktop()
+            desktop.browse(File(location).toURI())
+        }
+    }
+
+    @FXML
+    fun setPluginLocation() {
+        val dir = chooseDirectory("Choose plugin location")
+        with(config) {
+            if (dir != null && dir.exists() && dir.isDirectory) {
+                set("pf4j.pluginsDir", dir.absolutePath)
+                save()
+            }
+        }
+    }
+
 }

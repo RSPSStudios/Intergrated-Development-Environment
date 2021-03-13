@@ -1,8 +1,8 @@
 package com.javatar.ui.models
 
-import com.javatar.fs.directories.ArchiveDirectory
-import com.javatar.fs.directories.IndexDirectory
-import com.javatar.fs.directories.RootDirectory
+import com.javatar.api.fs.directories.ArchiveDirectory
+import com.javatar.api.fs.directories.IndexDirectory
+import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.ui.views.fs.FileSystemViewMeta
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleObjectProperty

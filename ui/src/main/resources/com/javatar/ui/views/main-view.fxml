@@ -11,7 +11,7 @@
         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
               AnchorPane.topAnchor="0.0">
             <children>
-                <MenuBar>
+                <MenuBar fx:id="menuBar">
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
@@ -24,6 +24,16 @@
                                 <MenuItem mnemonicParsing="false" text="Delete"/>
                             </items>
                         </Menu>
+                        <Menu fx:id="pluginsMenu" mnemonicParsing="false" text="Plugins">
+                            <items>
+                                <MenuItem fx:id="pluginRepo" mnemonicParsing="false" onAction="#pluginRepo"
+                                          text="Plugin Repository"/>
+                                <MenuItem mnemonicParsing="false" onAction="#openPluginLocation"
+                                          text="Open Plugin Location"/>
+                                <MenuItem mnemonicParsing="false" onAction="#setPluginLocation"
+                                          text="Set Plugin Location"/>
+                            </items>
+                        </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="About"/>
@@ -31,13 +41,18 @@
                         </Menu>
                     </menus>
                 </MenuBar>
-                <TabPane prefHeight="800.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
+                <TabPane fx:id="toolTabs" prefHeight="800.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                         <Tab text="File Explorer">
                             <content>
                                 <BorderPane>
                                     <center>
-                                        <AnchorPane fx:id="editorView"/>
+                                        <VBox>
+                                            <children>
+                                                <HBox fx:id="breadcrumbPane"/>
+                                                <AnchorPane fx:id="editorView"/>
+                                            </children>
+                                        </VBox>
                                     </center>
                                     <left>
                                         <TreeView fx:id="caches" BorderPane.alignment="CENTER"/>

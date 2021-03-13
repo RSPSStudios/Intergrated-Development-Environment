@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" stylesheets="@global.css" xmlns="http://javafx.com/javafx/11.0.1">
+   <children>
+      <VBox>
+         <children>
+            <ListView fx:id="pluginList"/>
+         </children>
+      </VBox>
+      <VBox/>
+   </children>
+</HBox>

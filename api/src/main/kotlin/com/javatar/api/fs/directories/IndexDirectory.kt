@@ -1,6 +1,6 @@
-package com.javatar.fs.directories
+package com.javatar.api.fs.directories
 
-import com.javatar.fs.JDirectory
+import com.javatar.api.fs.JDirectory
 
 class IndexDirectory(val nodeIndex: Int, val parent: RootDirectory) : JDirectory<ArchiveDirectory> {
     override fun nodes(): List<ArchiveDirectory> {

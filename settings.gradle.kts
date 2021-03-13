@@ -1,7 +1,8 @@
 
 rootProject.name = "CacheEditor"
 include(":definitions")
-include(":terminal")
 include(":ui")
+include(":api")
 include(":application")
+include(":plugins")
 

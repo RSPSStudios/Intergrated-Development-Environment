@@ -1,7 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+val pluginsDir by extra { file("$buildDir/plugins") }
 
 plugins {
     kotlin("jvm") version "1.4.31" apply false
+    kotlin("kapt") version "1.4.31" apply false
 }
 
 subprojects {
@@ -16,6 +18,7 @@ subprojects {
     version = "1.0-SNAPSHOT"
 
     apply(plugin = "kotlin")
+    apply(plugin = "kotlin-kapt")
 
     dependencies {
         "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")

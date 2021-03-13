@@ -1,4 +1,4 @@
-package com.javatar.fs
+package com.javatar.api.fs
 
 interface JFile : JNode {
 

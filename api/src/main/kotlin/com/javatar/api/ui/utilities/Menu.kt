@@ -1,4 +1,4 @@
-package com.javatar.ui
+package com.javatar.api.ui.utilities
 
 import javafx.event.EventTarget
 import javafx.scene.Node

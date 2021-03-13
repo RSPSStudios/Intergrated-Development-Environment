@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" stylesheets="@shop-editor.css" xmlns="http://javafx.com/javafx/11.0.1">
+    <left>
+        <VBox BorderPane.alignment="CENTER">
+            <children>
+                <ListView/>
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <AnchorPane BorderPane.alignment="CENTER"/>
+    </center>
+    <top>
+        <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <items>
+                <Button mnemonicParsing="false" text="Load Shops"/>
+                <Button layoutX="10.0" layoutY="11.0" mnemonicParsing="false" text="Save Shops"/>
+            </items>
+        </ToolBar>
+    </top>
+</BorderPane>

@@ -33,7 +33,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2")
     implementation("no.tornado:tornadofx:2.0.0-SNAPSHOT")
     implementation("org.controlsfx:controlsfx:11.0.3")
-    implementation("com.displee:rs-cache-library:6.8")
     implementation("de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2")
+    implementation("com.displee:rs-cache-library:6.8")
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
 }

@@ -2,7 +2,7 @@ package com.javatar.ui.views.fs
 
 import com.javatar.api.fs.directories.ArchiveDirectory
 import com.javatar.api.fs.directories.IndexDirectory
-import com.javatar.ui.datagrid
+import com.javatar.api.ui.utilities.datagrid
 import com.javatar.ui.models.ActiveDirectoryModel
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView

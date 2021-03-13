@@ -3,7 +3,7 @@ package com.javatar.ui.models
 import com.javatar.ui.data.PluginInformation
 import javafx.beans.property.SimpleListProperty
 import javafx.collections.FXCollections
-import org.pf4j.JarPluginManager
+import org.pf4j.PluginManager
 import tornadofx.ViewModel
 
 /**
@@ -13,7 +13,7 @@ import tornadofx.ViewModel
 
 class PluginRepositoryModel : ViewModel() {
 
-    val manager: JarPluginManager by di()
+    val manager: PluginManager by di()
 
     val plugins = bind { SimpleListProperty(FXCollections.observableArrayList<PluginInformation>()) }
 

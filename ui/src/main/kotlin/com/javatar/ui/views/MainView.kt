@@ -4,7 +4,7 @@ import com.displee.cache.CacheLibrary
 import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.api.ui.MenuItemExtension
 import com.javatar.api.ui.ToolTabExtension
-import com.javatar.ui.contextmenu
+import com.javatar.api.ui.utilities.contextmenu
 import com.javatar.ui.models.CacheConfigurationModel
 import com.javatar.ui.models.EditorModel
 import com.javatar.ui.models.PluginRepositoryModel
@@ -38,8 +38,14 @@ class MainView : View() {
 
         pluginRepository.manager.getExtensions(MenuItemExtension::class.java)
             .forEach { it.createMenuItem(pluginsMenu, menuBar) }
+
+        println(pluginRepository.manager.getExtensions(ToolTabExtension::class.java).size)
+
         pluginRepository.manager.getExtensions(ToolTabExtension::class.java)
-            .forEach { it.createToolTab(toolTabs) }
+            .forEach {
+                println("Creating tab")
+                it.createToolTab(toolTabs)
+            }
 
         editorView.add(editorModel.editorPane)
 

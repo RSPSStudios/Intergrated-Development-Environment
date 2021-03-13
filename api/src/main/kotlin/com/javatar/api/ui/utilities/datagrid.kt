@@ -1,4 +1,4 @@
-package com.javatar.ui
+package com.javatar.api.ui.utilities
 
 import javafx.beans.InvalidationListener
 import javafx.beans.property.*

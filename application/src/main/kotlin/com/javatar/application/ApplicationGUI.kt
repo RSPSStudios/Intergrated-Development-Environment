@@ -10,7 +10,6 @@ import com.javatar.ui.models.PluginRepositoryModel
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
-import org.pf4j.JarPluginManager
 import org.pf4j.PluginState
 import tornadofx.DIContainer
 import tornadofx.FX
@@ -31,7 +30,7 @@ object ApplicationGUI {
                 single { ActiveDirectoryModel() }
                 single { EditorModel() }
                 single { PluginRepositoryModel() }
-                single<JarPluginManager> { PluginManager }
+                single<org.pf4j.PluginManager> { PluginManager }
             })
         }
 
@@ -42,14 +41,17 @@ object ApplicationGUI {
             }
         }
 
-        System.setProperty("pf4j.pluginsDir", "${System.getProperty("user.home")}/plugins")
+        System.setProperty("pf4j.pluginsDir", "/home/javatar/IdeaProjects/CacheEditor/build/plugins")
 
         if (!Files.exists(Path.of(System.getProperty("pf4j.pluginsDir")))) {
             Files.createDirectory(Path.of(System.getProperty("pf4j.pluginsDir")))
         }
 
+        println(PluginManager.pluginsRoot.toFile().absolutePath)
+
         PluginManager.loadPlugins()
         PluginManager.startPlugins()
+
 
         PluginManager.plugins.forEach {
             val model = (FX.dicontainer!!).getInstance<PluginRepositoryModel>()

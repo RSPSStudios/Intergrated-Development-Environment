@@ -9,6 +9,8 @@ javafx {
     modules("javafx.base", "javafx.controls", "javafx.graphics", "javafx.fxml", "javafx.web")
 }
 
+val boundle by configurations.creating
+
 dependencies {
     implementation(project(":definitions"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2")
@@ -16,4 +18,5 @@ dependencies {
     implementation("org.controlsfx:controlsfx:11.0.3")
     implementation("com.displee:rs-cache-library:6.8")
     implementation("de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2")
+    boundle("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2")
 }

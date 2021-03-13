@@ -3,6 +3,7 @@ package com.javatar.application
 import com.javatar.ui.EditorApplication
 import com.javatar.ui.models.ActiveDirectoryModel
 import com.javatar.ui.models.CacheConfigurationModel
+import com.javatar.ui.models.EditorModel
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -20,6 +21,7 @@ object ApplicationGUI {
             modules(module {
                 single { CacheConfigurationModel() }
                 single { ActiveDirectoryModel() }
+                single { EditorModel() }
             })
         }
 

@@ -15,8 +15,7 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Mount Cache"/>
-                                <MenuItem mnemonicParsing="false" text="Unmount All"/>
+                                <MenuItem mnemonicParsing="false" onAction="#loadCache" text="Open Cache"/>
                                 <MenuItem mnemonicParsing="false" text="Close"/>
                             </items>
                         </Menu>
@@ -38,15 +37,7 @@
                             <content>
                                 <BorderPane>
                                     <center>
-                                        <TabPane>
-                                            <tabs>
-                                                <Tab text="Custom Cache">
-                                                    <content>
-                                                        <AnchorPane fx:id="fsView"/>
-                                                    </content>
-                                                </Tab>
-                                            </tabs>
-                                        </TabPane>
+                                        <AnchorPane fx:id="editorView"/>
                                     </center>
                                     <left>
                                         <TreeView fx:id="caches" BorderPane.alignment="CENTER"/>

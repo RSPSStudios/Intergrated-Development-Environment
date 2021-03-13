@@ -14,7 +14,9 @@ import tornadofx.vbox
 
 class FileSystemView : Fragment() {
 
-    val activeDir: ActiveDirectoryModel by di()
+    override val scope: FileExplorerScope = super.scope as FileExplorerScope
+
+    val activeDir: ActiveDirectoryModel = scope.activeDirectoryModel
 
     override val root = vbox {
 
@@ -74,7 +76,7 @@ class FileSystemView : Fragment() {
                         }
                     }
                     FileSystemViewMeta.MetaType.FILE -> {
-                        
+
                     }
                 }
             }

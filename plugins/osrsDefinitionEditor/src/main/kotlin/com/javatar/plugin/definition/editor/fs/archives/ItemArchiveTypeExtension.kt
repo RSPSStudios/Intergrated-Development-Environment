@@ -1,8 +1,8 @@
-package com.javatar.plugin.definition.editor.fs
+package com.javatar.plugin.definition.editor.fs.archives
 
 import com.javatar.api.fs.ArchiveType
 import com.javatar.api.fs.extensions.ArchiveTypeExtension
-import com.javatar.plugin.definition.editor.fs.types.ModelArchiveType
+import com.javatar.plugin.definition.editor.fs.types.archives.ItemArchiveType
 import org.pf4j.Extension
 
 /**
@@ -11,8 +11,8 @@ import org.pf4j.Extension
  */
 
 @Extension
-class ModelArchiveTypeExtension : ArchiveTypeExtension {
+class ItemArchiveTypeExtension : ArchiveTypeExtension {
     override fun createArchiveType(): ArchiveType {
-        return ModelArchiveType()
+        return ItemArchiveType()
     }
 }

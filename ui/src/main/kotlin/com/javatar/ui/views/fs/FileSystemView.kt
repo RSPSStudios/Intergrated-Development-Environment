@@ -53,8 +53,20 @@ class FileSystemView : Fragment() {
                     alignment = Pos.CENTER
                     when (it.meta) {
                         FileSystemViewMeta.MetaType.INDEX -> {
-                            add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
-                            label("Index ${it.id}")
+                            val type = fileTypeManager.getIndexType(it.id)
+                            val root = activeDir.root.get()
+                            if (type != null) {
+                                val icon = type.icon(root)
+                                if (icon != null) {
+                                    add(icon)
+                                } else {
+                                    add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
+                                }
+                                label(type.identifier(root))
+                            } else {
+                                add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
+                                label("Index ${it.id}")
+                            }
                             this@datagrid.contextMenu = null
                         }
                         FileSystemViewMeta.MetaType.ARCHIVE -> {

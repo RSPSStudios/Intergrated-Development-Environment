@@ -1,4 +1,4 @@
-package com.javatar.plugin.definition.editor.fs.types
+package com.javatar.plugin.definition.editor.fs.types.files
 
 import com.javatar.ItemDefinition
 import com.javatar.api.fs.FileType

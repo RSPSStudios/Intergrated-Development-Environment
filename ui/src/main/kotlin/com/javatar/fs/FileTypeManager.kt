@@ -3,6 +3,7 @@ package com.javatar.fs
 import com.javatar.api.fs.ArchiveType
 import com.javatar.api.fs.FileType
 import com.javatar.api.fs.IFileTypeManager
+import com.javatar.api.fs.IndexType
 
 /**
  * @author David Schlachter <davidschlachter96@gmail.com>
@@ -13,6 +14,7 @@ class FileTypeManager : IFileTypeManager {
 
     override val fileTypes: MutableMap<String, FileType> = mutableMapOf()
     override val archiveTypes: MutableMap<String, ArchiveType> = mutableMapOf()
+    override val indexTypes: MutableMap<Int, IndexType> = mutableMapOf()
 
     private val singleFileArchiveType = mutableMapOf<Int, ArchiveType>()
 
@@ -35,6 +37,14 @@ class FileTypeManager : IFileTypeManager {
         }
     }
 
+    override fun registerIndexType(type: IndexType) {
+        if (indexTypes.containsKey(type.indexId)) {
+            error("Index Type already registered.")
+        } else {
+            indexTypes[type.indexId] = type
+        }
+    }
+
     override fun getFileType(indexId: Int, archiveId: Int): FileType? {
         return fileTypes["$indexId:$archiveId"]
     }
@@ -44,6 +54,10 @@ class FileTypeManager : IFileTypeManager {
             return singleFileArchiveType[indexId]
         }
         return archiveTypes["$indexId:$archiveId"]
+    }
+
+    override fun getIndexType(indexId: Int): IndexType? {
+        return indexTypes[indexId]
     }
 
 }

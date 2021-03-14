@@ -1,8 +1,8 @@
-package com.javatar.plugin.definition.editor.fs
+package com.javatar.plugin.definition.editor.fs.files
 
 import com.javatar.api.fs.FileType
 import com.javatar.api.fs.extensions.FileTypeExtension
-import com.javatar.plugin.definition.editor.fs.types.ItemFileType
+import com.javatar.plugin.definition.editor.fs.types.files.ItemFileType
 import org.pf4j.Extension
 
 /**

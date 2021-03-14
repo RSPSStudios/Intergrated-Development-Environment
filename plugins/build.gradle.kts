@@ -18,9 +18,12 @@ subprojects {
         api("no.tornado:tornadofx:2.0.0-SNAPSHOT")
         compileOnly("org.controlsfx:controlsfx:11.0.3")
         compileOnly("de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2")
+        compileOnly("com.displee:rs-cache-library:6.8")
 
         compileOnly("org.pf4j:pf4j:3.6.0")
         kapt("org.pf4j:pf4j:3.6.0")
+
+        api("com.google.code.gson:gson:2.8.6")
     }
 
     apply(plugin = "org.jetbrains.kotlin.jvm")

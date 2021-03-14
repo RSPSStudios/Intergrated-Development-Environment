@@ -5,12 +5,18 @@ package com.javatar.definition
  * @created March 13 2021
  */
 
-class DefinitionManager<T : Definition, L : DeserializeDefinition<T>, S : SerializableDefinition<T>>(
+open class DefinitionManager<T : Definition, L : DeserializeDefinition<T>, S : SerializableDefinition<T>>(
     val loader: L,
     val saver: S
 ) {
 
-    val definitions = mutableMapOf<Int, T>()
+    private val definitions = mutableMapOf<Int, T>()
+
+    open fun getDefinition(id: Int): T = definitions[id]!!
+
+    operator fun contains(id: Int) = definitions.containsKey(id)
+
+    fun values(): List<T> = definitions.values.toList()
 
     fun add(def: T) {
         definitions[def.definitionId] = def
@@ -29,5 +35,4 @@ class DefinitionManager<T : Definition, L : DeserializeDefinition<T>, S : Serial
     fun save(def: T): ByteArray {
         return saver.serialize(def)
     }
-
 }

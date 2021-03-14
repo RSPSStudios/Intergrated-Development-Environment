@@ -6,7 +6,14 @@ plugins {
 javafx {
     version = "15.0.1"
     //modules = [ 'javafx.controls' ]
-    modules("javafx.base", "javafx.controls", "javafx.graphics", "javafx.fxml", "javafx.web")
+    modules(
+        "javafx.base",
+        "javafx.controls",
+        "javafx.graphics",
+        "javafx.fxml",
+        "javafx.web",
+        "javafx.swing"
+    )
 }
 
 dependencies {

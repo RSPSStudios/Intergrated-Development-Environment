@@ -29,6 +29,7 @@ javafx {
 
 dependencies {
     implementation(project(":ui"))
+    implementation(project(":api"))
     implementation("org.pf4j:pf4j:3.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2")
     implementation("no.tornado:tornadofx:2.0.0-SNAPSHOT")

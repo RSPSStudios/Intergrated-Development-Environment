@@ -1,10 +1,10 @@
 package com.javatar.saver;
 
 import com.javatar.EnumDefinition;
+import com.javatar.definition.SerializableDefinition;
 import com.javatar.output.OutputStream;
 
-public class EnumSaver {
-
+public class EnumSaver implements SerializableDefinition<EnumDefinition> {
     public byte[] serialize(EnumDefinition def) {
         OutputStream out = new OutputStream();
         if (def.getKeyType() != null) {

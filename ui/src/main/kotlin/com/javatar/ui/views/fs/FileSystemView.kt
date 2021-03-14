@@ -1,5 +1,6 @@
 package com.javatar.ui.views.fs
 
+import com.javatar.api.fs.IFileTypeManager
 import com.javatar.api.fs.directories.ArchiveDirectory
 import com.javatar.api.fs.directories.IndexDirectory
 import com.javatar.api.ui.utilities.DataGrid
@@ -7,6 +8,7 @@ import com.javatar.api.ui.utilities.contextmenu
 import com.javatar.api.ui.utilities.datagrid
 import com.javatar.ui.models.ActiveDirectoryModel
 import com.javatar.ui.models.ClipboardModel
+import com.javatar.ui.models.PluginRepositoryModel
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.collections.FXCollections
@@ -27,14 +29,23 @@ class FileSystemView : Fragment() {
 
     val clipboardModel: ClipboardModel by di()
 
+    val pluginRepo: PluginRepositoryModel by di()
+
+    val fileTypeManager: IFileTypeManager by di()
+
     override val root = vbox {
 
         datagrid<FileSystemViewMeta> {
             itemsProperty.bind(activeDir.activeNodes)
-            prefWidth = 830.0
+            prefWidth = 1032.0
             prefHeight = 705.0
 
             singleSelect = true
+
+            alignment = Pos.CENTER
+
+            cellWidth = 237.0
+            cellHeight = 225.0
 
             cellCache {
                 vbox {
@@ -47,15 +58,50 @@ class FileSystemView : Fragment() {
                             this@datagrid.contextMenu = null
                         }
                         FileSystemViewMeta.MetaType.ARCHIVE -> {
-                            add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
-                            label("Archive ${it.id}")
+                            val indexId = activeDir.indexDir.get().nodeIndex
+                            val type = fileTypeManager.getArchiveType(indexId, it.id)
+
+                            if (type != null) {
+                                val archiveDir = activeDir.indexDir.get().nodes().find { f -> f.id == it.id }
+                                if (archiveDir != null && archiveDir.nodes().isNotEmpty()) {
+                                    val jfile = archiveDir.nodes()[0]
+                                    val icon = type.icon(jfile, activeDir.root.get())
+                                    if (icon != null) {
+                                        add(icon)
+                                    } else {
+                                        add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
+                                    }
+                                    label("${type.identifier(jfile, activeDir.root.get())} ${it.id}")
+                                } else {
+                                    label("Archive ${it.id}")
+                                }
+                            } else {
+                                add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
+                                label("Archive ${it.id}")
+                            }
                             contextmenu {
                                 addArchiveMenuItems(it, this@datagrid)
                             }
                         }
                         FileSystemViewMeta.MetaType.FILE -> {
-                            add(FontAwesomeIconView(FontAwesomeIcon.FILE).also { it.glyphSize = 64 })
-                            label("File ${it.id}")
+                            val indexId = activeDir.indexDir.get().nodeIndex
+                            val archiveId = activeDir.archiveDir.get().id
+                            val type = fileTypeManager.getFileType(indexId, archiveId)
+                            val jfile = activeDir.archiveDir.get().nodes().find { f -> f.id == it.id }
+
+                            if (type != null && jfile != null) {
+                                val icon = type.icon(jfile, activeDir.root.get())
+                                if (icon != null) {
+                                    add(icon)
+                                } else {
+                                    add(FontAwesomeIconView(FontAwesomeIcon.FILE).also { it.glyphSize = 64 })
+                                }
+                                label(type.identifier(jfile, activeDir.root.get()))
+                            } else {
+                                add(FontAwesomeIconView(FontAwesomeIcon.FILE).also { it.glyphSize = 64 })
+                                label("File ${it.id}")
+                            }
+
                             contextmenu {
                                 addFileContextMenuItems(it, this@datagrid)
                             }
@@ -85,6 +131,10 @@ class FileSystemView : Fragment() {
                             if (archiveNode != null) {
                                 val metaNodes = archiveNode.nodes()
                                     .map { FileSystemViewMeta(it.id, FileSystemViewMeta.MetaType.FILE) }
+
+                                fileTypeManager.getFileType(indexNode.nodeIndex, archiveNode.id)
+                                    ?.cache(archiveNode.nodes(), activeDir.root.get())
+
                                 activeDir.archiveDir.set(ArchiveDirectory(archiveNode.id, archiveNode.parent))
                                 activeDir.activeNodes.set(FXCollections.observableList(metaNodes))
                                 selectionModel.clearSelection()

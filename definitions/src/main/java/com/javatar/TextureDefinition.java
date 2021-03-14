@@ -26,6 +26,7 @@
 package com.javatar;
 
 import com.javatar.definition.Definition;
+import com.javatar.definition.DefinitionProvider;
 
 public class TextureDefinition implements Definition {
     public int field1777;
@@ -128,24 +129,22 @@ public class TextureDefinition implements Definition {
         return fileIds;
     }
 
-    /*public boolean method2680(double var1, int var3, SpriteProvider spriteProvider)
-	{
-		int var5 = var3 * var3;
-		this.pixels = new int[var5];
+    public boolean method2680(double var1, int var3, DefinitionProvider<SpriteGroupDefinition> spriteProvider) {
+        int var5 = var3 * var3;
+        this.pixels = new int[var5];
 
-		for (int var6 = 0; var6 < this.fileIds.length; ++var6)
-		{
-			SpriteDefinition var7 = spriteProvider.provide(fileIds[var6], 0);
-			var7.normalize();
-			byte[] var8 = var7.pixelIdx;
-			int[] var9 = var7.palette;
-			int var10 = this.field1786[var6];
+        for (int var6 = 0; var6 < this.fileIds.length; ++var6) {
+            SpriteDefinition var7 = spriteProvider.getDefinition(fileIds[var6]).getSprites()[0];
+            var7.normalize();
+            byte[] var8 = var7.pixelIdx;
+            int[] var9 = var7.palette;
+            int var10 = this.field1786[var6];
 
-			int var11;
-			int var12;
-			int var13;
-			int var14;
-			if ((var10 & -16777216) == 50331648)
+            int var11;
+            int var12;
+            int var13;
+            int var14;
+            if ((var10 & -16777216) == 50331648)
 			{
 				var11 = var10 & 16711935;
 				var12 = var10 >> 8 & 255;
@@ -207,17 +206,16 @@ public class TextureDefinition implements Definition {
 
 					for (var13 = 0; var13 < var3; ++var13)
 					{
-						for (var14 = 0; var14 < var3; ++var14)
-						{
-							this.pixels[var12++] = var9[var8[(var14 << 1) + (var13 << 1 << 7)] & 255];
-						}
-					}
-				}
-			}
-		}
+                        for (var14 = 0; var14 < var3; ++var14) {
+                            this.pixels[var12++] = var9[var8[(var14 << 1) + (var13 << 1 << 7)] & 255];
+                        }
+                    }
+                }
+            }
+        }
 
-		return true;
-	}*/
+        return true;
+    }
 
     public void setFileIds(int[] fileIds) {
         this.fileIds = fileIds;

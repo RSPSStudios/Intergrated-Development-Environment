@@ -58,12 +58,12 @@ class MainView : View() {
                 contextmenu {
                     val value = item
                     item("Load").action {
-                        configModel.activeCache.set(CacheLibrary.create(value.second))
-                        editorModel.openFileExplorer(value.first, RootDirectory(configModel.activeCache.get()))
+                        editorModel.openFileExplorer(value.first, RootDirectory(CacheLibrary.create(value.second)))
                     }
                     item("Remove").action {
                         configModel.cachePaths.remove(value.first)
                         caches.root.children.remove(treeItem)
+                        configModel.save()
                     }
                 }
             }
@@ -92,8 +92,8 @@ class MainView : View() {
                 } else success("Cache successfully opened.")
             }
             nameDialog.showAndWait()
-            configModel.activeCache.set(CacheLibrary.create(dir.absolutePath))
             configModel.cachePaths[nameDialog.editor.text] = dir.absolutePath
+            configModel.save()
         } else {
             alert(Alert.AlertType.ERROR, "Could not find cache.")
         }

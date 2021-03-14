@@ -3,3 +3,4 @@
 gradle/wrapper/*.jar
 gradlew
 gradlew.bat
+conf

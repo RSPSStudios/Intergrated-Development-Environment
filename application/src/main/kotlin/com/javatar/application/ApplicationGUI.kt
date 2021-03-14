@@ -3,8 +3,8 @@ package com.javatar.application
 import com.javatar.application.plugins.PluginManager
 import com.javatar.ui.EditorApplication
 import com.javatar.ui.data.PluginInformation
-import com.javatar.ui.models.ActiveDirectoryModel
 import com.javatar.ui.models.CacheConfigurationModel
+import com.javatar.ui.models.ClipboardModel
 import com.javatar.ui.models.EditorModel
 import com.javatar.ui.models.PluginRepositoryModel
 import org.koin.core.context.GlobalContext
@@ -27,9 +27,9 @@ object ApplicationGUI {
         startKoin {
             modules(module {
                 single { CacheConfigurationModel() }
-                single { ActiveDirectoryModel() }
                 single { EditorModel() }
                 single { PluginRepositoryModel() }
+                single { ClipboardModel() }
                 single<org.pf4j.PluginManager> { PluginManager }
             })
         }
@@ -47,11 +47,8 @@ object ApplicationGUI {
             Files.createDirectory(Path.of(System.getProperty("pf4j.pluginsDir")))
         }
 
-        println(PluginManager.pluginsRoot.toFile().absolutePath)
-
         PluginManager.loadPlugins()
         PluginManager.startPlugins()
-
 
         PluginManager.plugins.forEach {
             val model = (FX.dicontainer!!).getInstance<PluginRepositoryModel>()

@@ -328,14 +328,14 @@ open class DataGridCell<T>(val dataGrid: DataGrid<T>) : IndexedCell<T>() {
         setOnMouseClicked {
 
             val defaultTrigger = dataGrid.selectionTriggerScope["default"]
-            if (defaultTrigger != null && defaultTrigger(it)) {
+            if (defaultTrigger != null && defaultTrigger(it) && it.button == MouseButton.PRIMARY) {
                 dataGrid.selectionActionScope.getOrDefault("default") {
                     dataGrid.selectionModel.select(index)
                 }.invoke(item)
             }
 
             dataGrid.selectionTriggerScope.forEach { scopeName, trigger ->
-                if (trigger(it)) {
+                if (trigger(it) && it.button == MouseButton.PRIMARY) {
                     dataGrid.selectionActionScope[scopeName]?.invoke(item)
                 }
             }

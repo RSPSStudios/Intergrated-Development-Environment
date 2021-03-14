@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -11,6 +10,6 @@
             <ListView fx:id="pluginList"/>
          </children>
       </VBox>
-      <VBox/>
+       <VBox fx:id="infoPanel"/>
    </children>
 </HBox>

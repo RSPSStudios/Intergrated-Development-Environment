@@ -2,21 +2,30 @@ package com.javatar.ui.views.fs
 
 import com.javatar.api.fs.directories.ArchiveDirectory
 import com.javatar.api.fs.directories.IndexDirectory
+import com.javatar.api.ui.utilities.DataGrid
+import com.javatar.api.ui.utilities.contextmenu
 import com.javatar.api.ui.utilities.datagrid
 import com.javatar.ui.models.ActiveDirectoryModel
+import com.javatar.ui.models.ClipboardModel
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.collections.FXCollections
 import javafx.geometry.Pos
-import tornadofx.Fragment
-import tornadofx.label
-import tornadofx.vbox
+import javafx.scene.control.ButtonType
+import javafx.scene.control.ContextMenu
+import javafx.scene.control.Menu
+import javafx.scene.control.TextInputDialog
+import javafx.stage.FileChooser
+import tornadofx.*
+import java.io.File
 
 class FileSystemView : Fragment() {
 
     override val scope: FileExplorerScope = super.scope as FileExplorerScope
 
     val activeDir: ActiveDirectoryModel = scope.activeDirectoryModel
+
+    val clipboardModel: ClipboardModel by di()
 
     override val root = vbox {
 
@@ -35,14 +44,21 @@ class FileSystemView : Fragment() {
                         FileSystemViewMeta.MetaType.INDEX -> {
                             add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
                             label("Index ${it.id}")
+                            this@datagrid.contextMenu = null
                         }
                         FileSystemViewMeta.MetaType.ARCHIVE -> {
                             add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
                             label("Archive ${it.id}")
+                            contextmenu {
+                                addArchiveMenuItems(it, this@datagrid)
+                            }
                         }
                         FileSystemViewMeta.MetaType.FILE -> {
                             add(FontAwesomeIconView(FontAwesomeIcon.FILE).also { it.glyphSize = 64 })
                             label("File ${it.id}")
+                            contextmenu {
+                                addFileContextMenuItems(it, this@datagrid)
+                            }
                         }
                     }
                 }
@@ -81,6 +97,211 @@ class FileSystemView : Fragment() {
                 }
             }
 
+        }
+    }
+
+    private fun ContextMenu.addFileContextMenuItems(
+        it: FileSystemViewMeta,
+        dataGrid: DataGrid<FileSystemViewMeta>
+    ) {
+        dataGrid.contextmenu { menu("New") { addNewFileItem() } }
+        menu("New") { addNewFileItem() }
+        separator()
+        item("Copy").action {
+            val indexId = activeDir.indexDir.get().nodeIndex
+            val archiveId = activeDir.archiveDir.get().id
+            val cache = activeDir.root.get().cache
+            val data = cache.data(indexId, archiveId, it.id)
+            if (data != null) {
+                clipboardModel.data.set(data)
+                clipboardModel.commit(clipboardModel.data)
+            }
+        }
+        item("Paste") {
+            disableWhen(clipboardModel.data.isNull)
+            action {
+                val indexId = activeDir.indexDir.get().nodeIndex
+                val archiveId = activeDir.archiveDir.get().id
+                val cache = activeDir.root.get().cache
+                val archive = cache.index(indexId).archive(archiveId)
+                val file = archive?.add(clipboardModel.data.get())
+                if (file != null) {
+                    val meta = FileSystemViewMeta(file.id, FileSystemViewMeta.MetaType.FILE)
+                    activeDir.activeNodes.add(meta)
+                    dataGrid.selectionModel.select(meta)
+                }
+            }
+        }
+        separator()
+        item("Save File ${it.id}").action {
+            val fileChoose = fileSaver(it)
+            val file = fileChoose.showSaveDialog(dataGrid.scene.window)
+            val indexId = activeDir.indexDir.get().nodeIndex
+            val archiveId = activeDir.archiveDir.get().id
+            val cache = activeDir.root.get().cache
+            val data = cache.data(indexId, archiveId, it.id)
+            if (data != null) {
+                file.writeBytes(data)
+            }
+        }
+        item("Replace File ${it.id}").action {
+            val files = chooseFile(
+                "Choose File",
+                arrayOf(FileChooser.ExtensionFilter("File", "*")),
+                mode = FileChooserMode.Single
+            )
+            if (files.isNotEmpty()) {
+                val file = files[0]
+                val indexId = activeDir.indexDir.get().nodeIndex
+                val archiveId = activeDir.archiveDir.get().id
+                val cache = activeDir.root.get().cache
+                cache.put(indexId, archiveId, it.id, file.readBytes())
+            }
+        }
+        item("Delete File ${it.id}").action {
+            val indexId = activeDir.indexDir.get().nodeIndex
+            val archiveId = activeDir.archiveDir.get().id
+            val cache = activeDir.root.get().cache
+            val result = confirmation(
+                "Archive Deletion",
+                "Are you sure you want to delete archive ${it.id}?",
+                buttons = arrayOf(ButtonType.YES, ButtonType.NO)
+            )
+            if (result.result == ButtonType.YES) {
+                val answer = confirmation(
+                    "Backup Archive",
+                    "Would you like to backup the archive before you delete it?",
+                    buttons = arrayOf(ButtonType.YES, ButtonType.NO)
+                )
+                if (answer.result == ButtonType.YES) {
+                    val fileChoose = fileSaver(it)
+                    val file = fileChoose.showSaveDialog(dataGrid.scene.window)
+                    val data = cache.data(indexId, archiveId, it.id)
+                    file.writeBytes(data ?: byteArrayOf())
+                }
+                cache.remove(indexId, archiveId, it.id)
+                dataGrid.selectionModel.clearSelection()
+                activeDir.activeNodes.remove(it)
+            }
+        }
+    }
+
+    private fun ContextMenu.addArchiveMenuItems(
+        it: FileSystemViewMeta,
+        dataGrid: DataGrid<FileSystemViewMeta>
+    ) {
+        dataGrid.contextmenu { menu("New") { addNewArchiveItem() } }
+        menu("New") { addNewArchiveItem() }
+        separator()
+        item("Save Archive ${it.id}").action {
+            val fileChoose = fileSaver(it)
+            val file = fileChoose.showSaveDialog(dataGrid.scene.window)
+            val indexId = activeDir.indexDir.get().nodeIndex
+            val cache = activeDir.root.get().cache
+            file.writeBytes(cache.index(indexId).readArchiveSector(it.id)?.data ?: byteArrayOf())
+        }
+        item("Replace Archive ${it.id}").action {
+            val choose = chooseFile(
+                "Choose Archive",
+                arrayOf(FileChooser.ExtensionFilter("Archive", "*")),
+                mode = FileChooserMode.Single
+            ) {
+                this.initialDirectory = File(System.getProperty("user.home"))
+            }
+            if (choose.isNotEmpty()) {
+                val file = choose[0]
+                val data = file.readBytes()
+                val indexId = activeDir.indexDir.get().nodeIndex
+                val cache = activeDir.root.get().cache
+                val result = confirmation(
+                    "Replace Archive ${it.id}",
+                    "Are you sure you want to replace this archive?",
+                    buttons = arrayOf(ButtonType.YES, ButtonType.NO)
+                )
+                if (result.result == ButtonType.YES) {
+                    cache.index(indexId).apply {
+                        writeArchiveSector(it.id, data)
+                    }
+                }
+            }
+        }
+        item("Delete Archive ${it.id}").action {
+            val indexId = activeDir.indexDir.get().nodeIndex
+            val cache = activeDir.root.get().cache
+            val result = confirmation(
+                "Archive Deletion",
+                "Are you sure you want to delete archive ${it.id}?",
+                buttons = arrayOf(ButtonType.YES, ButtonType.NO)
+            )
+            if (result.result == ButtonType.YES) {
+                val answer = confirmation(
+                    "Backup Archive",
+                    "Would you like to backup the archive before you delete it?",
+                    buttons = arrayOf(ButtonType.YES, ButtonType.NO)
+                )
+                if (answer.result == ButtonType.YES) {
+                    val fileChoose = fileSaver(it)
+                    val file = fileChoose.showSaveDialog(dataGrid.scene.window)
+                    val data = cache.index(indexId).readArchiveSector(it.id)
+                    file.writeBytes(data?.data ?: byteArrayOf())
+                }
+                cache.index(indexId).remove(it.id)
+                dataGrid.selectionModel.clearSelection()
+                activeDir.activeNodes.remove(it)
+            }
+        }
+    }
+
+    private fun fileSaver(it: FileSystemViewMeta): FileChooser {
+        return FileChooser().apply {
+            title = "Save Archive"
+            initialDirectory = File(System.getProperty("user.home"))
+            initialFileName = "Archive ${it.id}"
+        }
+    }
+
+    /**
+     * This function was introduced due to a weird bug, where I couldn't add the same menu
+     * to two different context menus. So we create new menus and items ....
+     */
+
+    private fun Menu.addNewArchiveItem() = item("Archive").action {
+        val indexId = activeDir.indexDir.get().nodeIndex
+        val cache = activeDir.root.get().cache
+        val input = TextInputDialog(null).apply {
+            this.title = "Enter Archive Name"
+        }
+        val result = input.showAndWait()
+        val archive = if (result.isPresent && result.get().isNotEmpty()) {
+            cache.index(indexId).add(result.get())
+        } else {
+            cache.index(indexId).add()
+        }
+        activeDir.activeNodes.add(FileSystemViewMeta(archive.id, FileSystemViewMeta.MetaType.ARCHIVE))
+    }
+
+    /**
+     * This function was introduced due to a weird bug, where I couldn't add the same menu
+     * to two different context menus. So we create new menus and items ....
+     */
+
+    private fun Menu.addNewFileItem() = item("File").action {
+        val indexId = activeDir.indexDir.get().nodeIndex
+        val archiveId = activeDir.archiveDir.get().id
+        val cache = activeDir.root.get().cache
+        val archive = cache.index(indexId).archive(archiveId)
+        if (archive != null) {
+            val files = chooseFile(
+                "Choose File",
+                arrayOf(FileChooser.ExtensionFilter("File", "*")),
+                mode = FileChooserMode.Multi
+            )
+            if (files.isNotEmpty()) {
+                files.forEach {
+                    val file = archive.add(it.readBytes())
+                    activeDir.activeNodes.add(FileSystemViewMeta(file.id, FileSystemViewMeta.MetaType.FILE))
+                }
+            }
         }
     }
 

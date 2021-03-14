@@ -39,11 +39,8 @@ class MainView : View() {
         pluginRepository.manager.getExtensions(MenuItemExtension::class.java)
             .forEach { it.createMenuItem(pluginsMenu, menuBar) }
 
-        println(pluginRepository.manager.getExtensions(ToolTabExtension::class.java).size)
-
         pluginRepository.manager.getExtensions(ToolTabExtension::class.java)
             .forEach {
-                println("Creating tab")
                 it.createToolTab(toolTabs)
             }
 
@@ -98,7 +95,7 @@ class MainView : View() {
             configModel.activeCache.set(CacheLibrary.create(dir.absolutePath))
             configModel.cachePaths[nameDialog.editor.text] = dir.absolutePath
         } else {
-            alert(Alert.AlertType.ERROR, "Could not find cache.").show()
+            alert(Alert.AlertType.ERROR, "Could not find cache.")
         }
     }
 

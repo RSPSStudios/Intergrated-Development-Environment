@@ -1,11 +1,16 @@
 package com.javatar.ui.views
 
+import com.javatar.api.ui.PluginPanelExtension
 import com.javatar.ui.data.PluginInformation
 import com.javatar.ui.models.PluginRepositoryModel
 import javafx.geometry.Pos
 import javafx.scene.control.ListView
 import javafx.scene.layout.HBox
-import tornadofx.*
+import javafx.scene.layout.VBox
+import tornadofx.View
+import tornadofx.label
+import tornadofx.onChange
+import tornadofx.vbox
 
 /**
  * @author David Schlachter <davidschlachter96@gmail.com>
@@ -18,6 +23,8 @@ class PluginRepository : View() {
 
     val pluginList: ListView<PluginInformation> by fxid()
 
+    val infoPanel: VBox by fxid()
+
     val pluginRepository: PluginRepositoryModel by di()
 
     init {
@@ -29,9 +36,16 @@ class PluginRepository : View() {
                 label("Name: ${it.pluginName}")
                 label("Author: ${it.pluginAuthor}")
                 label("Version: ${it.pluginVersion}")
-                button(if (it.pluginEnabled) "Enabled" else "Disabled").action {
-                    pluginRepository.manager.disablePlugin(it.pluginName)
-                }
+                label("Plugin: ${if (it.pluginEnabled) "Enabled" else "Disabled"}")
+            }
+        }
+
+        pluginList.selectionModel.selectedItemProperty().onChange {
+            if (it != null) {
+                pluginRepository.manager.getExtensions(
+                    PluginPanelExtension::class.java,
+                    it.pluginName
+                ).forEach { ext -> ext.createPluginInformationPanel(infoPanel) }
             }
         }
 

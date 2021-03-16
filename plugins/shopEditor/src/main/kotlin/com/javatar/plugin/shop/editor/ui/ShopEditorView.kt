@@ -9,14 +9,13 @@ import com.javatar.plugin.shop.editor.ui.models.*
 import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
-import javafx.scene.control.Button
-import javafx.scene.control.ButtonType
-import javafx.scene.control.ListView
-import javafx.scene.control.TextField
+import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import tornadofx.*
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 /**
  * @author David Schlachter <davidschlachter96@gmail.com>
@@ -42,6 +41,7 @@ class ShopEditorView : Fragment() {
     val addItemBtn: Button by fxid()
     val removeItemBtn: Button by fxid()
     val newShopBtn: Button by fxid()
+    val saveShopsBtn: Button by fxid()
     val deleteShopBtn: Button by fxid()
     val renameShopBtn: Button by fxid()
 
@@ -54,12 +54,17 @@ class ShopEditorView : Fragment() {
         deleteShopBtn.disableWhen(shopList.selectionModel.selectedItemProperty().isNull)
         renameShopBtn.disableWhen(shopList.selectionModel.selectedItemProperty().isNull)
 
+        newShopBtn.disableWhen(shopConfigModel.shopFilesPath.isNull)
+        saveShopsBtn.disableWhen(shopConfigModel.shopFilesPath.isNull)
+
         shopName.textProperty().bindBidirectional(shopModel.name)
 
         shopList.disableWhen(shopConfigModel.shopFilesPath.isNull)
         shopView.disableWhen(shopConfigModel.shopFilesPath.isNull)
 
-        shopList.itemsProperty().bind(shopModel.shops)
+        shopList.itemsProperty().bind(Bindings.createObjectBinding({
+            shopModel.shops.sorted { o1, o2 -> o1.name.get().compareTo(o2.name.get()) }
+        }, shopModel.shops))
 
         shopList.cellCache {
             vbox {
@@ -68,6 +73,9 @@ class ShopEditorView : Fragment() {
                 label("Currency: ${it.currency.get().name.toLowerCase().capitalize()}")
             }
         }
+
+        shopList.bindSelected(shopModel.editingShop)
+        shopView.disableWhen(shopModel.editingShop.isNull)
 
         shopList.selectionModel.selectedItemProperty().onChange {
             if (it != null) {
@@ -138,6 +146,7 @@ class ShopEditorView : Fragment() {
         ItemSelectionView().openModal(block = true)
         if (itemSelectModel.result.get() != -1) {
             shopModel.items.add(ShopItemModel(ShopItem(itemSelectModel.result.get())))
+            shopModel.commit()
         }
     }
 
@@ -158,6 +167,7 @@ class ShopEditorView : Fragment() {
             } else ButtonType.YES
             if (result == ButtonType.YES) {
                 shopModel.items.remove(selectedItem)
+                shopModel.commit()
             }
         }
     }
@@ -171,10 +181,14 @@ class ShopEditorView : Fragment() {
 
     @FXML
     fun newShop() {
-        val shopModel = ShopModel()
-        this.shopModel.shops.add(shopModel)
-        this.shopList.selectionModel.select(shopModel)
-        this.shopList.scrollTo(shopModel)
+        val shop = Shop("new shop")
+        this.shopModel.item = shop
+        this.shopModel.editingShop.set(ShopModel(shop))
+        this.shopModel.commit()
+        if (this.shopModel.editingShop.get() != null) {
+            shopList.selectionModel.select(shopModel.editingShop.get())
+            shopList.scrollTo(shopModel.editingShop.get())
+        }
     }
 
     @FXML
@@ -202,6 +216,26 @@ class ShopEditorView : Fragment() {
         if (dirChooser != null && dirChooser.exists() && dirChooser.isDirectory) {
             shopConfigModel.shopFilesPath.set(dirChooser.absolutePath)
             shopConfigModel.commit()
+        }
+    }
+
+    @FXML
+    fun saveShops() {
+        var saved = 0
+        shopModel.shops.filter { it.isDirty || it.items.count { i -> i.isDirty } > 0 }
+            .forEach {
+                it.commit()
+                val shop = it.item
+                val data = gson.toJson(shop)
+                val path = shopConfigModel.shopFilesPath.get()
+                val name = shop.name.toLowerCase().replace(" ", "_")
+                Files.write(Path.of(path, "$name.json"), data.toByteArray())
+                saved++
+            }
+        if (saved == 0) {
+            alert(Alert.AlertType.INFORMATION, "Finished Saving Shops", "No Shops were edited!")
+        } else {
+            alert(Alert.AlertType.INFORMATION, "Finished Saving Shops", "Shops Saved $saved")
         }
     }
 

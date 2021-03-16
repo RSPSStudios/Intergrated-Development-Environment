@@ -2,9 +2,7 @@ package com.javatar.plugin.shop.editor.ui.preferences
 
 import com.javatar.plugin.shop.editor.ui.models.PreferenceModel
 import javafx.geometry.Pos
-import tornadofx.Fragment
-import tornadofx.checkbox
-import tornadofx.vbox
+import tornadofx.*
 
 /**
  * @author David Schlachter <davidschlachter96@gmail.com>
@@ -20,7 +18,13 @@ class PreferencesView : Fragment() {
         spacing = 10.0
 
         checkbox("Ask before deletion", prefModel.warnOnDelete)
+        checkbox("Disable Icons", prefModel.disableIcons)
 
+        button("Apply") {
+            disableWhen(prefModel.dirty.not())
+        }.action {
+            prefModel.commit()
+        }
     }
 
 }

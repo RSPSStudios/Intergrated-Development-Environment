@@ -18,7 +18,8 @@
         <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <items>
                 <Button mnemonicParsing="false" onAction="#loadShops" text="Load Shops"/>
-                <Button disable="true" layoutX="10.0" layoutY="11.0" mnemonicParsing="false" text="Save Shops"/>
+                <Button fx:id="saveShopsBtn" layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#saveShops"
+                        text="Save Shops"/>
                 <Separator orientation="VERTICAL"/>
                 <Button mnemonicParsing="false" onAction="#loadCache" text="Load Cache">
                     <graphic>

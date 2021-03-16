@@ -2,6 +2,8 @@ package com.javatar.plugin.shop.editor.ui
 
 import com.javatar.api.ui.utilities.bindSelected
 import com.javatar.api.ui.utilities.datagrid
+import com.javatar.api.ui.utilities.dynamicContent
+import com.javatar.plugin.shop.editor.ui.models.PreferenceModel
 import com.javatar.plugin.shop.editor.ui.models.ShopCacheConfigModel
 import com.javatar.plugin.shop.editor.ui.models.ShopItemModel
 import com.javatar.plugin.shop.editor.ui.models.ShopModel
@@ -11,7 +13,10 @@ import javafx.beans.binding.Bindings
 import javafx.embed.swing.SwingFXUtils
 import javafx.geometry.Pos
 import javafx.scene.image.ImageView
-import tornadofx.*
+import tornadofx.Fragment
+import tornadofx.label
+import tornadofx.spinner
+import tornadofx.vbox
 
 /**
  * @author David Schlachter <davidschlachter96@gmail.com>
@@ -22,6 +27,7 @@ class ShopItemView : Fragment() {
 
     val shopModel: ShopModel by inject()
     val cacheModel: ShopCacheConfigModel by inject()
+    val prefModel: PreferenceModel by inject()
 
     override val root = datagrid<ShopItemModel>(shopModel.items) {
 
@@ -40,8 +46,8 @@ class ShopItemView : Fragment() {
 
                 val box = vbox {
                     alignment = Pos.CENTER
-                    dynamicContent(cacheModel.itemProvider) {
-                        if (it != null) {
+                    dynamicContent(cacheModel.itemProvider, prefModel.disableIcons) {
+                        if (!prefModel.disableIcons.get() && cacheModel.itemProvider.get() != null) {
                             val view = ImageView()
                             view.imageProperty().bind(Bindings.createObjectBinding({
                                 SwingFXUtils.toFXImage(

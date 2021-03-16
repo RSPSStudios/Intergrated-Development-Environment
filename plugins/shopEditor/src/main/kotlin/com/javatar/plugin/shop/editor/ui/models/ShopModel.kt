@@ -4,6 +4,7 @@ import com.javatar.plugin.shop.editor.shop.Shop
 import javafx.beans.property.*
 import javafx.collections.FXCollections
 import tornadofx.ItemViewModel
+import tornadofx.onChange
 import tornadofx.toObservable
 
 /**
@@ -13,7 +14,8 @@ import tornadofx.toObservable
 
 class ShopModel(shop: Shop = Shop("new shop")) : ItemViewModel<Shop>(shop) {
 
-    val shops = bind { SimpleListProperty<ShopModel>(this, "shops", FXCollections.observableArrayList()) }
+    val shops = SimpleListProperty<ShopModel>(this, "shops", FXCollections.observableArrayList())
+    val editingShop = SimpleObjectProperty<ShopModel>(this, "editing_shop")
 
     val items =
         bind { SimpleListProperty(this, "shop_items", shop.items.map { ShopItemModel(it) }.toList().toObservable()) }
@@ -30,6 +32,24 @@ class ShopModel(shop: Shop = Shop("new shop")) : ItemViewModel<Shop>(shop) {
 
     val editingItem = bind { SimpleObjectProperty<ShopItemModel>(this, "editing_item") }
 
+    init {
+        itemProperty.onChange {
+            if (it != null) {
+                items.setAll(it.items.map { item -> ShopItemModel(item) })
+                name.set(it.name)
+                currency.set(it.currency)
+                ironman.set(it.ironman)
+                generalStore.set(it.generalStore)
+                npcs.setAll(it.npcs.toList())
+                npcOption.set(it.npcOption)
+                sellMultiplier.set(it.sellMultiplier)
+                buyMultiplier.set(it.sellMultiplier)
+                hideBuy.set(it.hideBuy)
+                uniquePerNpc.set(it.uniquePerNpc)
+            }
+        }
+    }
+
     override fun onCommit() {
         super.onCommit()
         if (name.get() != null) {
@@ -41,12 +61,18 @@ class ShopModel(shop: Shop = Shop("new shop")) : ItemViewModel<Shop>(shop) {
                 generalStore.get(),
                 items.map { it.item }.toTypedArray(),
                 npcs.toIntArray(),
-                npcOption.get(),
+                npcOption.get() ?: "trade",
                 sellMultiplier.get(),
                 buyMultiplier.get(),
                 hideBuy.get(),
                 uniquePerNpc.get()
             )
+            val index = shops.indexOf(editingShop.get())
+            if (index != -1) {
+                shops[index].item = this.item
+            } else if (editingShop.get() != null) {
+                shops.add(editingShop.get())
+            }
         }
     }
 }

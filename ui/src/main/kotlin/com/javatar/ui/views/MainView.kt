@@ -128,4 +128,9 @@ class MainView : View() {
         }
     }
 
+    @FXML
+    fun openPreferences() {
+        PreferencesView().openModal(block = true)
+    }
+
 }

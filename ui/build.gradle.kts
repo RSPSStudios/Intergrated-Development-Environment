@@ -24,4 +24,5 @@ dependencies {
     implementation("org.controlsfx:controlsfx:11.0.3")
     implementation("de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2")
     implementation("com.displee:rs-cache-library:6.8")
+    implementation("org.koin:koin-core:2.2.1")
 }

@@ -1,6 +1,6 @@
 dependencies {
     kapt("org.pf4j:pf4j:3.6.0")
-    api(project(":definitions"))
+    plugin(project(":definitions"))
 }
 
 javafx {

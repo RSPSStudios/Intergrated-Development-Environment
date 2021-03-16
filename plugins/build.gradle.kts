@@ -5,25 +5,29 @@ plugins {
     kotlin("jvm") apply false
     id("org.openjfx.javafxplugin") version "0.0.9" apply false
 }
-
 // here we define the tasks which will build the plugins in the subprojects
 subprojects {
+
+    val plugin by configurations.creating
+
+    configurations {
+        plugin.isTransitive = false
+        api.get().extendsFrom(plugin)
+    }
 
     dependencies {
         compileOnly(project(":api"))
         compileOnly(kotlin("stdlib"))
-
-
         compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2")
-        api("no.tornado:tornadofx:2.0.0-SNAPSHOT")
+        compileOnly("no.tornado:tornadofx:2.0.0-SNAPSHOT")
         compileOnly("org.controlsfx:controlsfx:11.0.3")
         compileOnly("de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2")
         compileOnly("com.displee:rs-cache-library:6.8")
+        compileOnly("org.koin:koin-core:2.2.1")
 
         compileOnly("org.pf4j:pf4j:3.6.0")
         kapt("org.pf4j:pf4j:3.6.0")
-
-        api("com.google.code.gson:gson:2.8.6")
+        plugin("com.google.code.gson:gson:2.8.6")
     }
 
     apply(plugin = "org.jetbrains.kotlin.jvm")
@@ -48,7 +52,7 @@ subprojects {
         dependsOn(configurations.runtimeClasspath)
         into("lib") {
             from({
-                configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }
+                configurations.named("plugin").get().filter { it.name.endsWith("jar") }
             })
         }
         archiveExtension.set("zip")
@@ -73,6 +77,10 @@ subprojects {
 
     tasks.named("build") {
         dependsOn(tasks.named("plugin"))
+    }
+    fun DependencyHandler.pluginApi(dep: Any) {
+        add("api", dep)
+        add("plugin", dep)
     }
 }
 

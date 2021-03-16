@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="500.0"
+            minWidth="750.0" prefHeight="500.0" prefWidth="750.0" stylesheets="@global.css"
+            xmlns="http://javafx.com/javafx/11.0.1">
+   <left>
+      <TreeView fx:id="preferencesList" BorderPane.alignment="CENTER"/>
+   </left>
+   <center>
+      <VBox fx:id="preferenceView" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER"/>
+   </center>
+</BorderPane>

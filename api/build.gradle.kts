@@ -9,6 +9,7 @@ dependencies {
     implementation("no.tornado:tornadofx:2.0.0-SNAPSHOT")
     implementation("org.controlsfx:controlsfx:11.0.3")
     implementation("de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2")
+    implementation("org.koin:koin-core:2.2.1")
 }
 
 javafx {

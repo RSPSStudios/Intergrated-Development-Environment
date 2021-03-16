@@ -19,7 +19,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 
-class MainView : View() {
+class MainView : View("RuneScape Private Server Studios") {
 
     override val root: AnchorPane by fxml("main-view.fxml")
 

@@ -16,7 +16,8 @@ import java.nio.file.Path
 
 class EditorApplication : App(MainView::class), KoinComponent {
 
-    val DEVELOPMENT_MODE = true
+    val DEVELOPMENT_MODE = false
+    val DEFAULT_PLUGIN_DIR = "${System.getProperty("user.home")}/rsps-studios/plugins"
 
     val pluginRepo: PluginRepositoryModel = get()
     val typeManager: IFileTypeManager = get()
@@ -24,9 +25,13 @@ class EditorApplication : App(MainView::class), KoinComponent {
     override fun init() {
         super.init()
 
-        val pluginDir = config.string("PLUGIN_DIR")
+        var pluginDir = config.string("PLUGIN_DIR")
+        if (pluginDir == null) {
+            pluginDir = DEFAULT_PLUGIN_DIR
+            config["PLUGIN_DIR"] = pluginDir
+        }
 
-        if (pluginDir != null && !DEVELOPMENT_MODE) {
+        if (!DEVELOPMENT_MODE) {
             System.setProperty("pf4j.pluginsDir", pluginDir)
         } else {
             System.setProperty("pf4j.pluginsDir", "/home/javatar/IdeaProjects/CacheEditor/build/plugins")
@@ -35,7 +40,7 @@ class EditorApplication : App(MainView::class), KoinComponent {
 
 
         if (!Files.exists(Path.of(System.getProperty("pf4j.pluginsDir")))) {
-            Files.createDirectory(Path.of(System.getProperty("pf4j.pluginsDir")))
+            Files.createDirectories(Path.of(System.getProperty("pf4j.pluginsDir")))
         }
 
         pluginRepo.manager.loadPlugins()

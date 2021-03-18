@@ -6,7 +6,9 @@ import com.javatar.plugin.shop.editor.ui.models.ShopCacheConfigModel
 import com.javatar.plugin.shop.editor.ui.models.ShopModel
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.geometry.Pos
+import javafx.scene.control.Alert
 import javafx.scene.control.SpinnerValueFactory
+import javafx.scene.control.TextInputDialog
 import javafx.util.StringConverter
 import tornadofx.*
 
@@ -58,10 +60,20 @@ class ShopView : Fragment() {
             button("Add Npc").action {
                 if (cacheModel.npcProvider.get() != null) {
                     npcSelectionModel.npcs.setAll(cacheModel.npcProvider.get().npcIds())
-                }
-                NpcSelectionView().openModal(block = true)
-                if (npcSelectionModel.result.get() != -1) {
-                    shopModel.npcs.add(npcSelectionModel.result.get())
+                    NpcSelectionView().openModal(block = true)
+                    if (npcSelectionModel.result.get() != -1) {
+                        shopModel.npcs.add(npcSelectionModel.result.get())
+                    }
+                } else {
+                    val input = TextInputDialog("0")
+                    input.title = "Choose Npc ID"
+                    val result = input.showAndWait()
+                    if (result.isPresent && result.get().isInt()) {
+                        shopModel.npcs.add(result.get().toInt())
+                        shopModel.commit()
+                    } else {
+                        alert(Alert.AlertType.ERROR, "Invalid Input", "Invalid npc id.")
+                    }
                 }
             }
             button("Remove Npc").action {

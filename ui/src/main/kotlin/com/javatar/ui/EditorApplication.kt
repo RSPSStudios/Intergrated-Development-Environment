@@ -16,7 +16,7 @@ import java.nio.file.Path
 
 class EditorApplication : App(MainView::class), KoinComponent {
 
-    val DEVELOPMENT_MODE = false
+    val DEVELOPMENT_MODE = true
     val DEFAULT_PLUGIN_DIR = "${System.getProperty("user.home")}/rsps-studios/plugins"
 
     val pluginRepo: PluginRepositoryModel = get()

@@ -3,6 +3,7 @@ val pluginsDir: File by rootProject.extra
 plugins {
     kotlin("kapt") apply false
     kotlin("jvm") apply false
+    id("org.beryx.runtime") version "1.12.2" apply false
     id("org.openjfx.javafxplugin") version "0.0.9" apply false
 }
 // here we define the tasks which will build the plugins in the subprojects

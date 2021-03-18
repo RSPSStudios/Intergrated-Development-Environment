@@ -142,11 +142,21 @@ class ShopEditorView : Fragment() {
     fun addItem() {
         if (cacheModel.itemProvider.get() != null) {
             itemSelectModel.items.setAll(cacheModel.itemProvider.get().itemIds())
-        }
-        ItemSelectionView().openModal(block = true)
-        if (itemSelectModel.result.get() != -1) {
-            shopModel.items.add(ShopItemModel(ShopItem(itemSelectModel.result.get())))
-            shopModel.commit()
+            ItemSelectionView().openModal(block = true)
+            if (itemSelectModel.result.get() != -1) {
+                shopModel.items.add(ShopItemModel(ShopItem(itemSelectModel.result.get())))
+                shopModel.commit()
+            }
+        } else {
+            val input = TextInputDialog("0")
+            input.title = "Choose Item ID"
+            val result = input.showAndWait()
+            if (result.isPresent && result.get().isInt()) {
+                shopModel.items.add(ShopItemModel(ShopItem(result.get().toInt())))
+                shopModel.commit()
+            } else {
+                alert(Alert.AlertType.ERROR, "Invalid Input", "Invalid item id.")
+            }
         }
     }
 
@@ -244,7 +254,6 @@ class ShopEditorView : Fragment() {
         val dirChooser = chooseDirectory("Choose Cache Directory")
         if (dirChooser != null && dirChooser.exists() && dirChooser.isDirectory) {
             val cache = CacheLibrary.create(dirChooser.absolutePath)
-            cachePath.text = cache.path
             cacheModel.cache.set(cache)
             cacheModel.commit()
         }

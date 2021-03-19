@@ -17,7 +17,7 @@ subprojects {
     }
 
     dependencies {
-        compileOnly(project(":api"))
+        compileOnly("com.javatar:api:0.1")
         compileOnly(kotlin("stdlib"))
         compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2")
         compileOnly("no.tornado:tornadofx:2.0.0-SNAPSHOT")

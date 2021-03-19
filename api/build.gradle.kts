@@ -1,5 +1,6 @@
 plugins {
     id("org.openjfx.javafxplugin") version "0.0.9"
+    `maven-publish`
 }
 
 dependencies {
@@ -23,4 +24,15 @@ javafx {
         "javafx.web",
         "javafx.swing"
     )
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.javatar"
+            artifactId = "api"
+            version = "0.1"
+            from(components["kotlin"])
+        }
+    }
 }

@@ -1,6 +1,6 @@
-
 rootProject.name = "CacheEditor"
-include(":definitions")
+include(":osrs-toolkit")
+include(":osrs-definitions")
 include(":ui")
 include(":api")
 include(":application")

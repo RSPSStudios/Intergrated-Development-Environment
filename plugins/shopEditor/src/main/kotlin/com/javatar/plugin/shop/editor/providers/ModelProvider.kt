@@ -1,8 +1,8 @@
 package com.javatar.plugin.shop.editor.providers
 
 import com.displee.cache.CacheLibrary
-import com.javatar.ModelDefinition
 import com.javatar.definition.DefinitionProvider
+import com.javatar.osrs.definitions.impl.ModelDefinition
 import com.javatar.plugin.shop.editor.DefinitionManager
 
 /**

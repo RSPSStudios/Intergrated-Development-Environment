@@ -1,7 +1,7 @@
 package com.javatar.plugin.definition.editor
 
 import com.javatar.definition.DefinitionManager
-import com.javatar.loader.*
+import com.javatar.osrs.definitions.loaders.*
 import com.javatar.saver.*
 
 /**

@@ -1,9 +1,9 @@
 package com.javatar.plugin.definition.editor.fs.types.files
 
-import com.javatar.ItemDefinition
 import com.javatar.api.fs.FileType
 import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
+import com.javatar.osrs.definitions.impl.ItemDefinition
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
 import com.javatar.plugin.definition.editor.managers.ItemProvider

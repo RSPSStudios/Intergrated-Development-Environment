@@ -2,7 +2,7 @@ package com.javatar.plugin.shop.editor
 
 import com.google.gson.GsonBuilder
 import com.javatar.definition.DefinitionManager
-import com.javatar.loader.*
+import com.javatar.osrs.definitions.loaders.*
 import com.javatar.saver.*
 
 object DefinitionManager {

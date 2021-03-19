@@ -1,8 +1,8 @@
 package com.javatar.plugin.definition.editor.managers
 
 import com.displee.cache.CacheLibrary
-import com.javatar.SpriteGroupDefinition
 import com.javatar.definition.DefinitionProvider
+import com.javatar.osrs.definitions.impl.SpriteGroupDefinition
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 
 /**

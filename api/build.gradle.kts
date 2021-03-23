@@ -11,6 +11,7 @@ dependencies {
     implementation("org.controlsfx:controlsfx:11.0.3")
     implementation("de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2")
     implementation("org.koin:koin-core:2.2.1")
+    implementation("io.ktor:ktor-client-apache:1.5.2")
 }
 
 javafx {

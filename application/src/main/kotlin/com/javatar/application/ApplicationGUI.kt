@@ -1,6 +1,7 @@
 package com.javatar.application
 
 import com.javatar.api.fs.IFileTypeManager
+import com.javatar.api.http.Client
 import com.javatar.application.plugins.PluginManager
 import com.javatar.fs.FileTypeManager
 import com.javatar.ui.EditorApplication
@@ -28,6 +29,7 @@ object ApplicationGUI {
                 single { EditorModel() }
                 single { PluginRepositoryModel() }
                 single { ClipboardModel() }
+                single { Client() }
                 single<IFileTypeManager> { FileTypeManager() }
                 single<org.pf4j.PluginManager> { PluginManager }
             })

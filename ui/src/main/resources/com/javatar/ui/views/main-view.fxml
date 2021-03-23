@@ -30,6 +30,13 @@
                                           text="Set Plugin Location"/>
                             </items>
                         </Menu>
+                        <Menu mnemonicParsing="false" text="Account">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#login" text="Login"/>
+                                <MenuItem fx:id="accountSettingsBtn" mnemonicParsing="false" onAction="#accountSettings"
+                                          text="Account Settings"/>
+                            </items>
+                        </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="About"/>

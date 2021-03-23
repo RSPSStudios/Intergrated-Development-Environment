@@ -79,10 +79,6 @@ subprojects {
     tasks.named("build") {
         dependsOn(tasks.named("plugin"))
     }
-    fun DependencyHandler.pluginApi(dep: Any) {
-        add("api", dep)
-        add("plugin", dep)
-    }
 }
 
 

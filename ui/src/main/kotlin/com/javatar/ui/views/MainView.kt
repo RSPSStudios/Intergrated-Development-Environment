@@ -5,9 +5,9 @@ import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.api.ui.MenuItemExtension
 import com.javatar.api.ui.ToolTabExtension
 import com.javatar.api.ui.utilities.contextmenu
-import com.javatar.ui.models.CacheConfigurationModel
-import com.javatar.ui.models.EditorModel
-import com.javatar.ui.models.PluginRepositoryModel
+import com.javatar.ui.models.*
+import com.javatar.ui.views.account.AccountSettings
+import com.javatar.ui.views.account.LoginDialog
 import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -28,13 +28,22 @@ class MainView : View("RuneScape Private Server Studios") {
     val menuBar: MenuBar by fxid()
     val pluginsMenu: Menu by fxid()
     val toolTabs: TabPane by fxid()
+    val accountSettingsBtn: MenuItem by fxid()
 
     val configModel: CacheConfigurationModel by di()
     val editorModel: EditorModel by di()
 
     val pluginRepository: PluginRepositoryModel by di()
 
+    val titleModel: TitleModel by inject()
+
+    val accountModel: AccountModel by inject()
+
     init {
+
+        titleProperty.bind(Bindings.createStringBinding({
+            "${titleModel.title.get()} - ${titleModel.accountEmailOrName.get()}"
+        }, titleModel.title, titleModel.accountEmailOrName))
 
         pluginRepository.manager.getExtensions(MenuItemExtension::class.java)
             .forEach { it.createMenuItem(pluginsMenu, menuBar) }
@@ -78,6 +87,8 @@ class MainView : View("RuneScape Private Server Studios") {
                 })
             }
         }, configModel.cachePaths))
+
+        //accountSettingsBtn.enableWhen(accountModel.loggedIn)
     }
 
     @FXML
@@ -131,6 +142,16 @@ class MainView : View("RuneScape Private Server Studios") {
     @FXML
     fun openPreferences() {
         PreferencesView().openModal(block = true)
+    }
+
+    @FXML
+    fun login() {
+        LoginDialog().openModal(block = true)
+    }
+
+    @FXML
+    fun accountSettings() {
+        AccountSettings().openModal(block = true)
     }
 
 }

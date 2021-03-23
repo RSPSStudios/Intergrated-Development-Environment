@@ -2,16 +2,29 @@ package com.javatar.ui.views
 
 import com.displee.cache.CacheLibrary
 import com.javatar.api.fs.directories.RootDirectory
+import com.javatar.api.http.Client
+import com.javatar.api.http.UserInformation
 import com.javatar.api.ui.MenuItemExtension
 import com.javatar.api.ui.ToolTabExtension
+import com.javatar.api.ui.models.AccountModel
+import com.javatar.api.ui.models.AccountSettingsModel
 import com.javatar.api.ui.utilities.contextmenu
-import com.javatar.ui.models.*
-import com.javatar.ui.views.account.AccountSettings
+import com.javatar.ui.models.CacheConfigurationModel
+import com.javatar.ui.models.EditorModel
+import com.javatar.ui.models.PluginRepositoryModel
+import com.javatar.ui.models.TitleModel
+import com.javatar.ui.views.account.AccountSettingsFragment
 import com.javatar.ui.views.account.LoginDialog
+import io.ktor.util.*
 import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.javafx.JavaFx
 import tornadofx.*
 import java.awt.Desktop
 import java.io.File
@@ -37,13 +50,21 @@ class MainView : View("RuneScape Private Server Studios") {
 
     val titleModel: TitleModel by inject()
 
+    val accountSettingsModel: AccountSettingsModel by inject()
     val accountModel: AccountModel by inject()
+    val client: Client by di()
 
     init {
 
         titleProperty.bind(Bindings.createStringBinding({
             "${titleModel.title.get()} - ${titleModel.accountEmailOrName.get()}"
         }, titleModel.title, titleModel.accountEmailOrName))
+
+        titleModel.accountEmailOrName.bind(Bindings.createStringBinding({
+            if (accountModel.email.isNull.get()) {
+                "Guest"
+            } else accountModel.email.get()
+        }, accountModel.email))
 
         pluginRepository.manager.getExtensions(MenuItemExtension::class.java)
             .forEach { it.createMenuItem(pluginsMenu, menuBar) }
@@ -88,7 +109,7 @@ class MainView : View("RuneScape Private Server Studios") {
             }
         }, configModel.cachePaths))
 
-        //accountSettingsBtn.enableWhen(accountModel.loggedIn)
+        accountSettingsBtn.enableWhen(accountModel.loggedIn.or(accountModel.activeCredentials.isNotNull))
     }
 
     @FXML
@@ -149,9 +170,16 @@ class MainView : View("RuneScape Private Server Studios") {
         LoginDialog().openModal(block = true)
     }
 
+    @InternalAPI
     @FXML
     fun accountSettings() {
-        AccountSettings().openModal(block = true)
+        client.get<UserInformation>("user/info", accountModel.activeCredentials.get())
+            .onEach {
+                accountSettingsModel.primaryEmail.set(it.primaryEmail)
+                accountSettingsModel.subscribed.set(if (it.hasToken) "Yes" else "No")
+            }
+            .launchIn(CoroutineScope(Dispatchers.JavaFx))
+        AccountSettingsFragment().openModal(block = true)
     }
 
 }

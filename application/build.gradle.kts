@@ -45,6 +45,8 @@ dependencies {
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
     implementation("org.koin:koin-core:2.2.1")
     implementation("io.ktor:ktor-client-apache:1.5.2")
+    implementation("io.ktor:ktor-client-gson:1.5.2")
+    implementation("io.ktor:ktor-client-auth:1.5.2")
     org.openjfx.gradle.JavaFXPlatform.values().forEach { platform ->
         val cfg = configurations.create("javafx_" + platform.classifier)
         org.openjfx.gradle.JavaFXModule.getJavaFXModules(javaFXOptions.modules).forEach { m ->

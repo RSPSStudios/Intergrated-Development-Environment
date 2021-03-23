@@ -1,8 +1,18 @@
 package com.javatar.ui.views.account
 
-import com.javatar.ui.models.AccountModel
+import com.javatar.api.http.Client
+import com.javatar.api.http.CredentialsResponse
+import com.javatar.ui.data.RegistrationInformation
+import com.javatar.ui.models.AccountRegisterModel
+import io.ktor.util.*
+import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.javafx.JavaFx
 import tornadofx.*
 
 /**
@@ -12,8 +22,12 @@ import tornadofx.*
 
 class RegistrationFragment : Fragment("Account Registration") {
 
-    val accountModel: AccountModel by inject()
+    val accountModel: AccountRegisterModel by inject()
+    val client: Client by di()
 
+    val msg = SimpleStringProperty(this, "msg", "")
+
+    @InternalAPI
     override val root = form {
         alignment = Pos.CENTER
         fieldset("Register an account") {
@@ -36,16 +50,27 @@ class RegistrationFragment : Fragment("Account Registration") {
                     } else null
                 }
             }
-            button("Register Account") {
-                enableWhen(
-                    accountModel.valid(
-                        accountModel.registrationEmail,
-                        accountModel.registrationPassword,
-                        accountModel.confirmPassword
+            hbox {
+                spacing = 20.0
+                button("Register Account") {
+                    enableWhen(
+                        accountModel.valid(
+                            accountModel.registrationEmail,
+                            accountModel.registrationPassword,
+                            accountModel.confirmPassword
+                        )
                     )
-                )
-            }.action {
-                TODO("Send register post request to auth server.")
+                }.action {
+                    val reg = RegistrationInformation(
+                        accountModel.registrationEmail.get(),
+                        accountModel.registrationPassword.get()
+                    )
+                    client.post<CredentialsResponse>("register", reg)
+                        .onEach { msg.set(it.msg) }
+                        .launchIn(CoroutineScope(Dispatchers.JavaFx))
+
+                }
+                label(msg)
             }
         }
 

@@ -1,4 +1,4 @@
-package com.javatar.ui.models
+package com.javatar.api.ui.models
 
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.ViewModel
@@ -11,6 +11,7 @@ import tornadofx.ViewModel
 class AccountSettingsModel : ViewModel() {
 
     val email = bind { SimpleStringProperty(this, "email_address", "") }
+    val primaryEmail = bind { SimpleStringProperty(this, "primary_email", "") }
     val subscribed = bind { SimpleStringProperty(this, "subscribed", "") }
     val currentPassword = bind { SimpleStringProperty(this, "current_password", "") }
     val newPassword = bind { SimpleStringProperty(this, "new_password", "") }

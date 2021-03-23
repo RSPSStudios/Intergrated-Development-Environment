@@ -1,6 +1,6 @@
 package com.javatar.ui.views.account
 
-import com.javatar.ui.models.AccountModel
+import com.javatar.api.ui.models.AccountModel
 import javafx.geometry.Pos
 import tornadofx.*
 

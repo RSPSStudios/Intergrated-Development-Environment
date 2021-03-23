@@ -1,6 +1,6 @@
 package com.javatar.ui.views.account
 
-import com.javatar.ui.models.AccountSettingsModel
+import com.javatar.api.ui.models.AccountSettingsModel
 import tornadofx.*
 
 /**
@@ -8,18 +8,21 @@ import tornadofx.*
  * @created March 22 2021
  */
 
-class AccountSettings : Fragment("Account Settings") {
+class AccountSettingsFragment : Fragment("Account Settings") {
 
     val accountSettings: AccountSettingsModel by inject()
 
     override val root = form {
         style = "-fx-base: #3f474f;"
         fieldset("Account Settings") {
-            field("Email:") {
+            field("Login Email:") {
                 label(accountSettings.email)
             }
-            field("Subscription:") {
-                label("$250 a month")
+            field("Primary Email:") {
+                label(accountSettings.primaryEmail)
+            }
+            field("Subscribed:") {
+                label("Yes")
             }
         }
         fieldset("Change Password") {

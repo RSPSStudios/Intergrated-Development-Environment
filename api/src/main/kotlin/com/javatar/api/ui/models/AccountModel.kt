@@ -1,6 +1,8 @@
-package com.javatar.ui.models
+package com.javatar.api.ui.models
 
+import com.javatar.api.http.Credentials
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.ViewModel
 
@@ -16,15 +18,20 @@ class AccountModel : ViewModel() {
 
     val loggedIn = bind { SimpleBooleanProperty(this, "logged_in", false) }
 
-    val registrationEmail = bind { SimpleStringProperty(this, "register_email", "") }
-    val registrationPassword = bind { SimpleStringProperty(this, "register_password", "") }
-    val confirmPassword = bind { SimpleStringProperty(this, "confirm_password", "") }
+    val activeCredentials = bind {
+        SimpleObjectProperty<Credentials>(
+            this,
+            "active_credentials",
+            Credentials(config.string("email_address") ?: "", config.string("password") ?: "")
+        )
+    }
 
     override fun onCommit() {
         super.onCommit()
         with(config) {
             set("email_address", email.get())
             set("password", password.get())
+            activeCredentials.set(Credentials(email.get(), password.get()))
             save()
         }
     }

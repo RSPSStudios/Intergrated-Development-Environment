@@ -10,5 +10,7 @@ data class PluginInformation(
     val pluginAuthor: String,
     val pluginDescriptor: String,
     val pluginVersion: String,
-    val pluginEnabled: Boolean
+    val pluginEnabled: Boolean,
+    val updateAvailable: Boolean,
+    val isInstalled: Boolean
 )

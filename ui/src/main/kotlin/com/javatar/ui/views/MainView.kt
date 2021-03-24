@@ -131,6 +131,7 @@ class MainView : View("RuneScape Private Server Studios") {
         }
     }
 
+    @InternalAPI
     @FXML
     fun pluginRepo() {
         find<PluginRepository>().openModal()

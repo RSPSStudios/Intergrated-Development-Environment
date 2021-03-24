@@ -13,6 +13,8 @@ class AccountSettingsFragment : Fragment("Account Settings") {
     val accountSettings: AccountSettingsModel by inject()
 
     override val root = form {
+        prefWidth = 400.0
+        prefHeight = 300.0
         style = "-fx-base: #3f474f;"
         fieldset("Account Settings") {
             field("Login Email:") {

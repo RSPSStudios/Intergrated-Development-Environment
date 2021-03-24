@@ -11,6 +11,8 @@ import com.javatar.ui.models.PluginRepositoryModel
 import io.ktor.util.*
 import javafx.beans.binding.Bindings
 import javafx.geometry.Pos
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import javafx.scene.control.ListView
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
@@ -53,11 +55,13 @@ class PluginRepository : View() {
                 label("Version: ${plugin.pluginVersion}")
                 label("Plugin: ${if (plugin.pluginEnabled) "Enabled" else "Disabled"}")
                 button {
-                    text = when {
-                        plugin.updateAvailable -> "Update"
-                        plugin.isInstalled -> "Uninstall"
-                        else -> "Download"
-                    }
+                    textProperty().bind(Bindings.createStringBinding({
+                        when {
+                            plugin.updateAvailable -> "Update"
+                            plugin.isInstalled -> "Uninstall"
+                            else -> "Download"
+                        }
+                    }, pluginRepository.plugins))
                     action {
                         if (accountModel.activeCredentials.get() != null && (plugin.updateAvailable || !plugin.isInstalled)) {
                             val dir = app.config["PLUGIN_DIR"].toString()
@@ -70,6 +74,8 @@ class PluginRepository : View() {
                                 pluginDir.deleteRecursively()
                             }
                             val prog = find<ProgressDialog>(Scope())
+                            prog.title = "Downloading Plugin"
+                            prog.progressModel.msg.set("Downloading ${plugin.pluginName.replace("-", " ")}")
                             client.downloadFile(
                                 "http://127.0.0.1:8080/tools/plugin/${plugin.pluginName}",
                                 File(dir, "${plugin.pluginName}.zip"),
@@ -77,19 +83,30 @@ class PluginRepository : View() {
                             ).onStart {
                                 prog.openModal()
                             }.filterIsInstance<DownloadStatus.Progress>().onEach {
-                                println(it.progress)
                                 prog.progressModel.progress.set(it.progress)
                             }.onCompletion {
                                 prog.close()
-                                val id = pluginRepository.manager.loadPlugin(
-                                    File(
-                                        dir,
-                                        "${plugin.pluginName}.zip"
-                                    ).toPath()
-                                )
-                                pluginRepository.manager.startPlugin(id)
-                            }.flowOn(Dispatchers.JavaFx).launchIn(CoroutineScope(Dispatchers.IO))
+                                pluginRepository.plugins[plugin.pluginName] = plugin.copy(isInstalled = true)
+                            }.launchIn(CoroutineScope(Dispatchers.JavaFx))
+                        } else if (plugin.isInstalled) {
+                            val dir = app.config["PLUGIN_DIR"].toString()
+                            val pluginZip = File(dir, "${plugin.pluginName}.zip")
+                            val pluginDir = File(dir, plugin.pluginName)
+                            if (pluginZip.exists()) {
+                                pluginZip.delete()
+                                pluginRepository.plugins[plugin.pluginName] = plugin.copy(isInstalled = false)
+                            }
+                            if (pluginDir.exists() && pluginDir.isDirectory) {
+                                pluginDir.deleteRecursively()
+                            }
                         }
+                        alert(
+                            Alert.AlertType.WARNING,
+                            "Plugin Update",
+                            "Please restart for changes to take affect.",
+                            owner = scene?.window,
+                            buttons = arrayOf(ButtonType.OK)
+                        )
                     }
                 }
             }

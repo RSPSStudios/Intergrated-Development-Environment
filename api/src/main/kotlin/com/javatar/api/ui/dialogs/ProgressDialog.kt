@@ -2,10 +2,7 @@ package com.javatar.api.ui.dialogs
 
 import com.javatar.api.ui.models.ProgressDialogModel
 import javafx.geometry.Pos
-import tornadofx.Fragment
-import tornadofx.hbox
-import tornadofx.progressbar
-import tornadofx.progressindicator
+import tornadofx.*
 
 /**
  * @author David Schlachter <davidschlachter96@gmail.com>
@@ -20,7 +17,11 @@ class ProgressDialog : Fragment() {
         style = "-fx-base: #3f474f;"
         alignment = Pos.CENTER
         spacing = 10.0
-        progressbar(progressModel.progress)
+        vbox {
+            alignment = Pos.CENTER
+            label(progressModel.msg)
+            progressbar(progressModel.progress)
+        }
         progressindicator(progressModel.progress)
     }
 

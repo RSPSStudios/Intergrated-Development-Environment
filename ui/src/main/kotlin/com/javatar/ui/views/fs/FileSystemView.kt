@@ -3,6 +3,9 @@ package com.javatar.ui.views.fs
 import com.javatar.api.fs.IFileTypeManager
 import com.javatar.api.fs.directories.ArchiveDirectory
 import com.javatar.api.fs.directories.IndexDirectory
+import com.javatar.api.ui.fs.ArchiveContextMenuExtension
+import com.javatar.api.ui.fs.FileContextMenuExtension
+import com.javatar.api.ui.fs.IndexContextMenuExtension
 import com.javatar.api.ui.utilities.DataGrid
 import com.javatar.api.ui.utilities.contextmenu
 import com.javatar.api.ui.utilities.datagrid
@@ -67,6 +70,11 @@ class FileSystemView : Fragment() {
                                 add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
                                 label("Index ${it.id}")
                             }
+                            val exts = pluginRepo.manager.getExtensions(IndexContextMenuExtension::class.java)
+                            if(exts.isNotEmpty()) {
+                                contextMenu = ContextMenu()
+                                exts.forEach { it.configureContextMenu(contextMenu) }
+                            }
                             this@datagrid.contextMenu = null
                         }
                         FileSystemViewMeta.MetaType.ARCHIVE -> {
@@ -93,6 +101,10 @@ class FileSystemView : Fragment() {
                             }
                             contextmenu {
                                 addArchiveMenuItems(it, this@datagrid)
+                                val exts = pluginRepo.manager.getExtensions(ArchiveContextMenuExtension::class.java)
+                                if(exts.isNotEmpty()) {
+                                    exts.forEach { it.configureContextMenu(this) }
+                                }
                             }
                         }
                         FileSystemViewMeta.MetaType.FILE -> {
@@ -116,6 +128,10 @@ class FileSystemView : Fragment() {
 
                             contextmenu {
                                 addFileContextMenuItems(it, this@datagrid)
+                                val exts = pluginRepo.manager.getExtensions(FileContextMenuExtension::class.java)
+                                if(exts.isNotEmpty()) {
+                                    exts.forEach { it.configureContextMenu(this) }
+                                }
                             }
                         }
                     }

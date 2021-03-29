@@ -1,6 +1,7 @@
 package com.javatar.api.fs.extensions
 
 import com.javatar.api.fs.IndexType
+import javafx.scene.control.ContextMenu
 import org.pf4j.ExtensionPoint
 
 /**

@@ -4,13 +4,13 @@ import com.javatar.api.fs.FileType
 import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.osrs.definitions.impl.ItemDefinition
+import com.javatar.osrs.definitions.sprites.ItemSpriteFactory
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
 import com.javatar.plugin.definition.editor.managers.ItemProvider
 import com.javatar.plugin.definition.editor.managers.ModelProvider
 import com.javatar.plugin.definition.editor.managers.SpriteProvider
 import com.javatar.plugin.definition.editor.managers.TextureProvider
-import com.javatar.sprites.ItemSpriteFactory
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -34,7 +34,7 @@ class ItemFileType : FileType {
     }
 
     override fun save(data: String, file: JFile, root: RootDirectory) {
-        file.write(manager.save(gson.fromJson(data, ItemDefinition::class.java)))
+        TODO("Request save from auth server tools api.")
     }
 
     override fun identifier(file: JFile, root: RootDirectory): String {

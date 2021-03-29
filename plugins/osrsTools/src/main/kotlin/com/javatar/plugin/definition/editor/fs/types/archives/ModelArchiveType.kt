@@ -24,7 +24,7 @@ class ModelArchiveType : ArchiveType {
     }
 
     override fun save(data: String, file: JFile, root: RootDirectory) {
-        file.write(models.save(gson.fromJson(data)))
+        TODO("Make request to auth server tools api")
     }
 
     override fun identifier(file: JFile, root: RootDirectory): String {

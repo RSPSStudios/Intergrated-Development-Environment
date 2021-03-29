@@ -1,7 +1,6 @@
 dependencies {
     kapt("org.pf4j:pf4j:3.6.0")
     plugin("com.javatar:osrs-definitions:0.1")
-    plugin("com.javatar:osrs-toolkit:0.1")
 }
 
 javafx {

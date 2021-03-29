@@ -5,6 +5,6 @@ include(":application")
 include(
     ":plugins",
     ":plugins:shopEditor",
-    ":plugins:osrsDefinitionEditor"
+    ":plugins:osrsTools"
 )
 

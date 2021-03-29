@@ -1,8 +1,8 @@
 package com.javatar.plugin.shop.editor.ui.models
 
 import com.displee.cache.CacheLibrary
+import com.javatar.osrs.definitions.sprites.ItemSpriteFactory
 import com.javatar.plugin.shop.editor.providers.*
-import com.javatar.sprites.ItemSpriteFactory
 import javafx.beans.property.SimpleObjectProperty
 import tornadofx.ViewModel
 

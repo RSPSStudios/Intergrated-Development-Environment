@@ -12,7 +12,7 @@ class ArchiveDirectory(val id: Int, val parent: IndexDirectory) : JDirectory<JFi
             ?.fileIds()?.map {
                 DataFile(
                     it,
-                    archive.file(it)
+                    archive
                 )
             } ?: emptyList()
     }

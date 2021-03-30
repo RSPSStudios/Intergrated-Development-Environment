@@ -3,6 +3,7 @@ package com.javatar.ui.models
 import com.javatar.ui.data.PluginInformation
 import javafx.beans.property.SimpleMapProperty
 import javafx.collections.FXCollections
+import org.koin.core.component.KoinComponent
 import org.pf4j.PluginManager
 import tornadofx.ViewModel
 

@@ -1,6 +1,7 @@
 package com.javatar.api.fs
 
 import com.javatar.api.fs.directories.RootDirectory
+import javafx.scene.control.TabPane
 import javafx.scene.image.ImageView
 
 /**
@@ -13,8 +14,8 @@ interface FileType {
     val indexId: Int
     val archiveId: Int
 
-    fun open(file: JFile, root: RootDirectory): String
-    fun save(data: String, file: JFile, root: RootDirectory)
+    fun open(file: JFile, root: RootDirectory, editorPane: TabPane)
+    fun save(json: String, file: JFile, root: RootDirectory)
     fun identifier(file: JFile, root: RootDirectory): String
 
     fun cache(jfiles: List<JFile>, root: RootDirectory)

@@ -51,7 +51,7 @@ class MainView : View("RuneScape Private Server Studios") {
     val titleModel: TitleModel by inject()
 
     val accountSettingsModel: AccountSettingsModel by inject()
-    val accountModel: AccountModel by inject()
+    val accountModel: AccountModel by di()
     val client: Client by di()
 
     init {

@@ -24,7 +24,7 @@ import tornadofx.*
 
 class AccountLoginFragment : Fragment("Account Login") {
 
-    val accountModel: AccountModel by inject()
+    val accountModel: AccountModel by di()
     val client: Client by di()
 
     val msg = SimpleStringProperty(this, "msg", "")

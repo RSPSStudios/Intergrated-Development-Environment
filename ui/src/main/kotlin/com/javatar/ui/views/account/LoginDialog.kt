@@ -11,7 +11,7 @@ import tornadofx.*
 
 class LoginDialog : Fragment("Account") {
 
-    val accountModel: AccountModel by inject()
+    val accountModel: AccountModel by di()
 
     override val root = vbox {
         style = "-fx-base: #3f474f;"

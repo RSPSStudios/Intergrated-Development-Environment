@@ -19,7 +19,7 @@ class EditorModel : ViewModel() {
     val editorPane = EditorTabPane()
 
     fun openFileExplorer(name: String, rootDir: RootDirectory) {
-        val scope = FileExplorerScope(rootDir)
+        val scope = FileExplorerScope(rootDir, editorPane)
         val view = find<FileSystemView>(scope)
         val tab = Tab(name, VBox(scope.crumb, view.root))
         editorPane.tabs.add(tab)

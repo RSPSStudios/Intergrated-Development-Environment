@@ -62,6 +62,7 @@ subprojects {
     // the assemblePlugin will copy the zip file into the common plugins directory
     tasks.register<Copy>("assemblePlugin") {
         from(project.tasks.named("plugin"))
+        pluginsDir.listFiles()?.forEach { it.deleteRecursively() }
         into(pluginsDir)
     }
 

@@ -42,7 +42,7 @@ class PluginRepository : View() {
 
     val client: Client by di()
 
-    val accountModel: AccountModel by inject()
+    val accountModel: AccountModel by di()
 
     init {
 

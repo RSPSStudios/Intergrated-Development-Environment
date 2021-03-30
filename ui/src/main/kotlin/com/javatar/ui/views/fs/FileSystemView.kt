@@ -170,7 +170,14 @@ class FileSystemView : Fragment() {
                         }
                     }
                     FileSystemViewMeta.MetaType.FILE -> {
-
+                        val indexId = activeDir.indexDir.get().nodeIndex
+                        val archiveNode = activeDir.archiveDir.get()
+                        val archiveId = archiveNode.id
+                        val type = fileTypeManager.getFileType(indexId, archiveId)
+                        val jfile = archiveNode.nodes().find { it.id == meta.id }
+                        if(jfile != null && type != null) {
+                            type.open(jfile, activeDir.root.get(), this@FileSystemView.scope.editorTab)
+                        }
                     }
                 }
             }

@@ -1,11 +1,13 @@
 package com.javatar.plugin.definition.editor.fs.types.archives
 
 import com.javatar.api.fs.ArchiveType
+import com.javatar.api.fs.FileType
 import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.fromJson
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
+import javafx.scene.control.TabPane
 import javafx.scene.image.ImageView
 
 /**
@@ -19,11 +21,11 @@ class ModelArchiveType : ArchiveType {
 
     val models = OldSchoolDefinitionManager.models
 
-    override fun open(file: JFile, root: RootDirectory): String {
-        return gson.toJson(models.load(file.id, file.read()))
+    override fun open(file: JFile, root: RootDirectory, editorTab: TabPane) {
+        gson.toJson(models.load(file.id, file.read()))
     }
 
-    override fun save(data: String, file: JFile, root: RootDirectory) {
+    override fun save(json: String, file: JFile, root: RootDirectory) {
         TODO("Make request to auth server tools api")
     }
 

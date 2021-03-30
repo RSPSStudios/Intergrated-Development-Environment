@@ -22,7 +22,7 @@ class ModelArchiveType : ArchiveType {
     val models = OldSchoolDefinitionManager.models
 
     override fun open(file: JFile, root: RootDirectory, editorTab: TabPane) {
-        gson.toJson(models.load(file.id, file.read()))
+
     }
 
     override fun save(json: String, file: JFile, root: RootDirectory) {

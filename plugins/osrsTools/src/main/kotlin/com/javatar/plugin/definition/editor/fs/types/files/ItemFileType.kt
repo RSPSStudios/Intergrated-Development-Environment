@@ -7,6 +7,7 @@ import com.javatar.api.http.Client
 import com.javatar.api.http.StringBody
 import com.javatar.api.ui.models.AccountModel
 import com.javatar.osrs.definitions.impl.ItemDefinition
+import com.javatar.osrs.definitions.loaders.ItemLoader
 import com.javatar.osrs.definitions.sprites.ItemSpriteFactory
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
@@ -37,50 +38,12 @@ import tornadofx.*
  */
 
 @KoinApiExtension
-class ItemFileType : FileType, KoinComponent {
-    override val indexId: Int = 2
-    override val archiveId: Int = 10
-
+class ItemFileType : DefinitionFileType<ItemDefinition, ItemLoader>(10, 2, OldSchoolDefinitionManager.items, "items"), KoinComponent {
     private val factory = ItemSpriteFactory()
-    private val manager = OldSchoolDefinitionManager.items
-    private val client: Client by inject()
-    private val accountModel: AccountModel by inject()
-
     private val cachedIcons = mutableMapOf<Int, Image>()
 
-    override fun open(file: JFile, root: RootDirectory, editorPane: TabPane) {
-        val def = manager.load(file.id, file.read())
-        val data = gson.toJson(def)
-        val tool = find<GenericDefinitionTool>(Scope())
-        tool.editorModel.json.set(data)
-        tool.editorModel.fileNode.set(file)
-        tool.editorModel.fileType.set(this)
-        tool.editorModel.root.set(root)
-        editorPane.tabs.add(Tab(def.name, tool.root))
-    }
-
-    override fun save(json: String, file: JFile, root: RootDirectory) {
-        val creds = accountModel.activeCredentials.get()
-        if(creds != null) {
-            client.post<ByteArray>("tools/osrs/items", StringBody(json), creds)
-                .catch { alert(Alert.AlertType.ERROR, "Error Encoding", it.message) }
-                .onEach { file.write(it) }
-                .onCompletion {
-                    root.cache.index(2).update()
-                    alert(Alert.AlertType.INFORMATION, "Encode Request", "Finished Encoding data.")
-                }
-                .launchIn(CoroutineScope(Dispatchers.JavaFx))
-        }
-    }
-
     override fun identifier(file: JFile, root: RootDirectory): String {
-        return manager.getDefinition(file.id)?.name ?: "unknown"
-    }
-
-    override fun cache(jfiles: List<JFile>, root: RootDirectory) {
-        jfiles.forEach {
-            manager.load(it.id, it.read())
-        }
+        return manager.getDefinition(file.id, file.read()).name
     }
 
     override fun icon(file: JFile, root: RootDirectory): ImageView {

@@ -5,6 +5,8 @@ import org.pf4j.ExtensionPoint
 
 interface IndexContextMenuExtension : ExtensionPoint {
 
+    val indexId: Int
+
     fun configureContextMenu(context: ContextMenu)
 
 }

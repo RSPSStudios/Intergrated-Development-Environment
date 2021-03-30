@@ -56,6 +56,7 @@ class FileSystemView : Fragment() {
                     alignment = Pos.CENTER
                     when (it.meta) {
                         FileSystemViewMeta.MetaType.INDEX -> {
+                            val indexId = it.id
                             val type = fileTypeManager.getIndexType(it.id)
                             val root = activeDir.root.get()
                             if (type != null) {
@@ -72,13 +73,19 @@ class FileSystemView : Fragment() {
                             }
                             val exts = pluginRepo.manager.getExtensions(IndexContextMenuExtension::class.java)
                             if(exts.isNotEmpty()) {
-                                contextMenu = ContextMenu()
-                                exts.forEach { it.configureContextMenu(contextMenu) }
+                                contextmenu {
+                                    exts.forEach {  indexExt ->
+                                        if(indexId == indexExt.indexId) {
+                                            indexExt.configureContextMenu(this)
+                                        }
+                                    }
+                                }
                             }
                             this@datagrid.contextMenu = null
                         }
                         FileSystemViewMeta.MetaType.ARCHIVE -> {
                             val indexId = activeDir.indexDir.get().nodeIndex
+                            val archiveId = it.id
                             val type = fileTypeManager.getArchiveType(indexId, it.id)
 
                             if (type != null) {
@@ -103,7 +110,11 @@ class FileSystemView : Fragment() {
                                 addArchiveMenuItems(it, this@datagrid)
                                 val exts = pluginRepo.manager.getExtensions(ArchiveContextMenuExtension::class.java)
                                 if(exts.isNotEmpty()) {
-                                    exts.forEach { it.configureContextMenu(this) }
+                                    exts.forEach {  archiveExt ->
+                                        if(archiveId == archiveExt.archiveId) {
+                                            archiveExt.configureContextMenu(this)
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -130,7 +141,9 @@ class FileSystemView : Fragment() {
                                 addFileContextMenuItems(it, this@datagrid)
                                 val exts = pluginRepo.manager.getExtensions(FileContextMenuExtension::class.java)
                                 if(exts.isNotEmpty()) {
-                                    exts.forEach { it.configureContextMenu(this) }
+                                    exts.forEach {
+                                        it.configureContextMenu(this)
+                                    }
                                 }
                             }
                         }

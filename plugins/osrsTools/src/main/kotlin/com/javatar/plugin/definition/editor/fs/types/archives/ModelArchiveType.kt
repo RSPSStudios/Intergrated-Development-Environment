@@ -26,7 +26,6 @@ class ModelArchiveType : ArchiveType {
     }
 
     override fun save(json: String, file: JFile, root: RootDirectory) {
-        TODO("Make request to auth server tools api")
     }
 
     override fun identifier(file: JFile, root: RootDirectory): String {

@@ -21,7 +21,7 @@ class FileTypeManager : IFileTypeManager {
     override fun registerFileType(type: FileType) {
         val extId = "${type.indexId}:${type.archiveId}"
         if (fileTypes.containsKey(extId))
-            error("File type already registered.")
+            error("File type already registered. $extId")
 
         fileTypes[extId] = type
     }

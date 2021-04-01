@@ -1,5 +1,6 @@
 package com.javatar.plugin.definition.editor.fs.types.files
 
+import com.javatar.api.fs.ArchiveType
 import com.javatar.api.fs.FileType
 import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
@@ -33,7 +34,7 @@ open class DefinitionFileType<T : Definition, L : DeserializeDefinition<T>>(
     override val indexId: Int,
     val manager: DefinitionManager<T, L>,
     val endpoint: String
-) : FileType, KoinComponent {
+) : ArchiveType, KoinComponent {
 
     val accountModel: AccountModel by inject()
     val client: Client by inject()

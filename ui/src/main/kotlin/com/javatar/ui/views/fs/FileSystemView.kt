@@ -84,7 +84,7 @@ class FileSystemView : Fragment() {
                             this@datagrid.contextMenu = null
                         }
                         FileSystemViewMeta.MetaType.ARCHIVE -> {
-                            val indexId = activeDir.indexDir.get().nodeIndex
+                            val indexId = activeDir.indexDir.get().id
                             val archiveId = it.id
                             val type = fileTypeManager.getArchiveType(indexId, it.id)
 
@@ -92,11 +92,18 @@ class FileSystemView : Fragment() {
                                 val archiveDir = activeDir.indexDir.get().nodes().find { f -> f.id == it.id }
                                 if (archiveDir != null && archiveDir.nodes().isNotEmpty()) {
                                     val jfile = archiveDir.nodes()[0]
-                                    val icon = type.icon(jfile, activeDir.root.get())
-                                    if (icon != null) {
-                                        add(icon)
-                                    } else {
-                                        add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
+                                    val archiveIcon = type.icon(archiveDir, activeDir.root.get())
+                                    val fileIcon = type.icon(jfile, activeDir.root.get())
+                                    when {
+                                        archiveIcon != null -> {
+                                            add(archiveIcon)
+                                        }
+                                        fileIcon != null -> {
+                                            add(fileIcon)
+                                        }
+                                        else -> {
+                                            add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
+                                        }
                                     }
                                     label("${type.identifier(jfile, activeDir.root.get())} ${it.id}")
                                 } else {
@@ -119,7 +126,7 @@ class FileSystemView : Fragment() {
                             }
                         }
                         FileSystemViewMeta.MetaType.FILE -> {
-                            val indexId = activeDir.indexDir.get().nodeIndex
+                            val indexId = activeDir.indexDir.get().id
                             val archiveId = activeDir.archiveDir.get().id
                             val type = fileTypeManager.getFileType(indexId, archiveId)
                             val jfile = activeDir.archiveDir.get().nodes().find { f -> f.id == it.id }
@@ -156,11 +163,11 @@ class FileSystemView : Fragment() {
             onSelectionChange("action") { meta ->
                 when (meta.meta) {
                     FileSystemViewMeta.MetaType.INDEX -> {
-                        val indexNode = activeDir.root.get().nodes().find { it.nodeIndex == meta.id }
+                        val indexNode = activeDir.root.get().nodes().find { it.id == meta.id }
                         if (indexNode != null) {
                             val metaNodes =
                                 indexNode.nodes().map { FileSystemViewMeta(it.id, FileSystemViewMeta.MetaType.ARCHIVE) }
-                            activeDir.indexDir.set(IndexDirectory(indexNode.nodeIndex, indexNode.parent))
+                            activeDir.indexDir.set(IndexDirectory(indexNode.id, indexNode.parent))
                             activeDir.activeNodes.setAll(FXCollections.observableList(metaNodes))
                             selectionModel.clearSelection()
                         }
@@ -173,7 +180,7 @@ class FileSystemView : Fragment() {
                                 val metaNodes = archiveNode.nodes()
                                     .map { FileSystemViewMeta(it.id, FileSystemViewMeta.MetaType.FILE) }
 
-                                fileTypeManager.getFileType(indexNode.nodeIndex, archiveNode.id)
+                                fileTypeManager.getFileType(indexNode.id, archiveNode.id)
                                     ?.cache(archiveNode.nodes(), activeDir.root.get())
 
                                 activeDir.archiveDir.set(ArchiveDirectory(archiveNode.id, archiveNode.parent))
@@ -183,7 +190,7 @@ class FileSystemView : Fragment() {
                         }
                     }
                     FileSystemViewMeta.MetaType.FILE -> {
-                        val indexId = activeDir.indexDir.get().nodeIndex
+                        val indexId = activeDir.indexDir.get().id
                         val archiveNode = activeDir.archiveDir.get()
                         val archiveId = archiveNode.id
                         val type = fileTypeManager.getFileType(indexId, archiveId)
@@ -206,7 +213,7 @@ class FileSystemView : Fragment() {
         menu("New") { addNewFileItem() }
         separator()
         item("Copy").action {
-            val indexId = activeDir.indexDir.get().nodeIndex
+            val indexId = activeDir.indexDir.get().id
             val archiveId = activeDir.archiveDir.get().id
             val cache = activeDir.root.get().cache
             val data = cache.data(indexId, archiveId, it.id)
@@ -218,7 +225,7 @@ class FileSystemView : Fragment() {
         item("Paste") {
             disableWhen(clipboardModel.data.isNull)
             action {
-                val indexId = activeDir.indexDir.get().nodeIndex
+                val indexId = activeDir.indexDir.get().id
                 val archiveId = activeDir.archiveDir.get().id
                 val cache = activeDir.root.get().cache
                 val archive = cache.index(indexId).archive(archiveId)
@@ -234,7 +241,7 @@ class FileSystemView : Fragment() {
         item("Save File ${it.id}").action {
             val fileChoose = fileSaver(it)
             val file = fileChoose.showSaveDialog(dataGrid.scene.window)
-            val indexId = activeDir.indexDir.get().nodeIndex
+            val indexId = activeDir.indexDir.get().id
             val archiveId = activeDir.archiveDir.get().id
             val cache = activeDir.root.get().cache
             val data = cache.data(indexId, archiveId, it.id)
@@ -250,14 +257,14 @@ class FileSystemView : Fragment() {
             )
             if (files.isNotEmpty()) {
                 val file = files[0]
-                val indexId = activeDir.indexDir.get().nodeIndex
+                val indexId = activeDir.indexDir.get().id
                 val archiveId = activeDir.archiveDir.get().id
                 val cache = activeDir.root.get().cache
                 cache.put(indexId, archiveId, it.id, file.readBytes())
             }
         }
         item("Delete File ${it.id}").action {
-            val indexId = activeDir.indexDir.get().nodeIndex
+            val indexId = activeDir.indexDir.get().id
             val archiveId = activeDir.archiveDir.get().id
             val cache = activeDir.root.get().cache
             val result = confirmation(
@@ -294,7 +301,7 @@ class FileSystemView : Fragment() {
         item("Save Archive ${it.id}").action {
             val fileChoose = fileSaver(it)
             val file = fileChoose.showSaveDialog(dataGrid.scene.window)
-            val indexId = activeDir.indexDir.get().nodeIndex
+            val indexId = activeDir.indexDir.get().id
             val cache = activeDir.root.get().cache
             file.writeBytes(cache.index(indexId).readArchiveSector(it.id)?.data ?: byteArrayOf())
         }
@@ -309,7 +316,7 @@ class FileSystemView : Fragment() {
             if (choose.isNotEmpty()) {
                 val file = choose[0]
                 val data = file.readBytes()
-                val indexId = activeDir.indexDir.get().nodeIndex
+                val indexId = activeDir.indexDir.get().id
                 val cache = activeDir.root.get().cache
                 val result = confirmation(
                     "Replace Archive ${it.id}",
@@ -324,7 +331,7 @@ class FileSystemView : Fragment() {
             }
         }
         item("Delete Archive ${it.id}").action {
-            val indexId = activeDir.indexDir.get().nodeIndex
+            val indexId = activeDir.indexDir.get().id
             val cache = activeDir.root.get().cache
             val result = confirmation(
                 "Archive Deletion",
@@ -364,7 +371,7 @@ class FileSystemView : Fragment() {
      */
 
     private fun Menu.addNewArchiveItem() = item("Archive").action {
-        val indexId = activeDir.indexDir.get().nodeIndex
+        val indexId = activeDir.indexDir.get().id
         val cache = activeDir.root.get().cache
         val input = TextInputDialog(null).apply {
             this.title = "Enter Archive Name"
@@ -384,7 +391,7 @@ class FileSystemView : Fragment() {
      */
 
     private fun Menu.addNewFileItem() = item("File").action {
-        val indexId = activeDir.indexDir.get().nodeIndex
+        val indexId = activeDir.indexDir.get().id
         val archiveId = activeDir.archiveDir.get().id
         val cache = activeDir.root.get().cache
         val archive = cache.index(indexId).archive(archiveId)

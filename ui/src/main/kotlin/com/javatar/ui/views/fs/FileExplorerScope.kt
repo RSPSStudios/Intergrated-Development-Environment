@@ -37,7 +37,7 @@ class FileExplorerScope(rootDirectory: RootDirectory, val editorTab: TabPane) : 
                     Crumb("Root") {
                         backToRoot(this, root.get())
                     },
-                    Crumb("Index ${it.nodeIndex}")
+                    Crumb("Index ${it.id}")
                 )
             }
         }
@@ -47,7 +47,7 @@ class FileExplorerScope(rootDirectory: RootDirectory, val editorTab: TabPane) : 
                     Crumb("Root") {
                         backToRoot(this, root.get())
                     },
-                    Crumb("Index ${it.parent.nodeIndex}") {
+                    Crumb("Index ${it.parent.id}") {
                         backToIndex(this, it.parent)
                     },
                     Crumb("Archive ${it.id}")
@@ -73,7 +73,7 @@ class FileExplorerScope(rootDirectory: RootDirectory, val editorTab: TabPane) : 
         activeDirectoryModel.archiveDir.set(null)
         activeDirectoryModel.activeNodes.set(
             FXCollections.observableArrayList(
-                rootDirectory.nodes().map { FileSystemViewMeta(it.nodeIndex, FileSystemViewMeta.MetaType.INDEX) })
+                rootDirectory.nodes().map { FileSystemViewMeta(it.id, FileSystemViewMeta.MetaType.INDEX) })
         )
         crumb.selectedCrumb = BreadCrumbBar.buildTreeModel(Crumb("Root"))
     }

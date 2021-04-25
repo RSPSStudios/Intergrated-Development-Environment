@@ -18,8 +18,12 @@ class CacheConfigurationModel : ViewModel() {
 
     fun save() {
         with(config) {
-            cachePaths.entries.forEach {
-                set(it.key to it.value)
+            if(cachePaths.isEmpty()) {
+                clear()
+            } else {
+                cachePaths.entries.forEach {
+                    set(it.key to it.value)
+                }
             }
             save()
         }

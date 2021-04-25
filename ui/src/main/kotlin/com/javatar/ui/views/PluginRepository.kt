@@ -1,6 +1,7 @@
 package com.javatar.ui.views
 
 import com.javatar.api.http.Client
+import com.javatar.api.http.Client.Companion.DOMAIN
 import com.javatar.api.http.DownloadStatus
 import com.javatar.api.http.PluginInformationList
 import com.javatar.api.ui.PluginPanelExtension
@@ -77,7 +78,7 @@ class PluginRepository : View() {
                             prog.title = "Downloading Plugin"
                             prog.progressModel.msg.set("Downloading ${plugin.pluginName.replace("-", " ")}")
                             client.downloadFile(
-                                "http://127.0.0.1:8080/tools/plugin/${plugin.pluginName}",
+                                "http://$DOMAIN:8080/tools/plugin/${plugin.pluginName}",
                                 File(dir, "${plugin.pluginName}.zip"),
                                 accountModel.activeCredentials.get()
                             ).onStart {

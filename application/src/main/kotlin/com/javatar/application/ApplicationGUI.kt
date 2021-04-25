@@ -21,7 +21,6 @@ import kotlin.reflect.KClass
 
 object ApplicationGUI {
 
-
     @JvmStatic
     fun main(args: Array<String>) {
 

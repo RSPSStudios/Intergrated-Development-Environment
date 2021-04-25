@@ -86,14 +86,13 @@ class MainView : View("RuneScape Private Server Studios") {
                 }
             } else {
                 contextmenu {
-                    val value = item
                     item("Load").action {
-                        editorModel.openFileExplorer(value.first, RootDirectory(CacheLibrary.create(value.second)))
+                        editorModel.openFileExplorer(item.first, RootDirectory(CacheLibrary.create(item.second)))
                     }
                     item("Remove").action {
-                        configModel.cachePaths.remove(value.first)
-                        caches.root.children.remove(treeItem)
+                        configModel.cachePaths.remove(item.first)
                         configModel.save()
+                        caches.root.children.remove(treeItem)
                     }
                 }
             }
@@ -117,15 +116,20 @@ class MainView : View("RuneScape Private Server Studios") {
         val dir = chooseDirectory("Choose Cache Directory")
         if (dir != null && dir.exists()) {
             val nameDialog = TextInputDialog(dir.nameWithoutExtension)
+            nameDialog.contentText = "Enter cache name"
+            nameDialog.title = "Open Cache"
+            nameDialog.headerText = "Please enter a name for the cache"
             configModel.cacheName.bind(nameDialog.editor.textProperty())
             configModel.cacheName.addValidator(nameDialog.editor) {
                 if (caches.root.children.find { it.value.first == nameDialog.editor.text } != null) {
                     error("Cache already opened.")
                 } else success("Cache successfully opened.")
             }
-            nameDialog.showAndWait()
-            configModel.cachePaths[nameDialog.editor.text] = dir.absolutePath
-            configModel.save()
+            val result = nameDialog.showAndWait()
+            if (result.isPresent) {
+                configModel.cachePaths[result.get()] = dir.absolutePath
+                configModel.save()
+            }
         } else {
             alert(Alert.AlertType.ERROR, "Could not find cache.")
         }

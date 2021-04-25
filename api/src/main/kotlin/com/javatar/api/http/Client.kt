@@ -7,7 +7,6 @@ import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.util.*
 import io.ktor.util.cio.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
@@ -70,7 +69,7 @@ class Client {
 
 
     inline fun <reified T> post(endpoint: String, body: Any, credentials: Credentials? = null) = flow<T> {
-        emit(client.post("http://127.0.0.1:8080/$endpoint") {
+        emit(client.post("http://$DOMAIN:8080/$endpoint") {
             contentType(ContentType.Application.Json)
             if (credentials != null) {
                 header(HttpHeaders.Authorization, credentials.constructBasicAuthValue())
@@ -80,7 +79,7 @@ class Client {
     }
 
     inline fun <reified T> get(endpoint: String, credentials: Credentials? = null) = flow<T> {
-        emit(client.get("http://127.0.0.1:8080/$endpoint") {
+        emit(client.get("http://$DOMAIN:8080/$endpoint") {
             contentType(ContentType.Application.Json)
             if (credentials != null) {
                 header(HttpHeaders.Authorization, credentials.constructBasicAuthValue())
@@ -132,5 +131,9 @@ class Client {
         BASE64_INVERSE_ALPHABET[toInt() and 0xff].toByte() and BASE64_MASK
     private fun ByteArray.clearFrom(from: Int) {
         (from until size).forEach { this[it] = 0 }
+    }
+
+    companion object {
+        const val DOMAIN = "legionkt.com"
     }
 }

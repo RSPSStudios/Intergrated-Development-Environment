@@ -60,12 +60,12 @@ dependencies {
 
 runtime {
     imageZip.set(project.file("${project.buildDir}/image-zip/asset-manager-image.zip"))
-    options.set(listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages"))
-    modules.set(listOf("java.sql", "java.desktop", "jdk.unsupported", "java.scripting", "java.logging", "java.xml"))
+    options.set(listOf("--compress", "2", "--no-header-files", "--no-man-pages"))
+    modules.set(listOf("java.sql", "java.desktop", "jdk.unsupported", "java.scripting", "java.logging", "java.xml", "java.naming"))
 
-    //targetPlatform("linux", System.getenv("JDK_LINUX_HOME"))
-    //targetPlatform("mac", System.getenv("JDK_MAC_HOME"))
-    targetPlatform("win", "/home/javatar/Downloads/openjdk-15.0.2_windows-x64_bin/jdk-15.0.2")
+    targetPlatform("linux", "/usr/lib/jvm/java-15-openjdk")
+    targetPlatform("win", "/home/javatar/platforms/windows/jdk-15.0.2")
+    targetPlatform("mac", "/home/javatar/platforms/mac/jdk-15.0.2.jdk/Contents/Home")
 }
 
 tasks.withType(CreateStartScripts::class).forEach { script ->

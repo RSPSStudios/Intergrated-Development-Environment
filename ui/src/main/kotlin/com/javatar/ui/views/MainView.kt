@@ -27,9 +27,11 @@ import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.launch
 import tornadofx.*
 import java.awt.Desktop
 import java.io.File
@@ -58,7 +60,6 @@ class MainView : View("RuneScape Private Server Studios") {
     val accountSettingsModel: AccountSettingsModel by inject()
     val accountModel: AccountModel by di()
     val client: Client by di()
-    val fileTypeManager: IFileTypeManager by di()
 
     init {
 
@@ -172,8 +173,10 @@ class MainView : View("RuneScape Private Server Studios") {
             Files.createDirectory(path)
         }
         if (Desktop.isDesktopSupported()) {
-            val desktop = Desktop.getDesktop()
-            desktop.browse(File(location).toURI())
+            GlobalScope.launch(Dispatchers.IO) {
+                val desktop = Desktop.getDesktop()
+                desktop.browse(File(location).toURI())
+            }
         }
     }
 

@@ -1,45 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" stylesheets="@global.css"
-            xmlns="http://javafx.com/javafx/11.0.1">
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" stylesheets="@global.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-              AnchorPane.topAnchor="0.0">
+        <VBox fx:id="vboxRoot" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <MenuBar fx:id="menuBar">
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#loadCache" text="Open Cache"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#openPreferences" text="Preferences"/>
-                                <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" text="Close"/>
+                                <MenuItem mnemonicParsing="false" onAction="#loadCache" text="Open Cache" />
+                                <SeparatorMenuItem mnemonicParsing="false" />
+                                <MenuItem mnemonicParsing="false" onAction="#openPreferences" text="Preferences" />
+                                <SeparatorMenuItem mnemonicParsing="false" />
+                                <MenuItem mnemonicParsing="false" text="Close" />
                             </items>
                         </Menu>
                         <Menu fx:id="pluginsMenu" mnemonicParsing="false" text="Plugins">
                             <items>
-                                <MenuItem fx:id="pluginRepo" mnemonicParsing="false" onAction="#pluginRepo"
-                                          text="Plugin Repository"/>
-                                <MenuItem mnemonicParsing="false" onAction="#openPluginLocation"
-                                          text="Open Plugin Location"/>
-                                <MenuItem mnemonicParsing="false" onAction="#setPluginLocation"
-                                          text="Set Plugin Location"/>
+                                <MenuItem fx:id="pluginRepo" mnemonicParsing="false" onAction="#pluginRepo" text="Plugin Repository" />
+                                <MenuItem mnemonicParsing="false" onAction="#openPluginLocation" text="Open Plugin Location" />
+                                <MenuItem mnemonicParsing="false" onAction="#setPluginLocation" text="Set Plugin Location" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Account">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#login" text="Login"/>
-                                <MenuItem fx:id="accountSettingsBtn" mnemonicParsing="false" onAction="#accountSettings"
-                                          text="Account Settings"/>
+                                <MenuItem mnemonicParsing="false" onAction="#login" text="Login" />
+                                <MenuItem fx:id="accountSettingsBtn" mnemonicParsing="false" onAction="#accountSettings" text="Account Settings" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="About"/>
+                                <MenuItem mnemonicParsing="false" text="About" />
                             </items>
                         </Menu>
                     </menus>
@@ -52,13 +55,13 @@
                                     <center>
                                         <VBox>
                                             <children>
-                                                <HBox fx:id="breadcrumbPane"/>
-                                                <AnchorPane fx:id="editorView"/>
+                                                <HBox fx:id="breadcrumbPane" />
+                                                <AnchorPane fx:id="editorView" />
                                             </children>
                                         </VBox>
                                     </center>
                                     <left>
-                                        <TreeView fx:id="caches" BorderPane.alignment="CENTER"/>
+                                        <TreeView fx:id="caches" BorderPane.alignment="CENTER" />
                                     </left>
                                 </BorderPane>
                             </content>

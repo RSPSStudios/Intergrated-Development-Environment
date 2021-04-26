@@ -25,6 +25,7 @@ import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.VBox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -42,6 +43,7 @@ import java.nio.file.Path
 class MainView : View("RuneScape Private Server Studios") {
 
     override val root: AnchorPane by fxml("main-view.fxml")
+    val vboxRoot: VBox by fxid()
 
     val caches: TreeView<Pair<String, String>> by fxid()
     val editorView: AnchorPane by fxid()
@@ -62,6 +64,8 @@ class MainView : View("RuneScape Private Server Studios") {
     val client: Client by di()
 
     init {
+
+        root.autosize()
 
         titleProperty.bind(Bindings.createStringBinding({
             "${titleModel.title.get()} - ${titleModel.accountEmailOrName.get()}"

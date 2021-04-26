@@ -3,6 +3,7 @@ package com.javatar.ui
 import com.javatar.ui.data.PluginInformation
 import com.javatar.ui.models.PluginRepositoryModel
 import com.javatar.ui.views.MainView
+import javafx.stage.Stage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.pf4j.PluginState
@@ -56,5 +57,11 @@ class EditorApplication : App(MainView::class), KoinComponent {
                 true
             )
         }
+    }
+
+    override fun start(stage: Stage) {
+        stage.sizeToScene()
+        stage.isResizable = false
+        super.start(stage)
     }
 }

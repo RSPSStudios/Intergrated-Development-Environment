@@ -117,7 +117,7 @@ class FileSystemView : Fragment() {
                                 val exts = pluginRepo.manager.getExtensions(ArchiveContextMenuExtension::class.java, this@FileSystemView.scope.pluginId)
                                 if(exts.isNotEmpty()) {
                                     exts.forEach {  archiveExt ->
-                                        if(archiveId == archiveExt.archiveId) {
+                                        if(archiveId == archiveExt.archiveId && indexId == archiveExt.indexId) {
                                             archiveExt.configureContextMenu(this)
                                         }
                                     }

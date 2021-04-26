@@ -14,14 +14,16 @@ class OsrsDefinitionEditor(wrapper: PluginWrapper?) : Plugin(wrapper) {
     override fun start() {
         super.start()
         println("Starting Old School Definition Editor")
+        properties["pluginPath"] = "file:${wrapper.pluginPath.toAbsolutePath()}/classes"
     }
 
     companion object {
         val gson = GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
 
+        val properties: MutableMap<String, String> = mutableMapOf()
+
         inline fun <reified T> Gson.fromJson(data: String): T {
             return fromJson(data, T::class.java)
         }
-
     }
 }

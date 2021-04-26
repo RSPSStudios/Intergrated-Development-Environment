@@ -137,6 +137,10 @@ class PluginRepository : View() {
 
         if (credentials != null) {
             client.get<PluginInformationList>("tools/plugins", credentials)
+                .catch {
+                    alert(Alert.AlertType.ERROR, "Attempted usage of restricted features.", "Please login before accessing this feature.")
+                    emit(PluginInformationList(mutableListOf()))
+                }
                 .flatMapConcat { it.plugins.asFlow() }
                 .onEach { listedPlugin ->
                     val found = pluginRepository.plugins[listedPlugin.name]

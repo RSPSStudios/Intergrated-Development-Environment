@@ -1,6 +1,8 @@
 package com.javatar.ui.models
 
+import com.javatar.api.fs.IFileTypeManager
 import com.javatar.api.fs.directories.RootDirectory
+import com.javatar.fs.FileTypeManager
 import com.javatar.ui.views.fs.EditorTabPane
 import com.javatar.ui.views.fs.FileExplorerScope
 import com.javatar.ui.views.fs.FileSystemView
@@ -18,8 +20,8 @@ class EditorModel : ViewModel() {
 
     val editorPane = EditorTabPane()
 
-    fun openFileExplorer(name: String, rootDir: RootDirectory) {
-        val scope = FileExplorerScope(rootDir, editorPane)
+    fun openFileExplorer(name: String, rootDir: RootDirectory, typeManager: IFileTypeManager = FileTypeManager(), pluginId: String = "") {
+        val scope = FileExplorerScope(rootDir, editorPane, typeManager, pluginId)
         val view = find<FileSystemView>(scope)
         val tab = Tab(name, VBox(scope.crumb, view.root))
         editorPane.tabs.add(tab)

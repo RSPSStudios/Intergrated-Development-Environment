@@ -1,9 +1,6 @@
 package com.javatar.ui
 
 import com.javatar.api.fs.IFileTypeManager
-import com.javatar.api.fs.extensions.ArchiveTypeExtension
-import com.javatar.api.fs.extensions.FileTypeExtension
-import com.javatar.api.fs.extensions.IndexTypeExtension
 import com.javatar.ui.data.PluginInformation
 import com.javatar.ui.models.PluginRepositoryModel
 import com.javatar.ui.views.MainView
@@ -62,7 +59,7 @@ class EditorApplication : App(MainView::class), KoinComponent {
             )
         }
 
-        pluginRepo.manager.getExtensions(FileTypeExtension::class.java).forEach {
+        /*pluginRepo.manager.getExtensions(FileTypeExtension::class.java).forEach {
             typeManager.registerFileType(it.createFileType())
         }
         pluginRepo.manager.getExtensions(ArchiveTypeExtension::class.java).forEach {
@@ -70,6 +67,6 @@ class EditorApplication : App(MainView::class), KoinComponent {
         }
         pluginRepo.manager.getExtensions(IndexTypeExtension::class.java).forEach {
             typeManager.registerIndexType(it.createIndexType())
-        }
+        }*/
     }
 }

@@ -67,9 +67,6 @@ open class DefinitionFileType<T : Definition, L : DeserializeDefinition<T>>(
 
     override fun save(json: String, file: JFile, root: RootDirectory) {
         val creds = accountModel.activeCredentials.get()
-        val obj = JsonParser.parseString(json).asJsonObject
-        val id = obj.get("id").asInt
-        manager.remove(id)
         if(creds != null) {
             client.post<ByteArray>("tools/osrs/$endpoint", StringBody(json), creds)
                 .catch {

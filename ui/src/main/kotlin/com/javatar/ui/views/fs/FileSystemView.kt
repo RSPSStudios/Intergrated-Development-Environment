@@ -1,6 +1,5 @@
 package com.javatar.ui.views.fs
 
-import com.javatar.api.fs.IFileTypeManager
 import com.javatar.api.fs.directories.ArchiveDirectory
 import com.javatar.api.fs.directories.IndexDirectory
 import com.javatar.api.ui.fs.ArchiveContextMenuExtension
@@ -34,7 +33,7 @@ class FileSystemView : Fragment() {
 
     val pluginRepo: PluginRepositoryModel by di()
 
-    val fileTypeManager: IFileTypeManager by di()
+    val fileTypeManager = scope.typeManager
 
     override val root = vbox {
 
@@ -71,7 +70,7 @@ class FileSystemView : Fragment() {
                                 add(FontAwesomeIconView(FontAwesomeIcon.FOLDER).also { it.glyphSize = 64 })
                                 label("Index ${it.id}")
                             }
-                            val exts = pluginRepo.manager.getExtensions(IndexContextMenuExtension::class.java)
+                            val exts = pluginRepo.manager.getExtensions(IndexContextMenuExtension::class.java, this@FileSystemView.scope.pluginId)
                             if(exts.isNotEmpty()) {
                                 contextmenu {
                                     exts.forEach {  indexExt ->
@@ -115,7 +114,7 @@ class FileSystemView : Fragment() {
                             }
                             contextmenu {
                                 addArchiveMenuItems(it, this@datagrid)
-                                val exts = pluginRepo.manager.getExtensions(ArchiveContextMenuExtension::class.java)
+                                val exts = pluginRepo.manager.getExtensions(ArchiveContextMenuExtension::class.java, this@FileSystemView.scope.pluginId)
                                 if(exts.isNotEmpty()) {
                                     exts.forEach {  archiveExt ->
                                         if(archiveId == archiveExt.archiveId) {
@@ -146,7 +145,7 @@ class FileSystemView : Fragment() {
 
                             contextmenu {
                                 addFileContextMenuItems(it, this@datagrid)
-                                val exts = pluginRepo.manager.getExtensions(FileContextMenuExtension::class.java)
+                                val exts = pluginRepo.manager.getExtensions(FileContextMenuExtension::class.java, this@FileSystemView.scope.pluginId)
                                 if(exts.isNotEmpty()) {
                                     exts.forEach {
                                         it.configureContextMenu(this)

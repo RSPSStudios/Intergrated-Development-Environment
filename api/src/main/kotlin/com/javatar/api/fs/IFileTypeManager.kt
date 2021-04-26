@@ -19,4 +19,6 @@ interface IFileTypeManager {
     fun getArchiveType(indexId: Int, archiveId: Int): ArchiveType?
     fun getIndexType(indexId: Int): IndexType?
 
+    fun clear()
+
 }

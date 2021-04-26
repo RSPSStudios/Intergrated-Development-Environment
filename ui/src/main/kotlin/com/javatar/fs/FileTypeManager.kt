@@ -18,6 +18,12 @@ class FileTypeManager : IFileTypeManager {
 
     private val singleFileArchiveType = mutableMapOf<Int, ArchiveType>()
 
+    override fun clear() {
+        fileTypes.clear()
+        archiveTypes.clear()
+        indexTypes.clear()
+    }
+
     override fun registerFileType(type: FileType) {
         val extId = "${type.indexId}:${type.archiveId}"
         if (fileTypes.containsKey(extId))

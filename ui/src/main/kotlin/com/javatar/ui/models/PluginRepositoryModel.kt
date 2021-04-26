@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleMapProperty
 import javafx.collections.FXCollections
 import org.koin.core.component.KoinComponent
 import org.pf4j.PluginManager
+import org.pf4j.PluginWrapper
 import tornadofx.ViewModel
 
 /**

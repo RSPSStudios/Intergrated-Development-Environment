@@ -1,7 +1,9 @@
 package com.javatar.ui.views.fs
 
+import com.javatar.api.fs.IFileTypeManager
 import com.javatar.api.fs.directories.IndexDirectory
 import com.javatar.api.fs.directories.RootDirectory
+import com.javatar.fs.FileTypeManager
 import com.javatar.ui.Crumb
 import com.javatar.ui.models.ActiveDirectoryModel
 import javafx.collections.FXCollections
@@ -15,7 +17,7 @@ import tornadofx.onChange
  * @created March 12 2021
  */
 
-class FileExplorerScope(rootDirectory: RootDirectory, val editorTab: TabPane) : Scope() {
+class FileExplorerScope(rootDirectory: RootDirectory, val editorTab: TabPane, val typeManager: IFileTypeManager, val pluginId: String) : Scope() {
 
     val crumb = BreadCrumbBar<Crumb>()
 

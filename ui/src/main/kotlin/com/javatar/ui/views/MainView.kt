@@ -1,7 +1,11 @@
 package com.javatar.ui.views
 
 import com.displee.cache.CacheLibrary
+import com.javatar.api.fs.IFileTypeManager
 import com.javatar.api.fs.directories.RootDirectory
+import com.javatar.api.fs.extensions.ArchiveTypeExtension
+import com.javatar.api.fs.extensions.FileTypeExtension
+import com.javatar.api.fs.extensions.IndexTypeExtension
 import com.javatar.api.http.Client
 import com.javatar.api.http.UserInformation
 import com.javatar.api.ui.MenuItemExtension
@@ -9,6 +13,7 @@ import com.javatar.api.ui.ToolTabExtension
 import com.javatar.api.ui.models.AccountModel
 import com.javatar.api.ui.models.AccountSettingsModel
 import com.javatar.api.ui.utilities.contextmenu
+import com.javatar.fs.FileTypeManager
 import com.javatar.ui.models.CacheConfigurationModel
 import com.javatar.ui.models.EditorModel
 import com.javatar.ui.models.PluginRepositoryModel
@@ -53,6 +58,7 @@ class MainView : View("RuneScape Private Server Studios") {
     val accountSettingsModel: AccountSettingsModel by inject()
     val accountModel: AccountModel by di()
     val client: Client by di()
+    val fileTypeManager: IFileTypeManager by di()
 
     init {
 
@@ -88,6 +94,23 @@ class MainView : View("RuneScape Private Server Studios") {
                 contextmenu {
                     item("Load").action {
                         editorModel.openFileExplorer(item.first, RootDirectory(CacheLibrary.create(item.second)))
+                    }
+                    menu("Load with") {
+                        pluginRepository.manager.plugins.forEach { it ->
+                            item(it.pluginId).action {
+                                val typeManager = FileTypeManager()
+                                pluginRepository.manager.getExtensions(FileTypeExtension::class.java).forEach {
+                                    typeManager.registerFileType(it.createFileType())
+                                }
+                                pluginRepository.manager.getExtensions(ArchiveTypeExtension::class.java).forEach {
+                                    typeManager.registerArchiveType(it.createArchiveType())
+                                }
+                                pluginRepository.manager.getExtensions(IndexTypeExtension::class.java).forEach {
+                                    typeManager.registerIndexType(it.createIndexType())
+                                }
+                                editorModel.openFileExplorer(item.first, RootDirectory(CacheLibrary.create(item.second)), typeManager, it.pluginId)
+                            }
+                        }
                     }
                     item("Remove").action {
                         configModel.cachePaths.remove(item.first)

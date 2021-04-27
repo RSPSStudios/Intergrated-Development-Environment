@@ -8,6 +8,9 @@ import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 class ItemProvider(val cache: CacheLibrary) : DefinitionProvider<ItemDefinition> {
     val items = OldSchoolDefinitionManager.items
     override fun getDefinition(id: Int): ItemDefinition {
+        if(items.contains(id)) {
+            return items.getDefinition(id)
+        }
         val data = cache.data(2, 10, id)
         if (data != null) {
             return items.load(id, data)

@@ -6,13 +6,13 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="766.0" stylesheets="@editor-css.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -24,7 +24,7 @@
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#newItem" text="New Item" />
                         <MenuItem fx:id="duplicateItem" mnemonicParsing="false" onAction="#duplicateItem" text="Duplicate Item" />
-                        <MenuItem mnemonicParsing="false" onAction="#packItem" text="Pack Item" />
+                        <MenuItem fx:id="packItem" mnemonicParsing="false" onAction="#packItem" text="Pack Item" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="deleteItem" mnemonicParsing="false" onAction="#deleteItem" text="Delete" />
                   </items>
@@ -49,26 +49,42 @@
             </AnchorPane>
          </left>
          <center>
-            <Accordion BorderPane.alignment="CENTER">
+            <Accordion fx:id="itemPropertiesPane" BorderPane.alignment="CENTER">
               <panes>
                 <TitledPane animated="false" text="Item Configs">
                   <content>
-                    <AnchorPane fx:id="itemConfigPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <ScrollPane>
+                           <content>
+                          <AnchorPane fx:id="itemConfigPane" />
+                           </content>
+                        </ScrollPane>
                   </content>
                 </TitledPane>
                   <TitledPane animated="false" layoutX="10.0" layoutY="10.0" text="Item Model">
                      <content>
-                        <AnchorPane fx:id="itemModelPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <ScrollPane>
+                           <content>
+                              <AnchorPane fx:id="itemModelPane" />
+                           </content>
+                        </ScrollPane>
                      </content>
                   </TitledPane>
-                <TitledPane fx:id="itemActionsPane" animated="false" text="Item Actions">
+                <TitledPane fx:id="itemActionsPane" animated="false" text="Item Options">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <ScrollPane>
+                           <content>
+                          <AnchorPane fx:id="itemOptionsPane" />
+                           </content>
+                        </ScrollPane>
                   </content>
                 </TitledPane>
                 <TitledPane fx:id="itemColorsPane" animated="false" text="Item Colors">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <ScrollPane>
+                           <content>
+                          <AnchorPane />
+                           </content>
+                        </ScrollPane>
                   </content>
                 </TitledPane>
               </panes>

@@ -75,7 +75,7 @@ class FileSystemView : Fragment() {
                                 contextmenu {
                                     exts.forEach {  indexExt ->
                                         if(indexId == indexExt.indexId) {
-                                            indexExt.configureContextMenu(this)
+                                            indexExt.configureContextMenu(this, activeDir.root.get())
                                         }
                                     }
                                 }
@@ -118,7 +118,7 @@ class FileSystemView : Fragment() {
                                 if(exts.isNotEmpty()) {
                                     exts.forEach {  archiveExt ->
                                         if(archiveId == archiveExt.archiveId && indexId == archiveExt.indexId) {
-                                            archiveExt.configureContextMenu(this)
+                                            archiveExt.configureContextMenu(this, activeDir.root.get())
                                         }
                                     }
                                 }
@@ -148,7 +148,7 @@ class FileSystemView : Fragment() {
                                 val exts = pluginRepo.manager.getExtensions(FileContextMenuExtension::class.java, this@FileSystemView.scope.pluginId)
                                 if(exts.isNotEmpty()) {
                                     exts.forEach {
-                                        it.configureContextMenu(this)
+                                        it.configureContextMenu(this, activeDir.root.get())
                                     }
                                 }
                             }

@@ -170,3 +170,20 @@ class VarbitFileTypeExtension : FileTypeExtension {
     }
 }
 
+@Extension
+class WorldmapTypeExtension : FileTypeExtension {
+    override fun createFileType(): FileType {
+        return DefinitionFileType<WorldMapDefinition, WorldMapLoader>(
+            -1, 16, OldSchoolDefinitionManager.worldmap, "worldmap"
+        )
+    }
+}
+
+@Extension
+class HealthBarTypeExtension : FileTypeExtension {
+    override fun createFileType(): FileType {
+        return DefinitionFileType<HealthBarDefinition, HealthBarLoader>(
+            33, 2, OldSchoolDefinitionManager.healthbars, "healthbars"
+        )
+    }
+}

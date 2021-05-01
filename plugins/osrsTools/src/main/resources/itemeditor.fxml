@@ -78,11 +78,11 @@
                         </ScrollPane>
                   </content>
                 </TitledPane>
-                <TitledPane fx:id="itemColorsPane" animated="false" text="Item Colors">
+                <TitledPane fx:id="itemColorsPane" animated="false" text="Item Inventory and Colors">
                   <content>
                         <ScrollPane>
                            <content>
-                          <AnchorPane />
+                          <AnchorPane fx:id="itemInventoryPane" />
                            </content>
                         </ScrollPane>
                   </content>

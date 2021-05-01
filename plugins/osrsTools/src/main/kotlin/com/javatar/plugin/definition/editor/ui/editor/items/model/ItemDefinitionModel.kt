@@ -1,14 +1,14 @@
 package com.javatar.plugin.definition.editor.ui.editor.items.model
 
+import com.displee.cache.CacheLibrary
 import com.javatar.osrs.definitions.impl.ItemDefinition
-import com.javatar.osrs.definitions.sprites.ItemSpriteFactory
 import javafx.beans.property.*
 import javafx.collections.FXCollections
 import javafx.scene.image.Image
-import tornadofx.ItemViewModel
+import tornadofx.ViewModel
 import tornadofx.toObservable
 
-class ItemDefinitionModel : ItemViewModel<ItemDefinition>(ItemDefinition(-1)) {
+class ItemDefinitionModel : ViewModel() {
 
     val id = bind { SimpleIntegerProperty(this, "id", -1) }
     val name = bind { SimpleStringProperty(this, "name", "null") }
@@ -84,24 +84,10 @@ class ItemDefinitionModel : ItemViewModel<ItemDefinition>(ItemDefinition(-1)) {
 
     val icon = SimpleObjectProperty<Image>(this, "icon")
 
-    init {
-        update(this.item)
-    }
-
-    fun hasModels(): Boolean {
-        return maleModel0.get() != 0
-                || maleModel1.get() != 0
-                || maleModel2.get() != 0
-                || maleHeadModel0.get() != 0
-                || maleHeadModel1.get() != 0
-                || femaleModel0.get() != 0
-                || femaleModel1.get() != 0
-                || femaleModel2.get() != 0
-                || femaleHeadModel0.get() != 0
-                || femaleHeadModel1.get() != 0
-    }
+    val cacheProperty = SimpleObjectProperty<CacheLibrary>()
 
     fun update(def: ItemDefinition) {
+        println(def.id)
         id.set(def.id)
         name.set(def.name)
         resizeX.set(def.resizeX)
@@ -169,9 +155,8 @@ class ItemDefinitionModel : ItemViewModel<ItemDefinition>(ItemDefinition(-1)) {
         }
     }
 
-    override fun onCommit() {
-        super.onCommit()
-        item = ItemDefinition(id.get())
+    fun createItem() : ItemDefinition {
+        val item = ItemDefinition(id.get())
         item.name = name.get()
         item.resizeX = resizeX.get()
         item.resizeY = resizeY.get()
@@ -228,5 +213,6 @@ class ItemDefinitionModel : ItemViewModel<ItemDefinition>(ItemDefinition(-1)) {
         item.placeholderId = placeholderId.get()
         item.placeholderTemplateId = placeHolderTemplateId.get()
         item.params = itemParams.get()
+        return item
     }
 }

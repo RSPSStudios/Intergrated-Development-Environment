@@ -19,7 +19,7 @@ class ItemEditorExtension : ArchiveContextMenuExtension {
             separator()
             item("Item Editor").action {
                 find<ItemEditorView>().apply {
-                    cacheProperty.set(root.cache)
+                    definitionModel.cacheProperty.set(root.cache)
                 }.openModal(block = true)
             }
         }

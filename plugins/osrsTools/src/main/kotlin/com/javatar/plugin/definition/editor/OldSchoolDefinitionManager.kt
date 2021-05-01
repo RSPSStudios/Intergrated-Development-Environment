@@ -29,4 +29,6 @@ object OldSchoolDefinitionManager {
     val animations = DefinitionManager(SequenceLoader())
     val graphics = DefinitionManager(SpotAnimLoader())
     val structs = DefinitionManager(StructLoader())
+    val worldmap = DefinitionManager(WorldMapLoader())
+    val healthbars = DefinitionManager(HealthBarLoader())
 }

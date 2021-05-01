@@ -36,15 +36,15 @@ class ItemEditorView : Fragment("Old School Item Editor") {
     private val itemConfigPane: AnchorPane by fxid()
     private val itemModelPane: AnchorPane by fxid()
     private val itemOptionsPane: AnchorPane by fxid()
+    private val itemInventoryPane: AnchorPane by fxid()
 
-    private val definitionModel: ItemDefinitionModel by inject()
+    val definitionModel: ItemDefinitionModel by inject()
 
     private val manager = OldSchoolDefinitionManager.items
 
     private val factory = ItemSpriteFactory()
 
-    val cacheProperty = SimpleObjectProperty<CacheLibrary>()
-    private val cache: CacheLibrary by cacheProperty
+    private val cache: CacheLibrary by definitionModel.cacheProperty
 
     init {
         duplicateItem.disableWhen(itemList.selectionModel.selectedItemProperty().isNull)
@@ -78,14 +78,18 @@ class ItemEditorView : Fragment("Old School Item Editor") {
         itemList.selectionModel.selectedItemProperty().onChange {
             if(it != null) {
                 definitionModel.update(it)
+                definitionModel.id.set(it.id)
+                println("$definitionModel")
+                println("Editing ID: ${definitionModel.id.get()}")
             }
         }
 
         itemConfigPane.add<ItemConfigsFragment>()
         itemModelPane.add<ItemModelFragment>()
         itemOptionsPane.add<ItemOptionsFragment>()
+        itemInventoryPane.add<ItemInventoryFragment>()
 
-        cacheProperty.addListener { _, _, new ->
+        definitionModel.cacheProperty.addListener { _, _, new ->
             loadItems(new)
         }
     }

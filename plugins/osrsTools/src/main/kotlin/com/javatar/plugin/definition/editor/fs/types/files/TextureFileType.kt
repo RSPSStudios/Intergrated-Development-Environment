@@ -15,7 +15,9 @@ class TextureFileType : DefinitionFileType<TextureDefinition, TextureLoader>(0, 
 
     override fun icon(file: JFile, root: RootDirectory): ImageView? {
         val provider = SpriteProvider(root.cache)
-        val def = manager.getDefinition(file.id, file.read())
+        val def = if(manager[file.id] == null) {
+            manager.load(file.id, file.read())
+        } else manager[file.id]!!
         if(def.fileIds.isNotEmpty()) {
             val spriteId = def.fileIds[0]
             val spriteGroup = provider.getDefinition(spriteId)

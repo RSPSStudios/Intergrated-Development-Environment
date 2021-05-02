@@ -17,10 +17,10 @@ class ModelProvider(val cache: CacheLibrary) : DefinitionProvider<ModelDefinitio
     override fun getDefinition(id: Int): ModelDefinition {
         val data = cache.data(7, id)
         if (data != null) return models.load(id, data)
-        return models.getDefinition(id)
+        return models[id]!!
     }
 
     override fun values(): List<ModelDefinition> {
-        return models.values()
+        return models.definitions.values.toList()
     }
 }

@@ -32,7 +32,9 @@ class ShopCacheConfigModel : ViewModel() {
     }
     val modelProvider =
         bind { SimpleObjectProperty<ModelProvider>(this, "model_provider", cache.get()?.let { ModelProvider(it) }) }
-    val spriteFactory = bind { SimpleObjectProperty(this, "sprite_factory", ItemSpriteFactory()) }
+    val spriteFactory = bind { SimpleObjectProperty<ItemSpriteFactory>(this, "sprite_factory", cache.get()?.let {
+        ItemSpriteFactory(ItemProvider(it), ModelProvider(it), SpriteProvider(it), TextureProvider(it))
+    }) }
 
     override fun onCommit() {
         super.onCommit()

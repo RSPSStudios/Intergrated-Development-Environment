@@ -17,10 +17,10 @@ class SpriteProvider(val cache: CacheLibrary) : DefinitionProvider<SpriteGroupDe
     override fun getDefinition(id: Int): SpriteGroupDefinition {
         val data = cache.data(8, id)
         if (data != null) sprites.load(id, data)
-        return sprites.getDefinition(id)
+        return sprites[id]!!
     }
 
     override fun values(): List<SpriteGroupDefinition> {
-        return sprites.values()
+        return sprites.definitions.values.toList()
     }
 }

@@ -17,7 +17,7 @@ class NpcProvider(val cache: CacheLibrary) : DefinitionProvider<NpcDefinition> {
     override fun getDefinition(id: Int): NpcDefinition {
         val data = cache.data(2, 9, id)
         if (data != null) return npcs.load(id, data)
-        return npcs.getDefinition(id)
+        return npcs[id]!!
     }
 
     fun npcIds(): List<Int> {
@@ -25,6 +25,6 @@ class NpcProvider(val cache: CacheLibrary) : DefinitionProvider<NpcDefinition> {
     }
 
     override fun values(): List<NpcDefinition> {
-        return npcs.values()
+        return npcs.definitions.values.toList()
     }
 }

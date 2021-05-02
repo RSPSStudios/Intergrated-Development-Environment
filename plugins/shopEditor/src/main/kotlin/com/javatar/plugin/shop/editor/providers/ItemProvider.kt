@@ -3,6 +3,7 @@ package com.javatar.plugin.shop.editor.providers
 import com.displee.cache.CacheLibrary
 import com.javatar.definition.DefinitionProvider
 import com.javatar.osrs.definitions.impl.ItemDefinition
+import com.javatar.osrs.definitions.loaders.ItemLoader
 import com.javatar.plugin.shop.editor.DefinitionManager
 
 /**
@@ -13,15 +14,18 @@ import com.javatar.plugin.shop.editor.DefinitionManager
 class ItemProvider(val cache: CacheLibrary) : DefinitionProvider<ItemDefinition> {
 
     val items = DefinitionManager.items
-
     override fun getDefinition(id: Int): ItemDefinition {
-        val data = cache.data(2, 10, id)
-        if (data != null) return items.load(id, data)
-        return items.getDefinition(id)
+        if(items[id] == null) {
+            val data = cache.data(2, 10, id)
+            if(data != null) {
+                return items.load(id, data)
+            }
+        }
+        return items[id]!!
     }
 
     override fun values(): List<ItemDefinition> {
-        return items.values()
+        return items.definitions.values.toList()
     }
 
     fun itemIds(): List<Int> {

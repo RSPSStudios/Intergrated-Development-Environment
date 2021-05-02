@@ -17,10 +17,10 @@ class TextureProvider(val cache: CacheLibrary) : DefinitionProvider<TextureDefin
     override fun getDefinition(id: Int): TextureDefinition {
         val data = cache.data(9, 0, id)
         if (data != null) return textures.load(id, data)
-        return textures.getDefinition(id)
+        return textures[id]!!
     }
 
     override fun values(): List<TextureDefinition> {
-        return textures.values()
+        return textures.definitions.values.toList()
     }
 }

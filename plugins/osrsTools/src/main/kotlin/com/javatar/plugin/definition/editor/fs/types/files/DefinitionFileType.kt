@@ -1,7 +1,5 @@
 package com.javatar.plugin.definition.editor.fs.types.files
 
-import com.google.gson.JsonParser
-import com.google.gson.stream.JsonReader
 import com.javatar.api.fs.ArchiveType
 import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
@@ -9,9 +7,9 @@ import com.javatar.api.http.Client
 import com.javatar.api.http.StringBody
 import com.javatar.api.ui.models.AccountModel
 import com.javatar.osrs.definitions.Definition
-import com.javatar.osrs.definitions.DefinitionManager
 import com.javatar.osrs.definitions.DeserializeDefinition
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.GenericDefinitionTool
 import javafx.scene.control.Alert
 import javafx.scene.control.Tab
@@ -28,12 +26,11 @@ import org.koin.core.component.inject
 import tornadofx.Scope
 import tornadofx.alert
 import tornadofx.find
-import java.io.StringReader
 
 open class DefinitionFileType<T : Definition, L : DeserializeDefinition<T>>(
     override val archiveId: Int,
     override val indexId: Int,
-    val manager: DefinitionManager<T, L>,
+    val manager: ConfigDefinitionManager<T, L>,
     val endpoint: String
 ) : ArchiveType, KoinComponent {
 
@@ -46,16 +43,21 @@ open class DefinitionFileType<T : Definition, L : DeserializeDefinition<T>>(
 
     override fun cache(jfiles: List<JFile>, root: RootDirectory) {
         jfiles.forEach {
-            manager.getDefinition(it.id, it.read())
+            manager.load(it.id, it.read())
         }
     }
 
     override fun identifier(file: JFile, root: RootDirectory): String {
-        return "${manager.getDefinition(file.id, file.read()).name} - ${file.id}"
+        if(manager[file.id] == null) {
+            manager.load(file.id, file.read())
+        }
+        return "${manager.get(file.id)?.name} - ${file.id}"
     }
 
     override fun open(file: JFile, root: RootDirectory, editorPane: TabPane) {
-        val def = manager.load(file.id, file.read())
+        val def = if(manager[file.id] == null) {
+            manager.load(file.id, file.read())
+        } else manager[file.id]!!
         val data = gson.toJson(def)
         val tool = find<GenericDefinitionTool>(Scope())
         tool.editorModel.json.set(data)

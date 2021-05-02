@@ -42,9 +42,18 @@ class ItemEditorView : Fragment("Old School Item Editor") {
 
     private val manager = OldSchoolDefinitionManager.items
 
-    private val factory = ItemSpriteFactory()
-
     private val cache: CacheLibrary by definitionModel.cacheProperty
+
+    private val factory: ItemSpriteFactory by lazy {
+        if(cache == null)
+            error("Cache is null!")
+        ItemSpriteFactory(
+            ItemProvider(cache),
+            ModelProvider(cache),
+            SpriteProvider(cache),
+            TextureProvider(cache)
+        )
+    }
 
     init {
         duplicateItem.disableWhen(itemList.selectionModel.selectedItemProperty().isNull)
@@ -56,19 +65,12 @@ class ItemEditorView : Fragment("Old School Item Editor") {
             graphic = hbox {
                 spacing = 15.0
                 alignment = Pos.CENTER
-                val cache = cache
-                val image = SwingFXUtils.toFXImage(
-                    factory.createSprite(
-                        ItemProvider(cache),
-                        ModelProvider(cache),
-                        SpriteProvider(cache),
-                        TextureProvider(cache),
-                        item.id,
-                        1,
-                        1,
-                        3153952,
-                        false
-                    ), null
+                val image = factory.toFXImage(
+                    item.id,
+                    1,
+                    1,
+                    3153952,
+                    false
                 )
                 imageview(image)
                 label(item.name)

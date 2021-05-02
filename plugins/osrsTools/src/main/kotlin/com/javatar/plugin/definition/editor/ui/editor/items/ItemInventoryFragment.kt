@@ -1,10 +1,7 @@
 package com.javatar.plugin.definition.editor.ui.editor.items
 
-import com.displee.cache.CacheLibrary
 import com.javatar.api.ui.toFXColor
 import com.javatar.api.ui.toInt
-import com.javatar.definition.DefinitionProvider
-import com.javatar.osrs.definitions.impl.ItemDefinition
 import com.javatar.osrs.definitions.sprites.ItemSpriteFactory
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.managers.ItemProvider
@@ -14,54 +11,60 @@ import com.javatar.plugin.definition.editor.managers.TextureProvider
 import com.javatar.plugin.definition.editor.ui.editor.items.model.ItemDefinitionModel
 import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleObjectProperty
+import javafx.collections.ListChangeListener
+import javafx.collections.ObservableList
 import javafx.embed.swing.SwingFXUtils
 import javafx.geometry.Pos
+import javafx.geometry.Rectangle2D
 import javafx.scene.image.Image
+import javafx.scene.image.PixelBuffer
+import javafx.scene.image.PixelFormat
+import javafx.scene.image.WritableImage
 import tornadofx.*
+import java.nio.IntBuffer
 
 class ItemInventoryFragment : Fragment() {
 
     val def: ItemDefinitionModel by inject()
 
-    private val factory = ItemSpriteFactory()
+    private val pixelBuffer = PixelBuffer(36, 32, IntBuffer.allocate(36 * 32), PixelFormat.getIntArgbPreInstance())
+    private val itemSprite = WritableImage(pixelBuffer)
 
-    private val spriteProperty = SimpleObjectProperty<Image>()
+    private val factory: ItemSpriteFactory by lazy {
+        val cache = def.cacheProperty.get()
+        ItemSpriteFactory(
+            ItemProvider(cache),
+            ModelProvider(cache),
+            SpriteProvider(cache),
+            TextureProvider(cache),
+            pixelBuffer
+        )
+    }
 
     val manager = OldSchoolDefinitionManager.items
 
     init {
-        spriteProperty.bind(Bindings.createObjectBinding(
-            {
-                val cache = def.cacheProperty.get()
-                val item = def.createItem()
-                manager.add(item)
-                if (cache != null) SwingFXUtils.toFXImage(
-                    factory.createSprite(
-                        ItemProvider(cache),
-                        ModelProvider(cache),
-                        SpriteProvider(cache),
-                        TextureProvider(cache),
-                        def.id.get(),
-                        1,
-                        1,
-                        3153952,
-                        def.notedTemplate.get() != -1
-                    ), null
-                ) else null
-            },
-            def.xan2d,
-            def.yan2d,
-            def.zan2d,
-            def.xOffset2d,
-            def.yOffset2d,
-            def.resizeX,
-            def.resizeY,
-            def.resizeZ,
-            def.colorFind,
-            def.colorReplace,
-            def.textureFind,
-            def.textureReplace
-        ))
+
+        def.xan2d.onChange { onItemChange() }
+        def.yan2d.onChange { onItemChange() }
+        def.zan2d.onChange { onItemChange() }
+        def.xOffset2d.onChange { onItemChange() }
+        def.yOffset2d.onChange { onItemChange() }
+        def.resizeX.onChange { onItemChange() }
+        def.resizeY.onChange { onItemChange() }
+        def.resizeZ.onChange { onItemChange() }
+        def.colorFind.onChange { change: ListChangeListener.Change<out Int> ->
+            onItemChange()
+        }
+        def.colorReplace.onChange { change: ListChangeListener.Change<out Int> ->
+            onItemChange()
+        }
+        def.textureFind.onChange { change: ListChangeListener.Change<out Int> ->
+            onItemChange()
+        }
+        def.textureReplace.onChange { change: ListChangeListener.Change<out Int> ->
+            onItemChange()
+        }
     }
 
     override val root = vbox {
@@ -69,7 +72,7 @@ class ItemInventoryFragment : Fragment() {
         alignment = Pos.CENTER
         prefWidth = 514.0
         maxHeight = 455.0
-        imageview(spriteProperty)
+        imageview(itemSprite)
         scrollpane {
             form {
                 maxWidth = 510.0
@@ -105,9 +108,9 @@ class ItemInventoryFragment : Fragment() {
                     field {
                         listview(def.colorFind) {
                             cellFormat {
-                                colorpicker(item.toFXColor()) {
+                                graphic = colorpicker(item.toFXColor()) {
                                     valueProperty().onChange {
-                                        if(it != null) {
+                                        if (it != null) {
                                             def.colorFind[def.colorFind.indexOf(item)] = it.toInt()
                                         }
                                     }
@@ -119,4 +122,26 @@ class ItemInventoryFragment : Fragment() {
             }
         }
     }
+
+    private fun onItemChange() {
+        val item = def.createItem()
+        manager.add(item)
+        pixelBuffer.buffer.clear()
+        factory.createSpriteToPixelBuffer(
+            def.id.get(),
+            1,
+            1,
+            3153952,
+            def.notedTemplate.get() != -1
+        )
+        pixelBuffer.updateBuffer {
+            Rectangle2D(
+                def.xOffset2d.get().toDouble(),
+                def.yOffset2d.get().toDouble(),
+                36.0,
+                32.0
+            )
+        }
+    }
+
 }

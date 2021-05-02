@@ -1,7 +1,6 @@
 package com.javatar.plugin.shop.editor
 
 import com.google.gson.GsonBuilder
-import com.javatar.osrs.definitions.DefinitionManager
 import com.javatar.osrs.definitions.loaders.*
 
 object DefinitionManager {
@@ -11,10 +10,10 @@ object DefinitionManager {
         .disableHtmlEscaping()
         .create()
 
-    val items = DefinitionManager(ItemLoader())
-    val npcs = DefinitionManager(NpcLoader())
-    val models = DefinitionManager(ModelLoader())
-    val sprites = DefinitionManager(SpriteLoader())
-    val textures = DefinitionManager(TextureLoader())
+    val items = ConfigDefinitionManager(ItemLoader())
+    val npcs = ConfigDefinitionManager(NpcLoader())
+    val models = ConfigDefinitionManager(ModelLoader())
+    val sprites = ConfigDefinitionManager(SpriteLoader())
+    val textures = ConfigDefinitionManager(TextureLoader())
 
 }

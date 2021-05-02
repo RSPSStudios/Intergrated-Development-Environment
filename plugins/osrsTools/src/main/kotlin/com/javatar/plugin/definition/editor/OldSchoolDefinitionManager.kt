@@ -1,7 +1,7 @@
 package com.javatar.plugin.definition.editor
 
-import com.javatar.osrs.definitions.DefinitionManager
 import com.javatar.osrs.definitions.loaders.*
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 
 /**
  * @author David Schlachter <davidschlachter96@gmail.com>
@@ -9,26 +9,26 @@ import com.javatar.osrs.definitions.loaders.*
  */
 
 object OldSchoolDefinitionManager {
-    val items = DefinitionManager(ItemLoader())
-    val models = DefinitionManager(ModelLoader())
-    val textures = DefinitionManager(TextureLoader())
-    val sprites = DefinitionManager(SpriteLoader())
-    val npcs = DefinitionManager(NpcLoader())
-    val objects = DefinitionManager(ObjectLoader())
-    val varbits = DefinitionManager(VarbitLoader())
-    val enums = DefinitionManager(EnumLoader())
-    val playerKit = DefinitionManager(KitLoader())
-    val hitsplats = DefinitionManager(HitSplatLoader())
-    val areas = DefinitionManager(AreaLoader())
-    val widgets = DefinitionManager(InterfaceLoader())
-    val inventories = DefinitionManager(InventoryLoader())
-    val overlays = DefinitionManager(OverlayLoader())
-    val underlays = DefinitionManager(UnderlayLoader())
-    val params = DefinitionManager(ParamLoader())
-    val scripts = DefinitionManager(ScriptLoader())
-    val animations = DefinitionManager(SequenceLoader())
-    val graphics = DefinitionManager(SpotAnimLoader())
-    val structs = DefinitionManager(StructLoader())
-    val worldmap = DefinitionManager(WorldMapLoader())
-    val healthbars = DefinitionManager(HealthBarLoader())
+    val items = ConfigDefinitionManager(ItemLoader())
+    val models = ConfigDefinitionManager(ModelLoader())
+    val textures = ConfigDefinitionManager(TextureLoader())
+    val sprites = ConfigDefinitionManager(SpriteLoader())
+    val npcs = ConfigDefinitionManager(NpcLoader())
+    val objects = ConfigDefinitionManager(ObjectLoader())
+    val varbits = ConfigDefinitionManager(VarbitLoader())
+    val enums = ConfigDefinitionManager(EnumLoader())
+    val playerKit = ConfigDefinitionManager(KitLoader())
+    val hitsplats = ConfigDefinitionManager(HitSplatLoader())
+    val areas = ConfigDefinitionManager(AreaLoader())
+    val widgets = ConfigDefinitionManager(InterfaceLoader())
+    val inventories = ConfigDefinitionManager(InventoryLoader())
+    val overlays = ConfigDefinitionManager(OverlayLoader())
+    val underlays = ConfigDefinitionManager(UnderlayLoader())
+    val params = ConfigDefinitionManager(ParamLoader())
+    val scripts = ConfigDefinitionManager(ScriptLoader())
+    val animations = ConfigDefinitionManager(SequenceLoader())
+    val graphics = ConfigDefinitionManager(SpotAnimLoader())
+    val structs = ConfigDefinitionManager(StructLoader())
+    val worldmap = ConfigDefinitionManager(WorldMapLoader())
+    val healthbars = ConfigDefinitionManager(HealthBarLoader())
 }

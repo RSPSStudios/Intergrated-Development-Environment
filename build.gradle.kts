@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val pluginsDir by extra { file("$buildDir/plugins") }
 
 plugins {
-    kotlin("jvm") version "1.4.32" apply false
-    kotlin("kapt") version "1.4.32" apply false
+    kotlin("jvm") version "1.5.0" apply false
+    kotlin("kapt") version "1.5.0" apply false
 }
 
 subprojects {
@@ -22,7 +22,7 @@ subprojects {
     apply(plugin = "kotlin-kapt")
 
     dependencies {
-        "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+        "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
         "implementation"("org.koin:koin-core:2.2.1")
         "implementation"("org.slf4j:slf4j-api:2.0.0-alpha1")
         "implementation"("org.slf4j:slf4j-log4j12:2.0.0-alpha1")

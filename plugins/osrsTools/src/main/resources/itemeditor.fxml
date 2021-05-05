@@ -37,9 +37,9 @@
                <children>
                   <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Button mnemonicParsing="false" prefWidth="248.0" text="Clear">
+                        <Button mnemonicParsing="false" onAction="#searchItems" prefWidth="248.0" text="Search">
                            <graphic>
-                              <TextField />
+                              <TextField fx:id="searchField" />
                            </graphic>
                         </Button>
                         <ListView fx:id="itemList" prefHeight="587.0" prefWidth="248.0" />

@@ -3,27 +3,24 @@ package com.javatar.plugin.definition.editor.ui.editor.items
 import com.displee.cache.CacheLibrary
 import com.javatar.api.ui.loadPluginFXML
 import com.javatar.osrs.definitions.impl.ItemDefinition
-import com.javatar.osrs.definitions.sprites.ItemSpriteFactory
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor
-import com.javatar.plugin.definition.editor.managers.ItemProvider
-import com.javatar.plugin.definition.editor.managers.ModelProvider
-import com.javatar.plugin.definition.editor.managers.SpriteProvider
-import com.javatar.plugin.definition.editor.managers.TextureProvider
 import com.javatar.plugin.definition.editor.ui.editor.items.model.ItemDefinitionModel
-import javafx.beans.property.SimpleObjectProperty
-import javafx.embed.swing.SwingFXUtils
+import com.javatar.plugin.definition.editor.ui.editor.items.wizard.NewItemWizard
 import javafx.fxml.FXML
 import javafx.geometry.Pos
 import javafx.scene.control.Accordion
 import javafx.scene.control.ListView
 import javafx.scene.control.MenuItem
+import javafx.scene.control.TextField
 import javafx.scene.layout.AnchorPane
 import tornadofx.*
 
 class ItemEditorView : Fragment("Old School Item Editor") {
 
     override val root: AnchorPane = loadPluginFXML("${OsrsDefinitionEditor.properties["pluginPath"]}/itemeditor.fxml")
+
+    private val searchField: TextField by fxid()
 
     private val duplicateItem: MenuItem by fxid()
     private val deleteItem: MenuItem by fxid()
@@ -42,19 +39,6 @@ class ItemEditorView : Fragment("Old School Item Editor") {
 
     private val manager = OldSchoolDefinitionManager.items
 
-    private val cache: CacheLibrary by definitionModel.cacheProperty
-
-    private val factory: ItemSpriteFactory by lazy {
-        if(cache == null)
-            error("Cache is null!")
-        ItemSpriteFactory(
-            ItemProvider(cache),
-            ModelProvider(cache),
-            SpriteProvider(cache),
-            TextureProvider(cache)
-        )
-    }
-
     init {
         duplicateItem.disableWhen(itemList.selectionModel.selectedItemProperty().isNull)
         deleteItem.disableWhen(itemList.selectionModel.selectedItemProperty().isNull)
@@ -65,14 +49,17 @@ class ItemEditorView : Fragment("Old School Item Editor") {
             graphic = hbox {
                 spacing = 15.0
                 alignment = Pos.CENTER
-                val image = factory.toFXImage(
-                    item.id,
-                    1,
-                    1,
-                    3153952,
-                    false
-                )
-                imageview(image)
+                val factory = definitionModel.itemSpriteFactory.get()
+                if (factory != null) {
+                    val image = factory.toFXImage(
+                        item.id,
+                        1,
+                        1,
+                        3153952,
+                        false
+                    )
+                    imageview(image)
+                }
                 label(item.name)
             }
         }
@@ -81,8 +68,6 @@ class ItemEditorView : Fragment("Old School Item Editor") {
             if(it != null) {
                 definitionModel.update(it)
                 definitionModel.id.set(it.id)
-                println("$definitionModel")
-                println("Editing ID: ${definitionModel.id.get()}")
             }
         }
 
@@ -94,19 +79,39 @@ class ItemEditorView : Fragment("Old School Item Editor") {
         definitionModel.cacheProperty.addListener { _, _, new ->
             loadItems(new)
         }
+
+        searchField.textProperty().onChange {
+            if(it != null && it.isEmpty() && definitionModel.cacheProperty.get() != null) {
+                loadItems(definitionModel.cacheProperty.get())
+            }
+        }
     }
 
     private fun loadItems(cache: CacheLibrary) {
+        if(itemList.items.isNotEmpty()) {
+            itemList.items.clear()
+        }
         val ids = cache.index(2).archive(10)?.fileIds() ?: intArrayOf()
         ids.forEach {
-            val def = manager.loader.load(it, cache.data(2, 10, it))
-            itemList.items.add(def)
+            val data = cache.data(2, 10, it)
+            if(data != null) {
+                itemList.items.add(manager.load(it, data))
+            }
         }
     }
 
     @FXML
     fun newItem() {
+        find<NewItemWizard> {
+            onComplete {
 
+
+
+                println("New Item! ${def.name}")
+                println("Cost: ${def.cost}")
+            }
+            openModal()
+        }
     }
 
     @FXML
@@ -124,6 +129,57 @@ class ItemEditorView : Fragment("Old School Item Editor") {
 
     }
 
+    @FXML
+    fun searchItems() {
+        val result = searchField.text
+        if(result.isInt()) {
+            itemList.items.clear()
+            val itemId = result.toInt()
+            val def = manager[itemId]
+            if (def != null) {
+                itemList.items.addAll(def, *findRelatedItems(def).toTypedArray())
+            }
+        } else {
+            val filtered = manager.definitions.values.filter {
+                it.name.toLowerCase().contains(result.toLowerCase())
+            }
+            itemList.items.setAll(filtered)
+        }
+    }
 
+    private fun findRelatedItems(item: ItemDefinition) : List<ItemDefinition> {
+        val cache = definitionModel.cacheProperty.get()
+        val list = mutableListOf<ItemDefinition>()
+        if(cache != null) {
+            if(item.notedID != -1) {
+                val notedItem = manager[item.notedID]
+                if(notedItem == null) {
+                    val data = cache.data(2, 10, item.notedID)
+                    if (data != null) {
+                        list.add(manager.load(item.notedID, data))
+                    }
+                } else list.add(notedItem)
+            }
+            if(item.placeholderId != -1) {
+                val placeItem = manager[item.placeholderId]
+                if(placeItem == null) {
+                    val data = cache.data(2, 10, item.placeholderId)
+                    if(data != null) {
+                        list.add(manager.load(item.placeholderId, data))
+                    }
+                } else list.add(placeItem)
+            }
+            if(item.boughtId != -1) {
+                val boughtItem = manager[item.boughtId]
+                if(boughtItem == null) {
+                    val data = cache.data(2, 10, item.boughtId)
+                    if(data != null) {
+                        list.add(manager.load(item.boughtId, data))
+                    }
+                } else list.add(boughtItem)
+            }
+        }
+        return list
+    }
 
 }

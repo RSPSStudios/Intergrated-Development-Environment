@@ -13,18 +13,21 @@ class ItemConfigsFragment : Fragment() {
                 textfield(def.name)
             }
             field("Cost") {
-                spinner(property = def.cost) {
+                spinner(property = def.cost, min = 0, max = Integer.MAX_VALUE) {
                     isEditable = true
+                    editor.stripNonNumeric()
                 }
             }
             field("Team") {
-                spinner(property = def.team) {
+                spinner(property = def.team, min = 0, max = Integer.MAX_VALUE) {
                     isEditable = true
+                    editor.stripNonNumeric()
                 }
             }
             field("Shift Click Drop Index") {
-                spinner(property = def.shiftClickDropIndex) {
+                spinner(property = def.shiftClickDropIndex, min = -2, max = Integer.MAX_VALUE) {
                     isEditable = true
+                    editor.stripNonNumeric()
                 }
             }
             field("Tradeable") {

@@ -6,7 +6,7 @@ import javafx.stage.FileChooser
 import tornadofx.*
 import java.io.File
 
-class MapPacker : Fragment() {
+class MapPacker : Fragment("Old School Map Packer") {
 
     val mapPackerModel: MapPackerModel by inject()
 

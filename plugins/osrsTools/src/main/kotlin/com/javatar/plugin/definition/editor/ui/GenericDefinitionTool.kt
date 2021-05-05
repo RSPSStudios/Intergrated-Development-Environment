@@ -1,17 +1,8 @@
 package com.javatar.plugin.definition.editor.ui
 
-import com.javatar.api.http.Client
-import com.javatar.api.ui.models.AccountModel
 import com.javatar.plugin.definition.editor.ui.models.GenericDefinitionEditingModel
 import javafx.geometry.Pos
-import javafx.scene.control.Alert
 import javafx.stage.FileChooser
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.javafx.JavaFx
 import tornadofx.*
 import java.io.File
 

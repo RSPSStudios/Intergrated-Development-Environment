@@ -2,11 +2,21 @@ package com.javatar.plugin.definition.editor.ui.editor.items.model
 
 import com.displee.cache.CacheLibrary
 import com.javatar.osrs.definitions.impl.ItemDefinition
+import com.javatar.osrs.definitions.sprites.ItemSpriteFactory
+import com.javatar.plugin.definition.editor.managers.ItemProvider
+import com.javatar.plugin.definition.editor.managers.ModelProvider
+import com.javatar.plugin.definition.editor.managers.SpriteProvider
+import com.javatar.plugin.definition.editor.managers.TextureProvider
 import javafx.beans.property.*
 import javafx.collections.FXCollections
 import javafx.scene.image.Image
+import javafx.scene.image.PixelBuffer
+import javafx.scene.image.PixelFormat
+import javafx.scene.image.WritableImage
 import tornadofx.ViewModel
+import tornadofx.onChange
 import tornadofx.toObservable
+import java.nio.IntBuffer
 
 class ItemDefinitionModel : ViewModel() {
 
@@ -25,7 +35,7 @@ class ItemDefinitionModel : ViewModel() {
     val isTradeable = bind { SimpleBooleanProperty(this, "isTradeable", false) }
     val isMembers = bind { SimpleBooleanProperty(this, "isMembers", false) }
 
-    val stackable = bind { SimpleIntegerProperty(this, "stackable", 0) }
+    val stackable = bind { SimpleBooleanProperty(this, "stackable", false) }
     val inventoryModel = bind { SimpleIntegerProperty(this, "inventoryModel", 0) }
 
     val colorFind = bind { SimpleListProperty<Int>(this, "colorFind", FXCollections.observableArrayList()) }
@@ -86,6 +96,28 @@ class ItemDefinitionModel : ViewModel() {
 
     val cacheProperty = SimpleObjectProperty<CacheLibrary>()
 
+    val itemSpriteFactory = SimpleObjectProperty<ItemSpriteFactory>(this, "spriteFactory")
+
+    val pixelBuffer = PixelBuffer(36, 32, IntBuffer.allocate(36 * 32), PixelFormat.getIntArgbPreInstance())
+
+    val itemSprite = SimpleObjectProperty(WritableImage(pixelBuffer))
+
+    init {
+        cacheProperty.onChange {
+            if (it != null) {
+                itemSpriteFactory.set(
+                    ItemSpriteFactory(
+                        ItemProvider(it),
+                        ModelProvider(it),
+                        SpriteProvider(it),
+                        TextureProvider(it),
+                        pixelBuffer
+                    )
+                )
+            }
+        }
+    }
+
     fun update(def: ItemDefinition) {
         println(def.id)
         id.set(def.id)
@@ -93,7 +125,7 @@ class ItemDefinitionModel : ViewModel() {
         resizeX.set(def.resizeX)
         resizeY.set(def.resizeY)
         resizeZ.set(def.resizeZ)
-        stackable.set(def.stackable)
+        stackable.set(def.stackable == 1)
         xan2d.set(def.xan2d)
         yan2d.set(def.yan2d)
         zan2d.set(def.zan2d)
@@ -102,12 +134,18 @@ class ItemDefinitionModel : ViewModel() {
         isMembers.set(def.isMembers)
         inventoryModel.set(def.inventoryModel)
         if (def.colorFind != null) {
-            colorFind.set(def.colorFind.map { it.toInt() }.toObservable())
-            colorReplace.set(def.colorReplace.map { it.toInt() }.toObservable())
+            colorFind.setAll(def.colorFind.toList().map { it.toInt() })
+            colorReplace.setAll(def.colorReplace.toList().map { it.toInt() })
+        } else {
+            colorFind.clear()
+            colorReplace.clear()
         }
         if (def.textureFind != null) {
             textureFind.set(def.textureFind.map { it.toInt() }.toObservable())
             textureReplace.set(def.textureReplace.map { it.toInt() }.toObservable())
+        } else {
+            textureFind.clear()
+            textureReplace.clear()
         }
         zoom2d.set(def.zoom2d)
         yOffset2d.set(def.yOffset2d)
@@ -161,7 +199,7 @@ class ItemDefinitionModel : ViewModel() {
         item.resizeX = resizeX.get()
         item.resizeY = resizeY.get()
         item.resizeZ = resizeZ.get()
-        item.stackable = stackable.get()
+        item.stackable = if(stackable.get()) 1 else 0
         item.xan2d = xan2d.get()
         item.yan2d = yan2d.get()
         item.zan2d = zan2d.get()

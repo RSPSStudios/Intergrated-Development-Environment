@@ -10,6 +10,7 @@ import com.javatar.api.http.Client
 import com.javatar.api.http.UserInformation
 import com.javatar.api.ui.MenuItemExtension
 import com.javatar.api.ui.ToolTabExtension
+import com.javatar.api.ui.fs.QuickToolExtension
 import com.javatar.api.ui.models.AccountModel
 import com.javatar.api.ui.models.AccountSettingsModel
 import com.javatar.api.ui.utilities.contextmenu
@@ -117,6 +118,13 @@ class MainView : View("RuneScape Private Server Studios") {
                             }
                         }
                     }
+                    separator()
+                    menu("Quick Tools") {
+                        pluginRepository.manager.getExtensions(QuickToolExtension::class.java).forEach {
+                            it.applyQuickTool(this, item.second)
+                        }
+                    }
+                    separator()
                     item("Remove").action {
                         configModel.cachePaths.remove(item.first)
                         configModel.save()

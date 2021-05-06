@@ -14,7 +14,7 @@ import kotlin.io.path.ExperimentalPathApi
 
 class EditorApplication : App(MainView::class), KoinComponent {
 
-    val DEVELOPMENT_MODE = true
+    val DEVELOPMENT_MODE = false
     val DEFAULT_PLUGIN_DIR = "${System.getProperty("user.home")}/rsps-studios/plugins"
 
     val pluginRepo: PluginRepositoryModel = get()

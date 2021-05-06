@@ -11,6 +11,9 @@ class PartialItemDefinition {
     val stackableProperty = SimpleBooleanProperty(this, "stackable", false)
     val tradeable = SimpleBooleanProperty(this, "tradeable", false)
     val members = SimpleBooleanProperty(this, "members", false)
+
+    val inventoryModel = SimpleIntegerProperty(this, "inventoryModel", 0)
+
     val genBankNoteProperty = SimpleBooleanProperty(this, "gen_bank_note", false)
     val genPlaceholderProperty = SimpleBooleanProperty(this, "gen_placeholder", false)
 }
@@ -22,6 +25,8 @@ class ItemCreationModel : ItemViewModel<PartialItemDefinition>() {
     val stackable = bind(PartialItemDefinition::stackableProperty, true)
     val tradeable = bind(PartialItemDefinition::tradeable, true)
     val members = bind(PartialItemDefinition::members, true)
+
+    val inventoryModel = bind(PartialItemDefinition::inventoryModel, true)
 
     val generateBankNote = bind(PartialItemDefinition::genBankNoteProperty, true)
     val generatePlaceholder = bind(PartialItemDefinition::genPlaceholderProperty, true)

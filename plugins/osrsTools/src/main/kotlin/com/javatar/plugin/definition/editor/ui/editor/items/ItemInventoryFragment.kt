@@ -3,6 +3,9 @@ package com.javatar.plugin.definition.editor.ui.editor.items
 import com.javatar.api.ui.clearPixels
 import com.javatar.api.ui.toColor
 import com.javatar.api.ui.toRS2
+import com.javatar.api.ui.utilities.datagrid
+import com.javatar.osrs.definitions.loaders.ModelLoader
+import com.javatar.osrs.tools.ItemColorGeneration
 import com.javatar.plugin.definition.editor.ui.editor.items.model.ItemDefinitionModel
 import javafx.collections.ListChangeListener
 import javafx.geometry.Pos
@@ -22,6 +25,7 @@ class ItemInventoryFragment : Fragment() {
         def.resizeX.onChange { onItemChange() }
         def.resizeY.onChange { onItemChange() }
         def.resizeZ.onChange { onItemChange() }
+        def.zoom2d.onChange { onItemChange() }
         def.colorFind.onChange { change: ListChangeListener.Change<out Int> ->
             onItemChange()
         }
@@ -89,14 +93,46 @@ class ItemInventoryFragment : Fragment() {
                         }
                     }
                 }
+
+                fieldset("Other") {
+                    field("Inventory Model") {
+                        spinner(property = def.inventoryModel, editable = true, min = 0, max = Int.MAX_VALUE) {
+                            this.editor.stripNonNumeric()
+                        }
+                    }
+                    field("Zoom") {
+                        spinner(property = def.zoom2d, editable = true, min = 0, max = Int.MAX_VALUE) {
+                            this.editor.stripNonNumeric()
+                        }
+                    }
+                }
+
                 fieldset("Colors") {
                     field {
-                        listview(def.colorReplace) {
-                            cellFormat {
-                                graphic = colorpicker(item.toColor()) {
-                                    valueProperty().onChange {
-                                        if (it != null) {
-                                            def.colorReplace[def.colorReplace.indexOf(item)] = it.toRS2()
+                        button("Generate Colors").action {
+                            val cache = def.cacheProperty.get()
+                            if (cache != null) {
+                                val loader = ModelLoader()
+                                val data = cache.data(7, def.inventoryModel.get())
+                                val mdef = loader.load(def.inventoryModel.get(), data)
+                                val colors = ItemColorGeneration.generateOriginalColors(mdef)
+                                def.colorFind.setAll(colors.toList().map { it.toInt() })
+                                def.colorReplace.setAll(colors.toList().map { it.toInt() })
+                            }
+                        }
+                    }
+                    field {
+                        datagrid(def.colorReplace) {
+                            itemsProperty.bind(def.colorReplace)
+                            maxCellsInRow = 3
+                            cellFormat { v ->
+                                graphic = colorpicker(v.toColor()) {
+                                    setOnAction {
+                                        if (value != null) {
+                                            val index = def.colorReplace.indexOf(v)
+                                            if (index != -1) {
+                                                def.colorReplace[index] = value.toRS2()
+                                            }
                                         }
                                     }
                                 }
@@ -112,10 +148,10 @@ class ItemInventoryFragment : Fragment() {
         def.pixelBuffer.clearPixels()
         def.pixelBuffer.buffer.clear()
         val factory = def.itemSpriteFactory.get()
-        if(factory != null) {
+        if (factory != null) {
             val item = def.createItem()
 
-            if(item.colorFind.size != item.colorReplace.size)
+            if (item.colorFind.size != item.colorReplace.size)
                 return
 
             factory.writeSpriteToPixelBuffer(

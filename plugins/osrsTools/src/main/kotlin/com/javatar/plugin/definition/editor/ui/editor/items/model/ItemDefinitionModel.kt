@@ -119,7 +119,6 @@ class ItemDefinitionModel : ViewModel() {
     }
 
     fun update(def: ItemDefinition) {
-        println(def.id)
         id.set(def.id)
         name.set(def.name)
         resizeX.set(def.resizeX)
@@ -191,10 +190,11 @@ class ItemDefinitionModel : ViewModel() {
         if (def.params != null) {
             itemParams.set(def.params.toObservable())
         }
+        commit()
     }
 
-    fun createItem() : ItemDefinition {
-        val item = ItemDefinition(id.get())
+    fun createItem(itemId: Int = id.get()) : ItemDefinition {
+        val item = ItemDefinition(itemId)
         item.name = name.get()
         item.resizeX = resizeX.get()
         item.resizeY = resizeY.get()

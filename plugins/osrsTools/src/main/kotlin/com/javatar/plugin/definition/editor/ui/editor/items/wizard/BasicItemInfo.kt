@@ -16,7 +16,7 @@ class BasicItemInfo : View("Basic Information") {
                 textfield(def.name).required()
             }
             field("Cost") {
-                spinner(editable = true, property = def.cost) {
+                spinner(editable = true, property = def.cost, min = 0, max = Int.MAX_VALUE) {
                     editor.stripNonNumeric()
                 }
             }

@@ -16,6 +16,7 @@ class NewItemWizard : Wizard("New Item", "Enter item information") {
 
     init {
         add(BasicItemInfo::class)
+        add(ItemModelInfo::class)
         add(SecondaryItemGenerationInfo::class)
     }
 

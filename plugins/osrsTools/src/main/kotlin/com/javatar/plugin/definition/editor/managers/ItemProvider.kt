@@ -1,9 +1,8 @@
 package com.javatar.plugin.definition.editor.managers
 
 import com.displee.cache.CacheLibrary
-import com.javatar.definition.DefinitionProvider
+import com.javatar.osrs.definitions.definition.DefinitionProvider
 import com.javatar.osrs.definitions.impl.ItemDefinition
-import com.javatar.osrs.definitions.loaders.ItemLoader
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 
 class ItemProvider(val cache: CacheLibrary) : DefinitionProvider<ItemDefinition> {

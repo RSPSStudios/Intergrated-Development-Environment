@@ -1,7 +1,7 @@
 package com.javatar.plugin.shop.editor.providers
 
 import com.displee.cache.CacheLibrary
-import com.javatar.definition.DefinitionProvider
+import com.javatar.osrs.definitions.definition.DefinitionProvider
 import com.javatar.osrs.definitions.impl.NpcDefinition
 import com.javatar.plugin.shop.editor.DefinitionManager
 

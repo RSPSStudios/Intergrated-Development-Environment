@@ -1,7 +1,9 @@
 package com.javatar.ui.models
 
 import com.javatar.ui.data.PluginInformation
+import javafx.application.HostServices
 import javafx.beans.property.SimpleMapProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.FXCollections
 import org.koin.core.component.KoinComponent
 import org.pf4j.PluginManager
@@ -18,5 +20,7 @@ class PluginRepositoryModel : ViewModel() {
     val manager: PluginManager by di()
 
     val plugins = bind { SimpleMapProperty<String, PluginInformation>(FXCollections.observableHashMap()) }
+
+    val services = SimpleObjectProperty<HostServices>(this, "host_services")
 
 }

@@ -10,16 +10,14 @@ import org.pf4j.PluginState
 import tornadofx.App
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.ExperimentalPathApi
 
 class EditorApplication : App(MainView::class), KoinComponent {
 
-    val DEVELOPMENT_MODE = false
+    val DEVELOPMENT_MODE = true
     val DEFAULT_PLUGIN_DIR = "${System.getProperty("user.home")}/rsps-studios/plugins"
 
     val pluginRepo: PluginRepositoryModel = get()
 
-    @ExperimentalPathApi
     override fun init() {
         super.init()
 
@@ -40,6 +38,8 @@ class EditorApplication : App(MainView::class), KoinComponent {
         if (!Files.exists(Path.of(System.getProperty("pf4j.pluginsDir")))) {
             Files.createDirectories(Path.of(System.getProperty("pf4j.pluginsDir")))
         }
+
+        pluginRepo.services.set(hostServices)
 
         pluginRepo.manager.loadPlugins()
         pluginRepo.manager.startPlugins()

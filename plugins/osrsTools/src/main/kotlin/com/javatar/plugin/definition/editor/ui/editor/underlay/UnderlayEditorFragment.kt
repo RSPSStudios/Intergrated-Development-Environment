@@ -35,7 +35,6 @@ class UnderlayEditorFragment : Fragment("Underlay Editor") {
             }
         }
     }
-
     override val root = vbox {
         style = "-fx-base: #3f474f;"
         toolbar(
@@ -44,8 +43,8 @@ class UnderlayEditorFragment : Fragment("Underlay Editor") {
                 action {
                     val creds = account.activeCredentials.get()
                     val underlay = underlayModel.underlay.get()
-
                     if (creds != null && underlay != null) {
+                        underlayModel.commitUnderlay()
                         val json = gson.toJson(underlay)
                         client.post<ByteArray>("tools/osrs/underlays", StringBody(json), creds)
                             .catch {

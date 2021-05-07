@@ -2,6 +2,7 @@ package com.javatar.plugin.definition.editor.ui.editor.underlay.model
 
 import com.displee.cache.CacheLibrary
 import com.javatar.api.ui.toColor
+import com.javatar.api.ui.toRS2
 import com.javatar.osrs.definitions.impl.UnderlayDefinition
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -24,6 +25,13 @@ class UnderlayModel : ViewModel() {
             if (it != null) {
                 color.set(it.color.toColor())
             }
+        }
+    }
+
+    fun commitUnderlay() {
+        val u = underlay.get()
+        if (u != null) {
+            u.color = color.get().toRS2()
         }
     }
 

@@ -5,6 +5,7 @@ import com.javatar.osrs.tools.VariableTools.bitCount
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import tornadofx.ViewModel
+import tornadofx.mutateOnChange
 import tornadofx.onChange
 
 class VarbitModel : ViewModel() {
@@ -23,29 +24,43 @@ class VarbitModel : ViewModel() {
 
     init {
         variableType.onChange {
-            if(it != null && it !== variableType.get()) {
+            if(it != null) {
                 val type = variableType.get()
                 when {
                     type === VariableType.BOOLEAN -> {
+                        maxValue.set(1)
                         msb.set(lsb.get())
                     }
-                    type === VariableType.CUSTOM -> {
-                        val bitOffset = maxValue.get().bitCount() - 1
-                        msb.set(lsb.get() + bitOffset)
+                    type === VariableType.CUSTOM -> {}
+                    type === VariableType.INT -> {
+                        val bits = Int.MAX_VALUE.bitCount()
+                        if(lsb.get() + bits < 32) {
+                            maxValue.set(Int.MAX_VALUE)
+                        }
                     }
                     else -> {
-                        msb.set(lsb.get() + type.bitSize)
+                        if(lsb.get() + type.bitSize < 32) {
+                            maxValue.set((1 shl type.bitSize) - 1)
+                        }
                     }
                 }
             }
         }
+
+
         maxValue.onChange {
-            val type = variableType.get()
-            if(type != null && type === VariableType.CUSTOM) {
-                val bitOffset = it.bitCount()
-                msb.set(lsb.get() + bitOffset)
+            this.msb.set(lsb.get() + it.bitCount())
+        }
+
+        lsb.onChange {
+            val value = maxValue.get()
+            val requiredBits = value.bitCount()
+            val end = it + requiredBits
+            if (end <= 31) {
+                msb.set(end)
             }
         }
+
     }
 
     fun commitVarbit() : VarbitDefinition {

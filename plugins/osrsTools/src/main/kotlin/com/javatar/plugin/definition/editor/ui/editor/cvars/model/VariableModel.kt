@@ -18,6 +18,8 @@ class VariableModel : ViewModel() {
 
     val varps = bind { SimpleListProperty<VarpDefinition>(this, "varps", FXCollections.observableArrayList()) }
 
+    val unusedVarps = bind { SimpleListProperty<VarpDefinition>(this, "unused_varps", FXCollections.observableArrayList()) }
+
     val varbits = bind { SimpleListProperty<VarbitDefinition>(this, "varbits", FXCollections.observableArrayList()) }
 
     val selectedVarp = bind { SimpleObjectProperty<VarpDefinition>(this, "selected_varp") }
@@ -28,9 +30,10 @@ class VariableModel : ViewModel() {
 
     val cache = SimpleObjectProperty<CacheLibrary>(this, "cache")
 
-    override fun onCommit() {
-        with(config) {
-            set("max_varp_size", maxVarpSize.get())
+    init {
+        maxVarpSize.onChange {
+            config["max_varp_size"] = it
+            config.save()
         }
     }
 
@@ -62,6 +65,8 @@ class VariableModel : ViewModel() {
             }
         }
 
+        findUnusedVarps()
+
     }
 
     fun loadVarps() {
@@ -78,6 +83,19 @@ class VariableModel : ViewModel() {
             }
             this.varps.setAll(list)
         }
+    }
+
+    fun findUnusedVarps() {
+        val list = mutableListOf<VarpDefinition>()
+        val varps = OldSchoolDefinitionManager.varps
+
+        varps.definitions.values.forEach {
+            if(!variables.containsKey(it) && it.type == 0) {
+                list.add(it)
+            }
+        }
+
+        unusedVarps.setAll(list)
     }
 
     fun loadVarbits() : List<VarbitDefinition> {

@@ -6,17 +6,25 @@ import com.javatar.api.ui.models.AccountModel
 import com.javatar.osrs.definitions.impl.VarbitDefinition
 import com.javatar.osrs.definitions.impl.VarpDefinition
 import com.javatar.osrs.tools.VariableTools
+import com.javatar.osrs.tools.VariableTools.bitCount
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
+import com.javatar.plugin.definition.editor.ui.NumberSpinnerValueFactory
 import com.javatar.plugin.definition.editor.ui.editor.cvars.model.VarbitModel
 import com.javatar.plugin.definition.editor.ui.editor.cvars.model.VariableModel
 import com.javatar.plugin.definition.editor.ui.editor.cvars.model.VariableType
 import com.javatar.plugin.definition.editor.ui.editor.cvars.model.VarpModel
+import com.javatar.plugin.definition.editor.ui.editor.cvars.varps.UnusedVarpsFragment
+import com.javatar.plugin.definition.editor.ui.editor.cvars.varps.VarpsFragment
 import javafx.beans.binding.Bindings
+import javafx.beans.property.Property
 import javafx.beans.property.SimpleListProperty
 import javafx.collections.FXCollections
+import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
+import javafx.scene.control.Spinner
+import javafx.scene.control.SpinnerValueFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -24,7 +32,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.javafx.JavaFx
 import tornadofx.*
-import java.util.*
 
 class VariableEditorFragment : Fragment("Variable Player Editor") {
 
@@ -49,30 +56,31 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
             if (it != null) {
                 varbitModel.id.set(it.id)
                 varbitModel.varpId.set(it.index)
-                val bitCount = it.mostSignificantBit - it.leastSignificantBit
+                varbitModel.lsb.set(it.leastSignificantBit)
+                varbitModel.msb.set(it.mostSignificantBit)
 
-                when (bitCount) {
+                when (val bitCount = it.mostSignificantBit - it.leastSignificantBit) {
                     0 -> {
                         varbitModel.variableType.set(VariableType.BOOLEAN)
+                        varbitModel.maxValue.set(1)
                     }
                     8 -> {
                         varbitModel.variableType.set(VariableType.BYTE)
+                        varbitModel.maxValue.set(255)
                     }
                     16 -> {
                         varbitModel.variableType.set(VariableType.SHORT)
+                        varbitModel.maxValue.set(65535)
                     }
                     32 -> {
                         varbitModel.variableType.set(VariableType.INT)
+                        varbitModel.maxValue.set(Int.MAX_VALUE)
                     }
                     else -> {
                         varbitModel.variableType.set(VariableType.CUSTOM)
                         varbitModel.maxValue.set((1 shl bitCount))
                     }
                 }
-
-                varbitModel.lsb.set(it.leastSignificantBit)
-                varbitModel.msb.set(it.mostSignificantBit)
-
             }
         }
     }
@@ -145,14 +153,14 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                     if (cache != null && creds != null) {
                         val varbit = varbitModel.commitVarbit()
                         val varp = varps[varbit.index]
-                        if(varp != null) {
+                        if (varp != null) {
                             var intersects = false
                             var ovarId = -1
                             val list = varModel.variables[varp]
                             if (list != null) {
-                                if(list.isNotEmpty()) {
+                                if (list.isNotEmpty()) {
                                     list.forEach {
-                                        if(it.id != varbit.id && VariableTools.intersects(varp, it, varbit)) {
+                                        if (it.id != varbit.id && VariableTools.intersects(varp, it, varbit)) {
                                             intersects = true
                                             ovarId = it.id
                                             return@forEach
@@ -160,7 +168,7 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                                     }
                                 }
 
-                                if(!intersects) {
+                                if (!intersects) {
                                     val json = gson.toJson(varbit)
                                     client.post<ByteArray>("tools/osrs/varbits", StringBody(json), creds)
                                         .catch {
@@ -171,11 +179,19 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                                             if (it.isNotEmpty()) {
                                                 cache.put(2, 14, varbit.id, it)
                                                 cache.index(2).update()
-                                                alert(Alert.AlertType.INFORMATION, "Packing Varbit", "Successfully packed varbit")
+                                                alert(
+                                                    Alert.AlertType.INFORMATION,
+                                                    "Packing Varbit",
+                                                    "Successfully packed varbit"
+                                                )
                                             }
                                         }.launchIn(CoroutineScope(Dispatchers.JavaFx))
                                 } else {
-                                    alert(Alert.AlertType.ERROR, "Error Packing varbit", "Varbit ${varbit.id} value range overrides varbit $ovarId.")
+                                    alert(
+                                        Alert.AlertType.ERROR,
+                                        "Error Packing varbit",
+                                        "Varbit ${varbit.id} value range overrides varbit $ovarId."
+                                    )
                                 }
                             }
                         }
@@ -223,12 +239,14 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
         )
         hbox {
             spacing = 10.0
-            listview(varModel.varps) {
-                varModel.selectedVarp.bind(selectionModel.selectedItemProperty())
-                cellFormat {
-                    text = "Var Player ${it.definitionId}"
+
+            drawer {
+                item<VarpsFragment> {
+                    expanded = true
                 }
+                item<UnusedVarpsFragment>()
             }
+
             form {
                 fieldset("Varp Configs") {
                     disableWhen(varModel.selectedVarp.isNull)
@@ -246,20 +264,25 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                         }
                     }
                     field("LSB") {
-                        spinner(property = varbitModel.lsb, editable = true, min = 0, max = 32) {
-                            editor.stripNonNumeric()
+                        val factory = NumberSpinnerValueFactory(0, 32)
+                        spinner(factory) {
+                            factory.valueProperty().bindBidirectional(varbitModel.lsb)
+                            factory.maxProperty.bind(Bindings.createIntegerBinding({
+                                val value = varbitModel.maxValue.get()
+                                val requiredBits = value.bitCount()
+                                32 - requiredBits
+                            }, varbitModel.lsb, varbitModel.maxValue))
                         }
                     }
                     field("MSB") {
-                        spinner(property = varbitModel.msb, editable = true, min = 0, max = 32) {
-                            editor.stripNonNumeric()
-                        }
+                        label(varbitModel.msb)
                     }
                 }
                 fieldset("Varbit Value Information") {
                     disableWhen(varModel.selectedVarbit.isNull)
                     field("Variable Type") {
                         hbox {
+                            spacing = 5.0
                             dynamicContent(varbitModel.variableType) {
                                 choicebox(varbitModel.variableType, VariableType.values().toList())
                                 if (it != null && it === VariableType.CUSTOM) {
@@ -270,6 +293,10 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                                         max = Int.MAX_VALUE
                                     ) {
                                         editor.stripNonNumeric()
+                                    }
+                                } else {
+                                    textfield(varbitModel.maxValue) {
+                                        isEditable = false
                                     }
                                 }
                             }
@@ -322,5 +349,4 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
             cache.index(2).update()
         }
     }
-
 }

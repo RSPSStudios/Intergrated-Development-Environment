@@ -1,11 +1,10 @@
 package com.javatar.plugin.definition.editor.ui.editor.cvars.model
 
 import com.javatar.osrs.definitions.impl.VarbitDefinition
-import com.javatar.osrs.tools.VariableTools.bitCount
+import com.javatar.osrs.tools.variables.VariableTools.bitCount
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import tornadofx.ViewModel
-import tornadofx.mutateOnChange
 import tornadofx.onChange
 
 class VarbitModel : ViewModel() {

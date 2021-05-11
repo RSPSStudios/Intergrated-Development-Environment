@@ -4,11 +4,12 @@ import com.displee.cache.CacheLibrary
 import com.javatar.osrs.definitions.impl.VarbitDefinition
 import com.javatar.osrs.definitions.impl.VarpDefinition
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleListProperty
-import javafx.beans.property.SimpleMapProperty
-import javafx.beans.property.SimpleObjectProperty
+import com.javatar.plugin.definition.editor.ui.editor.cvars.VariableEditingType
+import javafx.beans.property.*
 import javafx.collections.FXCollections
+import javafx.scene.control.Button
+import javafx.scene.control.Control
+import javafx.scene.control.ToolBar
 import tornadofx.ViewModel
 import tornadofx.onChange
 
@@ -29,6 +30,8 @@ class VariableModel : ViewModel() {
     val maxVarpSize = bind { SimpleIntegerProperty(this, "max_varp_size", config["max_varp_size"] as Int? ?: 4000) }
 
     val cache = SimpleObjectProperty<CacheLibrary>(this, "cache")
+
+    val editingType = SimpleObjectProperty(this, "editing_type", VariableEditingType.PLAYER_VARIABLE)
 
     init {
         maxVarpSize.onChange {

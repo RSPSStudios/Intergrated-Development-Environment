@@ -16,6 +16,7 @@ object OldSchoolDefinitionManager {
     val npcs = ConfigDefinitionManager(NpcLoader())
     val objects = ConfigDefinitionManager(ObjectLoader())
     val varbits = ConfigDefinitionManager(VarbitLoader())
+    val preferences = ConfigDefinitionManager(ClientVariableLoader())
     val varps = ConfigDefinitionManager(VarpLoader())
     val enums = ConfigDefinitionManager(EnumLoader())
     val playerKit = ConfigDefinitionManager(KitLoader())

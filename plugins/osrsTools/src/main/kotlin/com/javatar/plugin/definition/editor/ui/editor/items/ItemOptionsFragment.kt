@@ -31,13 +31,7 @@ class ItemOptionsFragment : Fragment() {
                         val list = FXCollections.observableArrayList(actionModel.actions)
                         list.remove("Examine")
                         list.remove("Cancel")
-                        for (index in def.groundOptions.indices) {
-                            if(index < list.size) {
-                                def.groundOptions[index] = list[index]
-                            } else {
-                                def.groundOptions[index] = "null"
-                            }
-                        }
+                        def.groundOptions.setAll(list)
                     }
                 })
             }
@@ -57,13 +51,7 @@ class ItemOptionsFragment : Fragment() {
                         val list = FXCollections.observableArrayList(actionModel.actions)
                         list.remove("Examine")
                         list.remove("Cancel")
-                        for (index in def.interfaceOptions.indices) {
-                            if(index < list.size) {
-                                def.interfaceOptions[index] = list[index]
-                            } else {
-                                def.interfaceOptions[index] = "null"
-                            }
-                        }
+                        def.interfaceOptions.setAll(list)
                     }
                 })
             }

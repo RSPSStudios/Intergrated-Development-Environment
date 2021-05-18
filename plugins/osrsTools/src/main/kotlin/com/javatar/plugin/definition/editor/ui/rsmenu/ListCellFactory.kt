@@ -4,7 +4,6 @@ import com.javatar.plugin.definition.editor.ui.TextUtils
 import com.javatar.plugin.definition.editor.ui.rsmenu.model.ActionEditorModel
 import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleStringProperty
-import javafx.event.EventType
 import javafx.geometry.Pos
 import javafx.scene.control.ListCell
 import javafx.scene.control.ListView
@@ -17,7 +16,8 @@ import javafx.scene.text.Font
 import javafx.util.Callback
 import tornadofx.*
 
-class ListCellFactory(val targetName: SimpleStringProperty, val rsBoldFont: Font, val model: ActionEditorModel) : Callback<ListView<String>, ListCell<String>> {
+class ListCellFactory(val targetName: SimpleStringProperty, val rsBoldFont: Font, val model: ActionEditorModel) :
+    Callback<ListView<String>, ListCell<String>> {
 
     override fun call(param: ListView<String>): ListCell<String> {
         return Cell()
@@ -54,7 +54,7 @@ class ListCellFactory(val targetName: SimpleStringProperty, val rsBoldFont: Font
                 backgroundColor = MultiValue(arrayOf(c("#5D5447")))
             }
             selectedProperty().onChange {
-                if(it) {
+                if (it) {
                     style {
                         backgroundColor = MultiValue(arrayOf(c("#5D5447")))
                         borderColor += box(Color.RED)
@@ -67,11 +67,11 @@ class ListCellFactory(val targetName: SimpleStringProperty, val rsBoldFont: Font
             }
 
             setOnDragDetected {
-                if(item == null)
+                if (item == null)
                     return@setOnDragDetected
                 val dragBoard = startDragAndDrop(TransferMode.MOVE)
                 val clipContent = ClipboardContent()
-                clipContent.putString(item)
+                clipContent.putString("$index")
                 dragBoard.dragView = snapshot(null, null)
                 dragBoard.setContent(clipContent)
                 it.consume()
@@ -97,16 +97,16 @@ class ListCellFactory(val targetName: SimpleStringProperty, val rsBoldFont: Font
             }
 
             setOnDragDropped {
-                if(item == null)
+                if (item == null)
                     return@setOnDragDropped
                 val db = it.dragboard
                 var success = false
-                if(db.hasString()) {
+                if (db.hasString()) {
                     val items = listView.items
-                    val draggedIndex = items.indexOf(db.string)
-                    val thisIndex = index
+                    val draggedIndex = db.string.toInt()
+                    val draggedItem = items[draggedIndex]
                     items[draggedIndex] = item
-                    items[thisIndex] = db.string
+                    items[index] = draggedItem
                     listView.items.setAll(mutableListOf(*items.toTypedArray()))
                     success = true
                 }
@@ -131,7 +131,7 @@ class ListCellFactory(val targetName: SimpleStringProperty, val rsBoldFont: Font
 
         override fun commitEdit(newValue: String?) {
             super.commitEdit(newValue)
-            if(newValue != null && newValue.isNotEmpty()) {
+            if (newValue != null && newValue.isNotEmpty()) {
                 text = null
                 graphic = buildGraphicForNoneEditing(newValue)
             }
@@ -140,10 +140,10 @@ class ListCellFactory(val targetName: SimpleStringProperty, val rsBoldFont: Font
 
         override fun updateItem(item: String?, empty: Boolean) {
             super.updateItem(item, empty)
-            if(empty || item == null) {
+            if (empty || item == null) {
                 text = null
                 graphic = null
-            } else if(isEditing) {
+            } else if (isEditing) {
                 text = null
                 editorField.text = item
                 graphic = buildGraphicForEditing()

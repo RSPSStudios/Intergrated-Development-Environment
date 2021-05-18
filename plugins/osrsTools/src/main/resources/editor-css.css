@@ -24,3 +24,10 @@
             -fx-mid-text-color 60%
     );
 }
+
+.rsmenu:odd {
+    -fx-background: transparent;
+}
+.rsmenu:odd {
+    -fx-background: transparent;
+}

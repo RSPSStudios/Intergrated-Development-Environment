@@ -15,6 +15,7 @@ class OsrsDefinitionEditor(wrapper: PluginWrapper?) : Plugin(wrapper) {
         super.start()
         println("Starting Old School Definition Editor")
         properties["pluginPath"] = "file:${wrapper.pluginPath.toAbsolutePath()}/classes"
+        properties["resourcePath"] = "${wrapper.pluginPath.toAbsolutePath()}/classes"
     }
 
     companion object {

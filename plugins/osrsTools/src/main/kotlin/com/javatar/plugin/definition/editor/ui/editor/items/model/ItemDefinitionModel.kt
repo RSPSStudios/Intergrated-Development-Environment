@@ -60,7 +60,7 @@ class ItemDefinitionModel : ViewModel() {
         )
     }
     val interfaceOptions = bind {
-        SimpleListProperty<String>(
+        SimpleListProperty(
             this,
             "interfaceOptions",
             FXCollections.observableArrayList("null", "null", "null", "null", "Drop")

@@ -57,7 +57,10 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                 varbitModel.varpId.set(it.index)
                 varbitModel.lsb.set(it.leastSignificantBit)
                 varbitModel.msb.set(it.mostSignificantBit)
-
+                println(it.id)
+                println(it.index)
+                println(it.leastSignificantBit)
+                println(it.mostSignificantBit)
                 when (val bitCount = it.mostSignificantBit - it.leastSignificantBit) {
                     0 -> {
                         varbitModel.variableType.set(VariableType.BOOLEAN)
@@ -422,6 +425,8 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                                 )
                             }
                         }
+                    } else {
+                        alert(Alert.AlertType.ERROR, "Linked Varp Error", "Varp ${varbit.index} does not exist.")
                     }
                 }
             }
@@ -458,7 +463,7 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                         varModel.variables[varp]?.remove(varbit)
                         varModel.varbits.remove(varbit)
                         varbits.remove(varbit)
-                        cache.remove(2, 16, varbit.id)
+                        cache.remove(2, 14, varbit.id)
                         cache.index(2).update()
                     }
                 }

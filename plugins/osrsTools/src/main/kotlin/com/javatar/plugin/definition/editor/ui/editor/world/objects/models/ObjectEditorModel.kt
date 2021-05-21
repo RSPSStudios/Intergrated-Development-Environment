@@ -2,6 +2,7 @@ package com.javatar.plugin.definition.editor.ui.editor.world.objects.models
 
 import com.displee.cache.CacheLibrary
 import com.javatar.osrs.definitions.impl.ObjectDefinition
+import javafx.beans.binding.Bindings
 import javafx.beans.property.*
 import javafx.collections.FXCollections
 import tornadofx.ViewModel
@@ -12,14 +13,6 @@ class ObjectEditorModel : ViewModel() {
     val objects = bind { SimpleListProperty<ObjectDefinition>(this, "objects", FXCollections.observableArrayList()) }
     val selected = bind { SimpleObjectProperty<ObjectDefinition>(this, "selected") }
     val searchText = bind { SimpleStringProperty(this, "search_text", "") }
-
-    init {
-        selected.onChange {
-            if(it != null) {
-                update(it)
-            }
-        }
-    }
 
     val name = bind { SimpleStringProperty(this, "name", "null") }
     val textureReplacement =
@@ -192,6 +185,14 @@ class ObjectEditorModel : ViewModel() {
             def.isRandomizeAnimStart = randomizeAnimationStart.get()
             def.params = mutableMapOf()
             def.params.putAll(parameters)
+        }
+    }
+
+    init {
+        selected.onChange {
+            if(it != null) {
+                update(it)
+            }
         }
     }
 

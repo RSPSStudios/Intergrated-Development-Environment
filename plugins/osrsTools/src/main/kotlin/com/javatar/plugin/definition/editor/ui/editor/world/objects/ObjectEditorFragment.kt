@@ -3,6 +3,8 @@ package com.javatar.plugin.definition.editor.ui.editor.world.objects
 import com.javatar.osrs.definitions.impl.ObjectDefinition
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.world.objects.models.ObjectEditorModel
+import com.javatar.plugin.definition.editor.ui.editor.world.objects.tabs.ObjectActionsFragment
+import com.javatar.plugin.definition.editor.ui.editor.world.objects.tabs.ObjectConfigsFragment
 import tornadofx.*
 
 class ObjectEditorFragment : Fragment("World Object Editor") {
@@ -25,16 +27,20 @@ class ObjectEditorFragment : Fragment("World Object Editor") {
     }
 
     override val root = hbox {
+        prefWidth = 1200.0
+        fitToParentHeight()
         style {
             baseColor = c("#3f474f")
         }
         vbox {
+            fitToParentHeight()
             textfield(model.searchText) {
                 action {
                     searchObjects(text)
                 }
             }
             listview(model.objects) {
+                prefHeightProperty().bind(this@vbox.heightProperty())
                 model.selected.bind(selectionModel.selectedItemProperty())
                 cellFormat {
                     text = if(it.name == null || it.name == "null") {
@@ -45,7 +51,15 @@ class ObjectEditorFragment : Fragment("World Object Editor") {
                 }
             }
         }
-
+        tabpane {
+            disableWhen(model.selected.isNull)
+            tab<ObjectConfigsFragment> {
+                closableProperty().bind(false.toProperty())
+            }
+            tab<ObjectActionsFragment> {
+                closableProperty().bind(false.toProperty())
+            }
+        }
     }
 
     private fun loadObjects() {

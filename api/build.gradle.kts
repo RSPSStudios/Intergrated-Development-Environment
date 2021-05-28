@@ -29,13 +29,21 @@ javafx {
     )
 }
 
+version = "0.1-SNAPSHOT"
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "com.javatar"
-            artifactId = "api"
-            version = "0.1"
             from(components["kotlin"])
+        }
+        repositories {
+            maven {
+                url = uri("http://legionkt.com:8085/repository/rsps-studios-private/")
+                credentials {
+                    username = project.properties["myNexusUsername"] as String
+                    password = project.properties["myNexusPassword"] as String
+                }
+            }
         }
     }
 }

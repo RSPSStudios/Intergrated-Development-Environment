@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val pluginsDir by extra { file("$buildDir/plugins") }
 
 plugins {
-    kotlin("jvm") version "1.5.0" apply false
-    kotlin("kapt") version "1.5.0" apply false
+    kotlin("jvm") version "1.5.10" apply false
+    kotlin("kapt") version "1.5.10" apply false
 }
 
 subprojects {

@@ -30,10 +30,21 @@ javafx {
 }
 
 val javaFXOptions = the<org.openjfx.gradle.JavaFXOptions>()
+val user = project.properties["nexusUsername"] as String
+val pass = project.properties["nexusPassword"] as String
+
+repositories {
+    maven("http://legionkt.com:8085/repository/rsps-studios-private/") {
+        credentials {
+            username = user
+            password = pass
+        }
+    }
+}
 
 dependencies {
     implementation(project(":ui"))
-    implementation("com.javatar:api:0.1")
+    implementation("com.javatar:api:0.1-20210527.230828-1")
     implementation("org.pf4j:pf4j:3.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2")
     implementation("no.tornado:tornadofx:2.0.0-SNAPSHOT") {

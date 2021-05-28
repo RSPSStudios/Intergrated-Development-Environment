@@ -4,3 +4,7 @@ gradle/wrapper/*.jar
 gradlew
 gradlew.bat
 conf
+api/gradle.properties
+plugins/gradle.properties
+application/gradle.properties
+ui/gradle.properties

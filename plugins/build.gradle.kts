@@ -1,3 +1,7 @@
+import groovyx.net.http.MultipartContent.multipart
+import io.github.httpbuilderng.http.HttpTask
+import java.util.Base64
+
 val pluginsDir: File by rootProject.extra
 
 plugins {
@@ -5,19 +9,32 @@ plugins {
     kotlin("jvm") apply false
     id("org.beryx.runtime") version "1.12.2" apply false
     id("org.openjfx.javafxplugin") version "0.0.9" apply false
+    id("io.github.http-builder-ng.http-plugin") version "0.1.1" apply false
 }
+val user = project.properties["nexusUsername"] as String
+val pass = project.properties["nexusPassword"] as String
+
 // here we define the tasks which will build the plugins in the subprojects
 subprojects {
 
     val plugin by configurations.creating
-
     configurations {
         plugin.isTransitive = false
         api.get().extendsFrom(plugin)
     }
 
+    repositories {
+        maven("http://legionkt.com:8085/repository/rsps-studios-private/") {
+            credentials {
+                username = user
+                password = pass
+            }
+        }
+        maven("http://legionkt.com:8085/repository/maven-public/")
+    }
+
     dependencies {
-        compileOnly("com.javatar:api:0.1")
+        implementation("com.javatar:api:0.1-20210527.230828-1")
         compileOnly(kotlin("stdlib"))
         compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2")
         compileOnly("no.tornado:tornadofx:2.0.0-SNAPSHOT")
@@ -33,6 +50,7 @@ subprojects {
 
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.openjfx.javafxplugin")
+    apply(plugin = "io.github.http-builder-ng.http-plugin")
 
     // if the variable definitions are put here they are resolved for each subproject
     val pluginId: String by project
@@ -67,6 +85,7 @@ subprojects {
         from(project.tasks.named("plugin"))
         pluginsDir.listFiles()?.forEach { it.deleteRecursively() }
         into(pluginsDir)
+        finalizedBy(tasks.named("upload-plugin"))
     }
 
     // for the jar task we have to set the plugin properties, so they can be written to the manifest
@@ -83,8 +102,31 @@ subprojects {
     tasks.named("build") {
         dependsOn(tasks.named("plugin"))
     }
-}
 
+    tasks.register<HttpTask>("upload-plugin") {
+        config {
+            it.request.setUri("http://legionkt.com:8085/service/rest/v1/components?repository=rsps-studio-plugins")
+        }
+
+        post {
+            val f = File("$pluginsDir/plugin-$pluginId-$pluginVersion.zip")
+            it.request.setContentType("multipart/form-data")
+            it.request.headers["Authorization"] = "Basic ${Base64.getEncoder().encodeToString("$user:$pass".toByteArray())}"
+            it.request.setBody(multipart { m ->
+                m.field("raw.directory", "plugins")
+                m.field("raw.asset1.filename", f.name)
+                m.part("raw.asset1", f.name, "application/octet-stream", f.inputStream())
+            })
+            it.request.encoder("multipart/form-data", groovyx.net.http.OkHttpEncoders::multipart)
+            it.response.exception { t ->
+                t.printStackTrace()
+            }
+            it.response.failure { fromServer, any ->
+                println("Failed upload of plugin $any")
+            }
+        }
+    }
+}
 
 tasks.register<Copy>("assemblePlugins") {
     dependsOn(subprojects.map { it.tasks.named("assemblePlugin") })

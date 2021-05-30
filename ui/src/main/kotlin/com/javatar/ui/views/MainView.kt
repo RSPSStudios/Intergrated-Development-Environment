@@ -85,7 +85,7 @@ class MainView : View("RuneScape Private Server Studios") {
         events.latestLog.onChange {
             if(it != null) {
                 ncenter.owner(root)
-                ncenter.show(it)
+                ncenter show it
             }
         }
 

@@ -17,7 +17,20 @@ class SpriteProvider(val cache: CacheLibrary) : DefinitionProvider<SpriteGroupDe
     override fun getDefinition(id: Int): SpriteGroupDefinition {
         val data = cache.data(8, id)
         if (data != null) sprites.load(id, data)
-        return sprites[id]!!
+        val sprite = sprites[id]
+        if(sprite == null) {
+            val group = SpriteGroupDefinition()
+            group.width = 1
+            group.height = 1
+            return SpriteGroupDefinition()
+        }
+        if(sprite.width <= 0) {
+            sprite.width = 32
+        }
+        if(sprite.height <= 0) {
+            sprite.height = 32
+        }
+        return sprite
     }
 
     override fun values(): List<SpriteGroupDefinition> {

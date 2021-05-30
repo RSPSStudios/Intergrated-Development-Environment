@@ -1,0 +1,57 @@
+/******************************************************************************
+ *
+ * Dark theme
+ *
+ *****************************************************************************/
+
+.notification-bar.dark > .pane {
+    -fx-outer-border: black;
+    -fx-inner-border: black;
+    -fx-background-color: -fx-outer-border, -fx-inner-border, #3f474f;
+}
+
+.notification-bar.dark > .pane .title,
+.notification-bar.dark > .pane .label {
+    -fx-text-fill: white;
+}
+/******************************************************************************
+ *
+ * Close button
+ *
+ *****************************************************************************/
+.notification-bar > .pane .close-button {
+    -fx-background-color: black;
+    -fx-background-radius: 15px;
+    -fx-border-width: 1.5;
+    -fx-border-color: white;
+    -fx-border-radius: 15px;
+    -fx-translate-x: 10;
+    -fx-translate-y: -10;
+    -fx-alignment: center;
+}
+
+.notification-bar > .pane .close-button:hover {
+    -fx-background-color: black;
+}
+
+.notification-bar > .pane .close-button:pressed {
+    -fx-background-color: rgba(0, 0, 0, .3);
+}
+
+.notification-bar > .pane .close-button > .graphic {
+    -fx-background-color: #949494;
+    -fx-scale-shape: false;
+    -fx-padding: 4.5 4.5 4.5 4.5; /* Graphic is 9x9 px */
+}
+
+.notification-bar > .pane .close-button:hover > .graphic {
+    -fx-background-color: white;
+}
+
+.notification-bar > .pane .close-button:pressed > .graphic {
+    -fx-background-color: transparent;
+}
+
+.notification-bar > .pane .close-button > .graphic {
+    -fx-shape: "M395.992,296.758l1.794-1.794l7.292,7.292l-1.795,1.794 L395.992,296.758z M403.256,294.992l1.794,1.794l-7.292,7.292l-1.794-1.795 L403.256,294.992z";
+}

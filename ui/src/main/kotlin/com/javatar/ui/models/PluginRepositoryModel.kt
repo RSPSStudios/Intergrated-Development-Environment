@@ -2,6 +2,7 @@ package com.javatar.ui.models
 
 import com.javatar.ui.data.PluginInformation
 import javafx.application.HostServices
+import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleMapProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.FXCollections
@@ -22,5 +23,7 @@ class PluginRepositoryModel : ViewModel() {
     val plugins = bind { SimpleMapProperty<String, PluginInformation>(FXCollections.observableHashMap()) }
 
     val services = SimpleObjectProperty<HostServices>(this, "host_services")
+
+    val pluginRepositories = SimpleListProperty<String>(this, "plugin_repositories", FXCollections.observableArrayList())
 
 }

@@ -1,5 +1,6 @@
 package com.javatar.ui
 
+import com.javatar.api.nexus.NexusClient
 import com.javatar.ui.data.PluginInformation
 import com.javatar.ui.models.PluginRepositoryModel
 import com.javatar.ui.views.MainView
@@ -17,6 +18,7 @@ class EditorApplication : App(MainView::class), KoinComponent {
     val DEFAULT_PLUGIN_DIR = "${System.getProperty("user.home")}/rsps-studios/plugins"
 
     val pluginRepo: PluginRepositoryModel = get()
+    val nexusClient: NexusClient = get()
 
     override fun init() {
         super.init()
@@ -26,6 +28,12 @@ class EditorApplication : App(MainView::class), KoinComponent {
             pluginDir = DEFAULT_PLUGIN_DIR
             config["PLUGIN_DIR"] = pluginDir
         }
+        val repositoryBaseURL = config["REPO_BASE_URL"]
+        if(repositoryBaseURL == null) {
+            config["REPO_BASE_URL"] = "http://legionkt.com:8085"
+        }
+
+        nexusClient.baseURL(config["REPO_BASE_URL"] as String)
 
         if (!DEVELOPMENT_MODE) {
             System.setProperty("pf4j.pluginsDir", pluginDir)

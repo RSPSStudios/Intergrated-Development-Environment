@@ -6,6 +6,7 @@ import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.api.http.Client
 import com.javatar.api.http.StringBody
 import com.javatar.api.ui.models.AccountModel
+import com.javatar.api.ui.models.EventLogModel
 import com.javatar.osrs.definitions.Definition
 import com.javatar.osrs.definitions.DeserializeDefinition
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
@@ -36,6 +37,7 @@ open class DefinitionFileType<T : Definition, L : DeserializeDefinition<T>>(
 
     val accountModel: AccountModel by inject()
     val client: Client by inject()
+    val events: EventLogModel by inject()
 
     override fun icon(file: JFile, root: RootDirectory): ImageView? {
         return null
@@ -64,6 +66,7 @@ open class DefinitionFileType<T : Definition, L : DeserializeDefinition<T>>(
         tool.editorModel.fileNode.set(file)
         tool.editorModel.fileType.set(this)
         tool.editorModel.root.set(root)
+        events log "Opening file ${file.id} as ${def::class.java.simpleName}"
         editorPane.tabs.add(Tab(def.name, tool.root))
     }
 
@@ -72,14 +75,17 @@ open class DefinitionFileType<T : Definition, L : DeserializeDefinition<T>>(
         if(creds != null) {
             client.post<ByteArray>("tools/osrs/$endpoint", StringBody(json), creds)
                 .catch {
-                    alert(Alert.AlertType.ERROR, "Error Encoding", it.message)
+                    events xlog {
+                        msg("Error saving file ${file.id}")
+                        logMsg(it.message ?: "")
+                    }
                     emit(byteArrayOf())
                 }
                 .onEach {
                     if(it.isNotEmpty()) {
                         file.write(it)
                         root.cache.index(indexId).update()
-                        alert(Alert.AlertType.INFORMATION, "Encode Request", "Finished Encoding data.")
+                        events log "Finishing writing file ${file.id} to index $indexId"
                     }
                 }
                 .launchIn(CoroutineScope(Dispatchers.JavaFx))

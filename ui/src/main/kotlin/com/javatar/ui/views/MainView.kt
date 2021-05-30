@@ -1,7 +1,6 @@
 package com.javatar.ui.views
 
 import com.displee.cache.CacheLibrary
-import com.javatar.api.fs.IFileTypeManager
 import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.api.fs.extensions.ArchiveTypeExtension
 import com.javatar.api.fs.extensions.FileTypeExtension
@@ -10,15 +9,15 @@ import com.javatar.api.http.Client
 import com.javatar.api.http.UserInformation
 import com.javatar.api.ui.MenuItemExtension
 import com.javatar.api.ui.ToolTabExtension
+import com.javatar.api.ui.events.logs.EventLogType
 import com.javatar.api.ui.fs.QuickToolExtension
 import com.javatar.api.ui.models.AccountModel
 import com.javatar.api.ui.models.AccountSettingsModel
+import com.javatar.api.ui.models.EventLogModel
 import com.javatar.api.ui.utilities.contextmenu
 import com.javatar.fs.FileTypeManager
-import com.javatar.ui.models.CacheConfigurationModel
-import com.javatar.ui.models.EditorModel
-import com.javatar.ui.models.PluginRepositoryModel
-import com.javatar.ui.models.TitleModel
+import com.javatar.api.ui.notifications.NotificationCenter
+import com.javatar.ui.models.*
 import com.javatar.ui.views.account.AccountSettingsFragment
 import com.javatar.ui.views.account.LoginDialog
 import io.ktor.util.*
@@ -26,7 +25,10 @@ import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
+import javafx.scene.paint.Color
+import javafx.scene.text.Font
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -34,16 +36,19 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
+import org.controlsfx.control.Notifications
 import tornadofx.*
 import java.awt.Desktop
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class MainView : View("RuneScape Private Server Studios") {
 
-    override val root: AnchorPane by fxml("main-view.fxml")
+    override val root: StackPane by fxml("main-view.fxml")
     val vboxRoot: VBox by fxid()
 
     val caches: TreeView<Pair<String, String>> by fxid()
@@ -52,6 +57,8 @@ class MainView : View("RuneScape Private Server Studios") {
     val pluginsMenu: Menu by fxid()
     val toolTabs: TabPane by fxid()
     val accountSettingsBtn: MenuItem by fxid()
+    val latestEvent: Label by fxid()
+    val eventDate: Label by fxid()
 
     val configModel: CacheConfigurationModel by di()
     val editorModel: EditorModel by di()
@@ -61,30 +68,34 @@ class MainView : View("RuneScape Private Server Studios") {
     val titleModel: TitleModel by inject()
 
     val accountSettingsModel: AccountSettingsModel by inject()
+    val events: EventLogModel by di()
     val accountModel: AccountModel by di()
     val client: Client by di()
 
+    private val time: String
+        get() = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+    private val ncenter: NotificationCenter by di()
+
     init {
+        val css = MainView::class.java.getResource("notifications.css")
+        importStylesheet(css.toExternalForm())
+
+
+        events.latestLog.onChange {
+            if(it != null) {
+                ncenter.owner(root)
+                ncenter.show(it)
+            }
+        }
 
         root.autosize()
 
-        titleProperty.bind(Bindings.createStringBinding({
-            "${titleModel.title.get()} - ${titleModel.accountEmailOrName.get()}"
-        }, titleModel.title, titleModel.accountEmailOrName))
+        initEventLogBindings()
 
-        titleModel.accountEmailOrName.bind(Bindings.createStringBinding({
-            if (accountModel.email.isNull.get()) {
-                "Guest"
-            } else accountModel.email.get()
-        }, accountModel.email))
+        initTitleBindings()
 
-        pluginRepository.manager.getExtensions(MenuItemExtension::class.java)
-            .forEach { it.createMenuItem(pluginsMenu, menuBar) }
-
-        pluginRepository.manager.getExtensions(ToolTabExtension::class.java)
-            .forEach {
-                it.createToolTab(toolTabs)
-            }
+        initPlugins()
 
         editorView.add(editorModel.editorPane)
 
@@ -100,6 +111,7 @@ class MainView : View("RuneScape Private Server Studios") {
                 contextmenu {
                     item("Load").action {
                         editorModel.openFileExplorer(item.first, RootDirectory(CacheLibrary.create(item.second)))
+                        events log "Loaded Cache ${item.first}."
                     }
                     menu("Load with") {
                         pluginRepository.manager.plugins.forEach { it ->
@@ -115,6 +127,7 @@ class MainView : View("RuneScape Private Server Studios") {
                                     typeManager.registerIndexType(it.createIndexType())
                                 }
                                 editorModel.openFileExplorer(item.first, RootDirectory(CacheLibrary.create(item.second)), typeManager, it.pluginId)
+                                events log "Loaded Cache ${item.first} with ${it.pluginId}"
                             }
                         }
                     }
@@ -145,6 +158,49 @@ class MainView : View("RuneScape Private Server Studios") {
         }, configModel.cachePaths))
 
         accountSettingsBtn.enableWhen(accountModel.loggedIn.or(accountModel.activeCredentials.isNotNull))
+
+        events.log("Ready", EventLogType.FILTERED)
+    }
+
+    private fun initPlugins() {
+        pluginRepository.manager.getExtensions(MenuItemExtension::class.java)
+            .forEach { it.createMenuItem(pluginsMenu, menuBar) }
+
+        pluginRepository.manager.getExtensions(ToolTabExtension::class.java)
+            .forEach {
+                it.createToolTab(toolTabs)
+            }
+    }
+
+    private fun initTitleBindings() {
+        titleProperty.bind(Bindings.createStringBinding({
+            "${titleModel.title.get()} - ${titleModel.accountEmailOrName.get()}"
+        }, titleModel.title, titleModel.accountEmailOrName))
+
+
+        titleModel.accountEmailOrName.bind(Bindings.createStringBinding({
+            if (accountModel.email.isNull.get()) {
+                "Guest"
+            } else accountModel.email.get()
+        }, accountModel.email))
+    }
+
+    private fun initEventLogBindings() {
+        latestEvent.textProperty().bind(Bindings.createStringBinding({
+            events.latestLog.get()?.displayMessage ?: ""
+        }, events.latestLog))
+        eventDate.textProperty().bind(Bindings.createObjectBinding({
+            "${events.latestLog.get()?.timestap ?: time}:"
+        }, events.latestLog))
+        eventDate.fontProperty().bind(latestEvent.fontProperty())
+
+        latestEvent.fontProperty().bind(Bindings.createObjectBinding({
+            events.latestLog.get()?.font ?: Font.font(14.0)
+        }, events.latestLog))
+
+        latestEvent.textFillProperty().bind(Bindings.createObjectBinding({
+            events.latestLog.get()?.color ?: Color.WHITE
+        }, events.latestLog))
     }
 
     @FXML
@@ -225,4 +281,24 @@ class MainView : View("RuneScape Private Server Studios") {
         AccountSettingsFragment().openModal(block = true)
     }
 
+    @FXML
+    fun doNotification() {
+        /*val nscope = Scope()
+        val frag = find<NotificationFragment>(nscope)
+        frag.model.eventLog.set(EventLog("This is a test message", ""))
+        frag.root.layoutX = 975.0
+        frag.root.layoutY = 572.0
+        root.add(frag)*/
+        Notifications.create().apply {
+            title("Test Notification")
+            text("This is a notification.")
+            owner(root)
+            darkStyle()
+        }.show()
+    }
+
+    @FXML
+    fun reloadCss() {
+        root.scene?.reloadStylesheets()
+    }
 }

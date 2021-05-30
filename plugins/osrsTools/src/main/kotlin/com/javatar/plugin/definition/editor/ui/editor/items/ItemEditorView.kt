@@ -3,8 +3,10 @@ package com.javatar.plugin.definition.editor.ui.editor.items
 import com.displee.cache.CacheLibrary
 import com.javatar.api.http.Client
 import com.javatar.api.http.StringBody
+import com.javatar.api.ui.events.logs.EventLogType
 import com.javatar.api.ui.loadPluginFXML
 import com.javatar.api.ui.models.AccountModel
+import com.javatar.api.ui.models.EventLogModel
 import com.javatar.api.ui.utilities.contextmenu
 import com.javatar.osrs.definitions.impl.ItemDefinition
 import com.javatar.osrs.tools.ItemGeneration
@@ -49,6 +51,8 @@ class ItemEditorView : Fragment("Old School Item Editor") {
 
     private val client: Client by di()
     private val account: AccountModel by di()
+
+    private val events: EventLogModel by di()
 
     init {
         duplicateItem.disableWhen(itemList.selectionModel.selectedItemProperty().isNull)
@@ -216,27 +220,30 @@ class ItemEditorView : Fragment("Old School Item Editor") {
                     client.post<ByteArray>("tools/osrs/items", StringBody(json), creds)
                         .catch {
                             alert(Alert.AlertType.ERROR, "Error Encoding", it.message)
+                            events xlog {
+                                msg("Error Encoding")
+                                logMsg(it.message ?: "Error Encoding")
+                            }
                             emit(byteArrayOf())
                         }
                         .onEach {
                             if(it.isNotEmpty()) {
                                 cache.put(2, 10, defId, it)
                                 cache.index(2).update()
+                                events log "Finished Encoding ${manager.modifiedDefinitions.size} item definitions. "
+                                manager.modifiedDefinitions.clear()
                             }
-                        }
-                        .onCompletion {
-                            alert(Alert.AlertType.INFORMATION, "Encode Request", "Finished Encoding ${manager.modifiedDefinitions.size} item definitions.")
-                            manager.modifiedDefinitions.clear()
                         }
                         .launchIn(CoroutineScope(Dispatchers.JavaFx))
                 } else {
-                    alert(Alert.AlertType.ERROR, "No Item Definition found", "Item Definition $defId not found for encoding.")
+                    events xlog "Item Definition $defId not found for encoding."
                 }
             }
         } else if(creds == null) {
-            alert(Alert.AlertType.ERROR, "Not Logged in", "Please login before requesting an encoding.")
-        } else {
-            println("WTF")
+            events.log {
+                msg("Not Logged in.")
+                type(EventLogType.WARNING)
+            }
         }
     }
 

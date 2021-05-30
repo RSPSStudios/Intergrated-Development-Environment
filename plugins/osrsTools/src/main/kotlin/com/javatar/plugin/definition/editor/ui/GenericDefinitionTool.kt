@@ -1,5 +1,6 @@
 package com.javatar.plugin.definition.editor.ui
 
+import com.javatar.api.ui.models.EventLogModel
 import com.javatar.plugin.definition.editor.ui.models.GenericDefinitionEditingModel
 import javafx.geometry.Pos
 import javafx.stage.FileChooser

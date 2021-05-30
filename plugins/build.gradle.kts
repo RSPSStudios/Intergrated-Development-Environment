@@ -24,17 +24,11 @@ subprojects {
     }
 
     repositories {
-        maven("http://legionkt.com:8085/repository/rsps-studios-private/") {
-            credentials {
-                username = user
-                password = pass
-            }
-        }
         maven("http://legionkt.com:8085/repository/maven-public/")
     }
 
     dependencies {
-        implementation("com.javatar:api:0.1-20210527.230828-1")
+        implementation(project(":api"))
         compileOnly(kotlin("stdlib"))
         compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.4.2")
         compileOnly("no.tornado:tornadofx:2.0.0-SNAPSHOT")

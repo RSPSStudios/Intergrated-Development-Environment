@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -10,65 +11,87 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" stylesheets="@global.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-        <VBox fx:id="vboxRoot" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <children>
-                <MenuBar fx:id="menuBar">
-                    <menus>
-                        <Menu mnemonicParsing="false" text="File">
-                            <items>
-                                <MenuItem mnemonicParsing="false" onAction="#loadCache" text="Open Cache" />
-                                <SeparatorMenuItem mnemonicParsing="false" />
-                                <MenuItem mnemonicParsing="false" onAction="#openPreferences" text="Preferences" />
-                                <SeparatorMenuItem mnemonicParsing="false" />
-                                <MenuItem mnemonicParsing="false" text="Close" />
-                            </items>
-                        </Menu>
-                        <Menu fx:id="pluginsMenu" mnemonicParsing="false" text="Plugins">
-                            <items>
-                                <MenuItem fx:id="pluginRepo" mnemonicParsing="false" onAction="#pluginRepo" text="Plugin Repository" />
-                                <MenuItem mnemonicParsing="false" onAction="#openPluginLocation" text="Open Plugin Location" />
-                                <MenuItem mnemonicParsing="false" onAction="#setPluginLocation" text="Set Plugin Location" />
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Account">
-                            <items>
-                                <MenuItem mnemonicParsing="false" onAction="#login" text="Login" />
-                                <MenuItem fx:id="accountSettingsBtn" mnemonicParsing="false" onAction="#accountSettings" text="Account Settings" />
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Help">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="About" />
-                            </items>
-                        </Menu>
-                    </menus>
-                </MenuBar>
-                <TabPane fx:id="toolTabs" prefHeight="800.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                        <Tab text="File Explorer">
-                            <content>
-                                <BorderPane>
-                                    <center>
-                                        <VBox>
-                                            <children>
-                                                <HBox fx:id="breadcrumbPane" />
-                                                <AnchorPane fx:id="editorView" />
-                                            </children>
-                                        </VBox>
-                                    </center>
-                                    <left>
-                                        <TreeView fx:id="caches" BorderPane.alignment="CENTER" />
-                                    </left>
-                                </BorderPane>
-                            </content>
-                        </Tab>
-                    </tabs>
-                </TabPane>
-            </children>
-        </VBox>
-    </children>
-</AnchorPane>
+<StackPane stylesheets="@global.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0">
+          <children>
+              <VBox fx:id="vboxRoot" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <children>
+                      <MenuBar fx:id="menuBar">
+                          <menus>
+                              <Menu mnemonicParsing="false" text="File">
+                                  <items>
+                                      <MenuItem mnemonicParsing="false" onAction="#loadCache" text="Open Cache" />
+                                      <SeparatorMenuItem mnemonicParsing="false" />
+                                      <MenuItem mnemonicParsing="false" onAction="#openPreferences" text="Preferences" />
+                                      <SeparatorMenuItem mnemonicParsing="false" />
+                                      <MenuItem mnemonicParsing="false" text="Close" />
+                                  </items>
+                              </Menu>
+                              <Menu fx:id="pluginsMenu" mnemonicParsing="false" text="Plugins">
+                                  <items>
+                                      <MenuItem fx:id="pluginRepo" mnemonicParsing="false" onAction="#pluginRepo" text="Plugin Repository" />
+                                      <MenuItem mnemonicParsing="false" onAction="#openPluginLocation" text="Open Plugin Location" />
+                                      <MenuItem mnemonicParsing="false" onAction="#setPluginLocation" text="Set Plugin Location" />
+                                  </items>
+                              </Menu>
+                              <Menu mnemonicParsing="false" text="Account">
+                                  <items>
+                                      <MenuItem mnemonicParsing="false" onAction="#login" text="Login" />
+                                      <MenuItem fx:id="accountSettingsBtn" mnemonicParsing="false" onAction="#accountSettings" text="Account Settings" />
+                                  </items>
+                              </Menu>
+                              <Menu mnemonicParsing="false" text="Help">
+                                  <items>
+                                      <MenuItem mnemonicParsing="false" text="About" />
+                              <Menu mnemonicParsing="false" text="Developer">
+                                <items>
+                                  <MenuItem mnemonicParsing="false" onAction="#doNotification" text="Test Notification" />
+                                    <MenuItem mnemonicParsing="false" onAction="#reloadCss" text="Reload CSS" />
+                                </items>
+                              </Menu>
+                                  </items>
+                              </Menu>
+                          </menus>
+                      </MenuBar>
+                      <TabPane fx:id="toolTabs" prefHeight="800.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                              <Tab text="File Explorer">
+                                  <content>
+                                      <BorderPane>
+                                          <center>
+                                              <VBox>
+                                                  <children>
+                                                      <HBox fx:id="breadcrumbPane" />
+                                                      <AnchorPane fx:id="editorView" />
+                                                  </children>
+                                              </VBox>
+                                          </center>
+                                          <left>
+                                              <TreeView fx:id="caches" BorderPane.alignment="CENTER" />
+                                          </left>
+                                      </BorderPane>
+                                  </content>
+                              </Tab>
+                          </tabs>
+                      </TabPane>
+                  <AnchorPane style="-fx-border-color: black;">
+                     <children>
+                        <HBox layoutX="6.0" layoutY="1.0" maxHeight="25.0" prefHeight="25.0" prefWidth="700.0" spacing="3.0">
+                           <children>
+                              <Label fx:id="eventDate" maxHeight="25.0" prefHeight="25.0" text="Date:" />
+                              <Label fx:id="latestEvent" maxHeight="25.0" maxWidth="700.0" text="Message" />
+                           </children>
+                        </HBox>
+                        <HBox fx:id="eventActionContainer" maxHeight="25.0" maxWidth="580.0" prefHeight="25.0" prefWidth="580.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+                  </children>
+              </VBox>
+          </children>
+      </AnchorPane>
+   </children>
+</StackPane>

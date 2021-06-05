@@ -7,5 +7,5 @@ class NexusComponent(
     val group: String,
     val name: String,
     val version: String,
-    val assets: Array<NexusAsset>
+    val assets: List<NexusAsset>
 )

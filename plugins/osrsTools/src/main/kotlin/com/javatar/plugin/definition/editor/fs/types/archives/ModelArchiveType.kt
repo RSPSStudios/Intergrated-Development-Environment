@@ -1,12 +1,9 @@
 package com.javatar.plugin.definition.editor.fs.types.archives
 
 import com.javatar.api.fs.ArchiveType
-import com.javatar.api.fs.FileType
 import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
-import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.fromJson
-import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
 import javafx.scene.control.TabPane
 import javafx.scene.image.ImageView
 

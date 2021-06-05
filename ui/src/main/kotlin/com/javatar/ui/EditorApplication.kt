@@ -65,6 +65,8 @@ class EditorApplication : App(MainView::class), KoinComponent {
                 true
             )
         }
+
+        pluginRepo.calculateHashes()
     }
 
     override fun start(stage: Stage) {

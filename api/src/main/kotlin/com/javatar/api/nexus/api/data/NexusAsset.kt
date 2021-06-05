@@ -7,5 +7,6 @@ class NexusAsset(
     val repository: String,
     val format: String,
     val contentType: String,
-    val lastModified: String
+    val lastModified: String,
+    val checksum: Map<String, String>
 )

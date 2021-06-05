@@ -20,6 +20,7 @@ import com.javatar.api.ui.notifications.NotificationCenter
 import com.javatar.ui.models.*
 import com.javatar.ui.views.account.AccountSettingsFragment
 import com.javatar.ui.views.account.LoginDialog
+import com.javatar.ui.views.plugins.PluginRepository
 import io.ktor.util.*
 import javafx.beans.binding.Bindings
 import javafx.fxml.FXML

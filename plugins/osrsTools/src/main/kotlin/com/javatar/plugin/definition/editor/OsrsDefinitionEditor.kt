@@ -23,8 +23,5 @@ class OsrsDefinitionEditor(wrapper: PluginWrapper?) : Plugin(wrapper) {
 
         val properties: MutableMap<String, String> = mutableMapOf()
 
-        inline fun <reified T> Gson.fromJson(data: String): T {
-            return fromJson(data, T::class.java)
-        }
     }
 }

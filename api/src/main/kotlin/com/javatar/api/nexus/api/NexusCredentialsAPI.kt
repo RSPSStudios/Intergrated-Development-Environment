@@ -1,6 +1,6 @@
 package com.javatar.api.nexus.api
 
-interface NexusCredentials {
+interface NexusCredentialsAPI {
 
     fun user(username: String, password: String)
 

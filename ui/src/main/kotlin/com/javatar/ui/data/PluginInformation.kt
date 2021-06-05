@@ -12,5 +12,9 @@ data class PluginInformation(
     val pluginVersion: String,
     val pluginEnabled: Boolean,
     val updateAvailable: Boolean,
-    val isInstalled: Boolean
+    val isInstalled: Boolean,
+    var sha1: String = "Deprecated",
+    var sha256: String = "Not Used",
+    var sha512: String = "Unknown",
+    var md5: String = "Deprecated"
 )

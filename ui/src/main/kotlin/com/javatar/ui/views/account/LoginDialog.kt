@@ -25,6 +25,9 @@ class LoginDialog : Fragment("Account") {
                 closeableWhen(false.toProperty())
                 disableWhen(accountModel.loggedIn)
             }
+            tab<AccountRecoveryFragment> {
+                closeableWhen(false.toProperty())
+            }
         }
     }
 

@@ -2,7 +2,7 @@ plugins {
     application
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("org.openjfx.javafxplugin") version "0.0.9"
-    id("org.beryx.runtime") version "1.12.2"
+    id("org.beryx.runtime") version "1.12.5"
 }
 
 application {
@@ -63,7 +63,7 @@ runtime {
     options.set(listOf("--compress", "2", "--no-header-files", "--no-man-pages"))
     modules.set(listOf("java.sql", "java.desktop", "jdk.unsupported", "java.scripting", "java.logging", "java.xml", "java.naming"))
 
-    targetPlatform("linux", "/usr/lib/jvm/java-15-openjdk")
+    targetPlatform("linux", "/home/javatar/.jdks/adopt-openj9-15.0.2")
     targetPlatform("win", "/home/javatar/platforms/windows/jdk-15.0.2")
     targetPlatform("mac", "/home/javatar/platforms/mac/jdk-15.0.2.jdk/Contents/Home")
 }

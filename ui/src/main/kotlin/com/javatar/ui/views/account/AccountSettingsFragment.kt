@@ -81,13 +81,6 @@ class AccountSettingsFragment : Fragment("Account Settings") {
                         }
                     }
                 }
-                button("Request Reset").action {
-                    val creds = accountModel.activeCredentials.get()
-                    client.post<CredentialsResponse>("user/resetpwd", creds, creds)
-                        .onEach {
-                            msg.set(it.msg)
-                        }.launchIn(CoroutineScope(Dispatchers.JavaFx))
-                }
             }
             label(msg)
         }

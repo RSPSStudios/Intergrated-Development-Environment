@@ -23,7 +23,7 @@ tasks.withType<Jar> {
     }
 }
 javafx {
-    version = "15.0.1"
+    version = "16"
     //modules = [ 'javafx.controls' ]
     modules("javafx.base", "javafx.controls", "javafx.graphics", "javafx.fxml", "javafx.web")
     configuration = "compileOnly"

@@ -57,10 +57,6 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                 varbitModel.varpId.set(it.index)
                 varbitModel.lsb.set(it.leastSignificantBit)
                 varbitModel.msb.set(it.mostSignificantBit)
-                println(it.id)
-                println(it.index)
-                println(it.leastSignificantBit)
-                println(it.mostSignificantBit)
                 when (val bitCount = it.mostSignificantBit - it.leastSignificantBit) {
                     0 -> {
                         varbitModel.variableType.set(VariableType.BOOLEAN)
@@ -95,7 +91,7 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                 when (it) {
                     VariableEditingType.PLAYER_VARIABLE -> items.setAll(*varpAndVarbitToolBar())
                     VariableEditingType.CLIENT_PREFERENCES -> items.setAll(*clientPreferencesToolbar())
-                    null -> TODO()
+                    null -> { items.clear() }
                 }
             }
         }

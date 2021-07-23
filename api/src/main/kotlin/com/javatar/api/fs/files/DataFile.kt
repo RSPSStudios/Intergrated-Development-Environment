@@ -1,7 +1,6 @@
 package com.javatar.api.fs.files
 
 import com.displee.cache.index.archive.Archive
-import com.displee.cache.index.archive.file.File
 import com.javatar.api.fs.JFile
 
 class DataFile(override val id: Int, val archive: Archive) : JFile {

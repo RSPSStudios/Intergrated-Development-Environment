@@ -5,6 +5,7 @@ import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.world.objects.models.ObjectEditorModel
 import com.javatar.plugin.definition.editor.ui.editor.world.objects.tabs.ObjectActionsFragment
 import com.javatar.plugin.definition.editor.ui.editor.world.objects.tabs.ObjectConfigsFragment
+import com.javatar.plugin.definition.editor.ui.editor.world.objects.tabs.ObjectVariablesFragment
 import tornadofx.*
 
 class ObjectEditorFragment : Fragment("World Object Editor") {
@@ -34,6 +35,15 @@ class ObjectEditorFragment : Fragment("World Object Editor") {
         }
         vbox {
             fitToParentHeight()
+            hbox {
+                button("Pack Object") {
+                    disableWhen(model.selected.isNull)
+                }
+                button("Add Object")
+                button("Delete Object") {
+                    disableWhen(model.selected.isNull)
+                }
+            }
             textfield(model.searchText) {
                 action {
                     searchObjects(text)
@@ -57,6 +67,9 @@ class ObjectEditorFragment : Fragment("World Object Editor") {
                 closableProperty().bind(false.toProperty())
             }
             tab<ObjectActionsFragment> {
+                closableProperty().bind(false.toProperty())
+            }
+            tab<ObjectVariablesFragment> {
                 closableProperty().bind(false.toProperty())
             }
         }

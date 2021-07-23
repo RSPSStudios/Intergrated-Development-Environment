@@ -8,7 +8,7 @@ plugins {
     kotlin("kapt") apply false
     kotlin("jvm") apply false
     id("org.beryx.runtime") version "1.12.2" apply false
-    id("org.openjfx.javafxplugin") version "0.0.9" apply false
+    id("org.openjfx.javafxplugin") version "0.0.10" apply false
     id("io.github.http-builder-ng.http-plugin") version "0.1.1" apply false
 }
 val user = project.properties["nexusUsername"] as String
@@ -79,7 +79,7 @@ subprojects {
         from(project.tasks.named("plugin"))
         pluginsDir.listFiles()?.forEach { it.deleteRecursively() }
         into(pluginsDir)
-        finalizedBy(tasks.named("upload-plugin"))
+        //finalizedBy(tasks.named("upload-plugin"))
     }
 
     // for the jar task we have to set the plugin properties, so they can be written to the manifest

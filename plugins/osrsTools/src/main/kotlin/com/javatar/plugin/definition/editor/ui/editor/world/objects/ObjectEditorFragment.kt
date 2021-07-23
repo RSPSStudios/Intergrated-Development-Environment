@@ -28,7 +28,7 @@ class ObjectEditorFragment : Fragment("World Object Editor") {
     }
 
     override val root = hbox {
-        prefWidth = 1200.0
+        prefWidth = 800.0
         fitToParentHeight()
         style {
             baseColor = c("#3f474f")
@@ -39,7 +39,9 @@ class ObjectEditorFragment : Fragment("World Object Editor") {
                 button("Pack Object") {
                     disableWhen(model.selected.isNull)
                 }
-                button("Add Object")
+                button("Add Object") {
+
+                }
                 button("Delete Object") {
                     disableWhen(model.selected.isNull)
                 }

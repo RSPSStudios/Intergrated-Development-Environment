@@ -1,12 +1,14 @@
 package com.javatar.plugin.definition.editor.ui.selectors
 
-import com.javatar.osrs.definitions.impl.VarbitDefinition
 import com.javatar.osrs.definitions.impl.VarpDefinition
 import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.ui.selectors.models.VarpSelectModel
 import com.javatar.plugin.definition.editor.ui.selectors.scope.SelectVarpScope
 import javafx.scene.input.MouseEvent
-import tornadofx.*
+import tornadofx.Fragment
+import tornadofx.hbox
+import tornadofx.listview
+import tornadofx.onChange
 
 class VarpSelectorFragment : Fragment("Select Variable Player") {
 

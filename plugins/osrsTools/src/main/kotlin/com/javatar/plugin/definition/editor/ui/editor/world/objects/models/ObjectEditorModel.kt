@@ -85,18 +85,28 @@ class ObjectEditorModel : ViewModel() {
         if (def.textureToReplace != null && def.retextureToFind != null) {
             textureReplacement.setAll(def.textureToReplace.map { it.toInt() })
             textureFind.setAll(def.retextureToFind.map { it.toInt() })
+        } else {
+            textureReplacement.clear()
+            textureFind.clear()
         }
         decorDisplacement.set(def.decorDisplacement)
         isHollow.set(def.isHollow)
         if (def.objectModels != null) {
             objectModels.setAll(def.objectModels.toList())
+        } else {
+            objectModels.clear()
         }
         if (def.objectTypes != null) {
             objectTypes.setAll(def.objectTypes.toList())
+        } else {
+            objectTypes.clear()
         }
         if (def.recolorToFind != null && def.recolorToReplace != null) {
             colorFind.setAll(def.recolorToFind.map { it.toInt() })
             colorReplacement.setAll(def.recolorToReplace.map { it.toInt() })
+        } else {
+            colorFind.clear()
+            colorReplacement.clear()
         }
         mapAreaId.set(def.mapAreaId)
         sizeX.set(def.sizeX)
@@ -105,6 +115,8 @@ class ObjectEditorModel : ViewModel() {
         soundEffectRadius.set(def.soundEffectRadius)
         if (def.soundEffectIds != null) {
             soundEffectIds.setAll(*def.soundEffectIds.toTypedArray())
+        } else {
+            soundEffectIds.clear()
         }
         offsetX.set(def.offsetX)
         offsetY.set(def.offsetY)
@@ -116,11 +128,15 @@ class ObjectEditorModel : ViewModel() {
         varpID.set(def.varpID)
         if (def.configChangeDest != null) {
             transformations.setAll(*def.configChangeDest.toTypedArray())
+        } else {
+            transformations.clear()
         }
         ambient.set(def.ambient)
         contrast.set(def.contrast)
         if (def.actions != null) {
             actions.setAll(*def.actions)
+        } else {
+            actions.clear()
         }
         interactType.set(def.interactType)
         mapSceneID.set(def.mapSceneID)
@@ -137,6 +153,8 @@ class ObjectEditorModel : ViewModel() {
         randomizeAnimationStart.set(def.isRandomizeAnimStart)
         if (def.params != null) {
             parameters.putAll(def.params)
+        } else {
+            parameters.clear()
         }
     }
 

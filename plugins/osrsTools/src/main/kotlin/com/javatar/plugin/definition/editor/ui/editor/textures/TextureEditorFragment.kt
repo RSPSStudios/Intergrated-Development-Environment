@@ -5,10 +5,11 @@ import com.javatar.api.http.StringBody
 import com.javatar.api.ui.models.AccountModel
 import com.javatar.osrs.definitions.impl.SpriteDefinition
 import com.javatar.osrs.definitions.impl.TextureDefinition
+import com.javatar.osrs.definitions.loaders.SpriteLoader
+import com.javatar.osrs.definitions.loaders.TextureLoader
 import com.javatar.osrs.tools.SpriteTools.toImage
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager.sprites
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.textures.models.TextureEditorModel
 import com.javatar.plugin.definition.editor.ui.selectors.SelectSpriteFragment
 import com.javatar.plugin.definition.editor.ui.selectors.scope.SpriteSelectScope
@@ -27,7 +28,7 @@ class TextureEditorFragment : Fragment("Texture Editor") {
 
     val textureModel: TextureEditorModel by inject()
 
-    val textures = OldSchoolDefinitionManager.textures
+    val textures = ConfigDefinitionManager(TextureLoader())
 
     val accountModel: AccountModel by di()
     val client: Client by di()
@@ -48,7 +49,7 @@ class TextureEditorFragment : Fragment("Texture Editor") {
                 action {
                     val creds = accountModel.activeCredentials.get()
                     val cache = textureModel.cache.get()
-                    if(creds != null && cache != null) {
+                    if (creds != null && cache != null) {
                         textureModel.commitTexture()
                         val tex = textureModel.selected.get()
                         val json = gson.toJson(tex)
@@ -58,10 +59,14 @@ class TextureEditorFragment : Fragment("Texture Editor") {
                                 emit(byteArrayOf())
                             }
                             .onEach {
-                                if(it.isNotEmpty()) {
+                                if (it.isNotEmpty()) {
                                     cache.put(9, 0, it)
                                     cache.index(9).update()
-                                    alert(Alert.AlertType.INFORMATION, "Packing Texture", "Successfully packed texture.")
+                                    alert(
+                                        Alert.AlertType.INFORMATION,
+                                        "Packing Texture",
+                                        "Successfully packed texture."
+                                    )
                                 }
                             }.launchIn(CoroutineScope(Dispatchers.JavaFx))
                     }
@@ -80,7 +85,7 @@ class TextureEditorFragment : Fragment("Texture Editor") {
                 action {
                     val cache = textureModel.cache.get()
                     val tex = textureModel.selected.get()
-                    if(cache != null) {
+                    if (cache != null) {
                         val remove = alert(
                             Alert.AlertType.CONFIRMATION,
                             "Delete Texture ${tex.id}",
@@ -88,7 +93,7 @@ class TextureEditorFragment : Fragment("Texture Editor") {
                             buttons = arrayOf(ButtonType.YES, ButtonType.NO)
                         )
                         val result = remove.result
-                        if(result === ButtonType.YES) {
+                        if (result === ButtonType.YES) {
                             cache.remove(9, 0, tex.id)
                             cache.index(9).update()
                         }
@@ -175,17 +180,17 @@ class TextureEditorFragment : Fragment("Texture Editor") {
     }
 
     private fun getSprite(spriteId: Int): SpriteDefinition {
-        val group = sprites[spriteId]
+        val group = ConfigDefinitionManager(SpriteLoader())[spriteId]
         if (group == null) {
             val cache = textureModel.cache.get()
             if (cache != null) {
                 val data = cache.data(8, spriteId)
                 if (data != null) {
-                    return sprites.load(spriteId, data).sprites[0]
+                    return ConfigDefinitionManager(SpriteLoader()).load(spriteId, data).sprites[0]
                 }
             }
         } else {
-            return sprites[spriteId]?.sprites?.get(0) ?: SpriteDefinition()
+            return ConfigDefinitionManager(SpriteLoader())[spriteId]?.sprites?.get(0) ?: SpriteDefinition()
         }
         return SpriteDefinition()
     }

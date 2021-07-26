@@ -35,7 +35,7 @@ subprojects {
         compileOnly("org.controlsfx:controlsfx:11.0.3")
         compileOnly("de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2")
         compileOnly("com.displee:rs-cache-library:6.8")
-        compileOnly("org.koin:koin-core:2.2.1")
+        compileOnly("io.insert-koin:koin-core:3.1.2")
 
         compileOnly("org.pf4j:pf4j:3.6.0")
         kapt("org.pf4j:pf4j:3.6.0")
@@ -79,7 +79,7 @@ subprojects {
         from(project.tasks.named("plugin"))
         pluginsDir.listFiles()?.forEach { it.deleteRecursively() }
         into(pluginsDir)
-        //finalizedBy(tasks.named("upload-plugin"))
+        finalizedBy(tasks.named("upload-plugin"))
     }
 
     // for the jar task we have to set the plugin properties, so they can be written to the manifest

@@ -4,8 +4,9 @@ import com.javatar.api.http.Client
 import com.javatar.api.http.StringBody
 import com.javatar.api.ui.models.AccountModel
 import com.javatar.osrs.definitions.impl.InventoryDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.InventoryLoader
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.inventories.model.InventoryEditorModel
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
@@ -25,11 +26,11 @@ class InventoryEditorFragment : Fragment("Inventory Editor") {
     val account: AccountModel by di()
     val client: Client by di()
 
-    val invs = OldSchoolDefinitionManager.inventories
+    val invs = ConfigDefinitionManager(InventoryLoader())
 
     init {
         invModel.cache.onChange {
-            if(it != null) {
+            if (it != null) {
                 loadInventories()
             }
         }
@@ -43,7 +44,7 @@ class InventoryEditorFragment : Fragment("Inventory Editor") {
                 action {
                     val cache = invModel.cache.get()
                     val creds = account.activeCredentials.get()
-                    if(cache != null && creds != null) {
+                    if (cache != null && creds != null) {
                         invModel.commitInventory()
                         val inv = invModel.selected.get()
                         val json = gson.toJson(inv)
@@ -53,10 +54,14 @@ class InventoryEditorFragment : Fragment("Inventory Editor") {
                                 emit(byteArrayOf())
                             }
                             .onEach {
-                                if(it.isNotEmpty()) {
+                                if (it.isNotEmpty()) {
                                     cache.put(2, 5, inv.id, it)
                                     cache.index(2).update()
-                                    alert(Alert.AlertType.INFORMATION, "Packing Inventory", "Successfully packed inventory definition.")
+                                    alert(
+                                        Alert.AlertType.INFORMATION,
+                                        "Packing Inventory",
+                                        "Successfully packed inventory definition."
+                                    )
                                 }
                             }.launchIn(CoroutineScope(Dispatchers.JavaFx))
                     }
@@ -79,9 +84,9 @@ class InventoryEditorFragment : Fragment("Inventory Editor") {
                         "Are you sure you want to delete this inventory definition?",
                         buttons = arrayOf(ButtonType.YES, ButtonType.NO)
                     )
-                    if(confirm.result === ButtonType.YES) {
+                    if (confirm.result === ButtonType.YES) {
                         val cache = invModel.cache.get()
-                        if(cache != null) {
+                        if (cache != null) {
                             val inv = invModel.selected.get()
                             invs.remove(inv)
                             invModel.inventories.remove(inv)
@@ -116,12 +121,12 @@ class InventoryEditorFragment : Fragment("Inventory Editor") {
 
     private fun loadInventories() {
         val cache = invModel.cache.get()
-        if(cache != null) {
+        if (cache != null) {
             val invIds = cache.index(2).archive(5)?.fileIds() ?: intArrayOf()
             val list = mutableListOf<InventoryDefinition>()
             for (invId in invIds) {
                 val data = cache.data(2, 5, invId)
-                if(data != null) {
+                if (data != null) {
                     list.add(invs.load(invId, data))
                 }
             }

@@ -10,7 +10,6 @@ subprojects {
 
     repositories {
         mavenLocal()
-        jcenter()
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
     }
@@ -23,7 +22,7 @@ subprojects {
 
     dependencies {
         "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
-        "implementation"("org.koin:koin-core:2.2.1")
+        "implementation"("io.insert-koin:koin-core:3.1.2")
         "implementation"("org.slf4j:slf4j-api:2.0.0-alpha1")
         "implementation"("org.slf4j:slf4j-log4j12:2.0.0-alpha1")
         "implementation"("com.google.guava:guava:30.1.1-jre")

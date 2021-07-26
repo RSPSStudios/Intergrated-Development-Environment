@@ -3,7 +3,8 @@ package com.javatar.plugin.definition.editor.fs.types.archives
 import com.javatar.api.fs.ArchiveType
 import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.ModelLoader
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import javafx.scene.control.TabPane
 import javafx.scene.image.ImageView
 
@@ -16,7 +17,7 @@ class ModelArchiveType : ArchiveType {
     override val indexId: Int = 7
     override val archiveId: Int = -1
 
-    val models = OldSchoolDefinitionManager.models
+    val models = ConfigDefinitionManager(ModelLoader())
 
     override fun open(file: JFile, root: RootDirectory, editorTab: TabPane) {
 

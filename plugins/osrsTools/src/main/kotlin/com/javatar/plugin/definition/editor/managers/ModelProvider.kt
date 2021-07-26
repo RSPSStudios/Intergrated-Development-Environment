@@ -3,7 +3,7 @@ package com.javatar.plugin.definition.editor.managers
 import com.displee.cache.CacheLibrary
 import com.javatar.osrs.definitions.definition.DefinitionProvider
 import com.javatar.osrs.definitions.impl.ModelDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.ModelLoader
 
 /**
  * @author David Schlachter <davidschlachter96@gmail.com>
@@ -12,7 +12,7 @@ import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 
 class ModelProvider(val cache: CacheLibrary) : DefinitionProvider<ModelDefinition> {
 
-    val models = OldSchoolDefinitionManager.models
+    val models = ConfigDefinitionManager(ModelLoader())
 
     override fun getDefinition(id: Int): ModelDefinition {
         val data = cache.data(7, id)

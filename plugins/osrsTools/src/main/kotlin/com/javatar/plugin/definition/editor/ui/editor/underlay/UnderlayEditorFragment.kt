@@ -4,8 +4,9 @@ import com.javatar.api.http.Client
 import com.javatar.api.http.StringBody
 import com.javatar.api.ui.models.AccountModel
 import com.javatar.osrs.definitions.impl.UnderlayDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.UnderlayLoader
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.underlay.model.UnderlayModel
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
@@ -23,7 +24,7 @@ class UnderlayEditorFragment : Fragment("Underlay Editor") {
 
     val underlayModel: UnderlayModel by inject()
 
-    val underlays = OldSchoolDefinitionManager.underlays
+    val underlays = ConfigDefinitionManager(UnderlayLoader())
 
     val client: Client by di()
     val account: AccountModel by di()
@@ -35,6 +36,7 @@ class UnderlayEditorFragment : Fragment("Underlay Editor") {
             }
         }
     }
+
     override val root = vbox {
         style = "-fx-base: #3f474f;"
         toolbar(

@@ -1,7 +1,8 @@
 package com.javatar.plugin.definition.editor.ui.editor.world.objects
 
 import com.javatar.osrs.definitions.impl.ObjectDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.ObjectLoader
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.world.objects.models.ObjectEditorModel
 import com.javatar.plugin.definition.editor.ui.editor.world.objects.tabs.ObjectActionsFragment
 import com.javatar.plugin.definition.editor.ui.editor.world.objects.tabs.ObjectConfigsFragment
@@ -12,16 +13,16 @@ class ObjectEditorFragment : Fragment("World Object Editor") {
 
     val model: ObjectEditorModel by inject()
 
-    val objects = OldSchoolDefinitionManager.objects
+    val objects = ConfigDefinitionManager(ObjectLoader())
 
     init {
         model.cache.onChange {
-            if(it != null) {
+            if (it != null) {
                 loadObjects()
             }
         }
         model.searchText.onChange {
-            if(it == null || it.isEmpty()) {
+            if (it == null || it.isEmpty()) {
                 model.objects.setAll(objects.definitions.values)
             }
         }
@@ -55,7 +56,7 @@ class ObjectEditorFragment : Fragment("World Object Editor") {
                 prefHeightProperty().bind(this@vbox.heightProperty())
                 model.selected.bind(selectionModel.selectedItemProperty())
                 cellFormat {
-                    text = if(it.name == null || it.name == "null") {
+                    text = if (it.name == null || it.name == "null") {
                         "Object ${it.id}"
                     } else {
                         "${it.name} - ${it.id}"
@@ -95,14 +96,14 @@ class ObjectEditorFragment : Fragment("World Object Editor") {
     }
 
     private fun searchObjects(text: String) {
-        if(text.isEmpty()) {
+        if (text.isEmpty()) {
             model.objects.setAll(objects.definitions.values)
             return
         }
         when {
             text.endsWith(":var") -> {
                 val identifier = text.split(":")[0]
-                val list = if(identifier.isNotEmpty()) {
+                val list = if (identifier.isNotEmpty()) {
                     val id = text.split(":")[0].toInt()
                     objects.definitions.values.filter {
                         it.varbitID == id || it.varpID == id

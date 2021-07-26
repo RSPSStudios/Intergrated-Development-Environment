@@ -3,13 +3,12 @@ package com.javatar.plugin.definition.editor.ui.editor.cvars.model
 import com.displee.cache.CacheLibrary
 import com.javatar.osrs.definitions.impl.VarbitDefinition
 import com.javatar.osrs.definitions.impl.VarpDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.VarbitLoader
+import com.javatar.osrs.definitions.loaders.VarpLoader
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.cvars.VariableEditingType
 import javafx.beans.property.*
 import javafx.collections.FXCollections
-import javafx.scene.control.Button
-import javafx.scene.control.Control
-import javafx.scene.control.ToolBar
 import tornadofx.ViewModel
 import tornadofx.onChange
 
@@ -74,13 +73,13 @@ class VariableModel : ViewModel() {
 
     fun loadVarps() {
         val cache = cache.get()
-        val varps = OldSchoolDefinitionManager.varps
-        if(cache != null) {
+        val varps = ConfigDefinitionManager(VarpLoader())
+        if (cache != null) {
             val varpIds = cache.index(2).archive(16)?.fileIds() ?: intArrayOf()
             val list = mutableListOf<VarpDefinition>()
             for (varpId in varpIds) {
                 val data = cache.data(2, 16, varpId)
-                if(data != null) {
+                if (data != null) {
                     list.add(varps.load(varpId, data))
                 }
             }
@@ -90,10 +89,10 @@ class VariableModel : ViewModel() {
 
     fun findUnusedVarps() {
         val list = mutableListOf<VarpDefinition>()
-        val varps = OldSchoolDefinitionManager.varps
+        val varps = ConfigDefinitionManager(VarpLoader())
 
         varps.definitions.values.forEach {
-            if(!variables.containsKey(it) && it.type == 0) {
+            if (!variables.containsKey(it) && it.type == 0) {
                 list.add(it)
             }
         }
@@ -101,15 +100,15 @@ class VariableModel : ViewModel() {
         unusedVarps.setAll(list)
     }
 
-    fun loadVarbits() : List<VarbitDefinition> {
+    fun loadVarbits(): List<VarbitDefinition> {
         val cache = cache.get()
-        val varbits = OldSchoolDefinitionManager.varbits
-        if(cache != null) {
+        val varbits = ConfigDefinitionManager(VarbitLoader())
+        if (cache != null) {
             val varbitIds = cache.index(2).archive(14)?.fileIds() ?: intArrayOf()
             val list = mutableListOf<VarbitDefinition>()
             for (varbitId in varbitIds) {
                 val data = cache.data(2, 14, varbitId)
-                if(data != null) {
+                if (data != null) {
                     list.add(varbits.load(varbitId, data))
                 }
             }

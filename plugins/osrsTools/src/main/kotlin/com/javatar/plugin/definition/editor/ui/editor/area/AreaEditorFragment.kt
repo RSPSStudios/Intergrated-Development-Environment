@@ -1,7 +1,8 @@
 package com.javatar.plugin.definition.editor.ui.editor.area
 
+import com.javatar.osrs.definitions.loaders.SpriteLoader
 import com.javatar.osrs.tools.SpriteTools.toImage
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.area.model.AreaEditorModel
 import com.javatar.plugin.definition.editor.ui.editor.getSprite
 import com.javatar.plugin.definition.editor.ui.rsmenu.ActionEditorFragment
@@ -15,7 +16,7 @@ class AreaEditorFragment : Fragment("Area Editor") {
 
     val areaModel: AreaEditorModel by inject()
 
-    val sprites = OldSchoolDefinitionManager.sprites
+    val sprites = ConfigDefinitionManager(SpriteLoader())
 
     override val root = hbox {
         spacing = 10.0
@@ -40,7 +41,7 @@ class AreaEditorFragment : Fragment("Area Editor") {
                                             spacing = 10.0
                                             dynamicContent(areaModel.spriteId) {
                                                 val sprite = cache.getSprite(s.spriteId)
-                                                if(sprite.pixels != null) {
+                                                if (sprite.pixels != null) {
                                                     imageview(sprite.toImage())
                                                 } else {
                                                     label("No Sprite")
@@ -60,7 +61,7 @@ class AreaEditorFragment : Fragment("Area Editor") {
                                             spacing = 10.0
                                             dynamicContent(areaModel.spriteId2) {
                                                 val sprite2 = cache.getSprite(s.field3294)
-                                                if(sprite2.pixels != null) {
+                                                if (sprite2.pixels != null) {
                                                     imageview(sprite2.toImage())
                                                 } else {
                                                     label("No Sprite")
@@ -106,7 +107,7 @@ class AreaEditorFragment : Fragment("Area Editor") {
                     setOnSave {
                         val list = FXCollections.observableArrayList(actionModel.actions)
                         list.remove("Cancel")
-                        list.replaceAll { if(it == "null") null else it }
+                        list.replaceAll { if (it == "null") null else it }
                         areaModel.menuActions.setAll(list)
                     }
                 }

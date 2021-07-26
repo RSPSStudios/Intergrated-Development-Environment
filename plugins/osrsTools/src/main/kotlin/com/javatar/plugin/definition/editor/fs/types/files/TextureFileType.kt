@@ -4,14 +4,15 @@ import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.osrs.definitions.impl.TextureDefinition
 import com.javatar.osrs.definitions.loaders.TextureLoader
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.managers.SpriteProvider
 import javafx.scene.image.ImageView
 import javafx.scene.image.PixelFormat
 import javafx.scene.image.WritableImage
 import java.nio.IntBuffer
 
-class TextureFileType : DefinitionFileType<TextureDefinition, TextureLoader>(0, 9, OldSchoolDefinitionManager.textures, "textures") {
+class TextureFileType :
+    DefinitionFileType<TextureDefinition, TextureLoader>(0, 9, ConfigDefinitionManager(TextureLoader()), "textures") {
 
     override fun icon(file: JFile, root: RootDirectory): ImageView? {
         val provider = SpriteProvider(root.cache)

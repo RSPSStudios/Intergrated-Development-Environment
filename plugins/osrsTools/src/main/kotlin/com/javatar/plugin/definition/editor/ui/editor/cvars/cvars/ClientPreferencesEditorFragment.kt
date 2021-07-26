@@ -1,7 +1,8 @@
 package com.javatar.plugin.definition.editor.ui.editor.cvars.cvars
 
 import com.javatar.osrs.definitions.impl.ClientVarDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.ClientVariableLoader
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.cvars.model.ClientPreferencesModel
 import com.javatar.plugin.definition.editor.ui.editor.cvars.model.VariableModel
 import javafx.scene.paint.Color
@@ -12,7 +13,7 @@ class ClientPreferencesEditorFragment : Fragment("Client Preferences") {
     val varModel: VariableModel by inject()
     val prefModel: ClientPreferencesModel by inject()
 
-    val prefs = OldSchoolDefinitionManager.preferences
+    val prefs = ConfigDefinitionManager(ClientVariableLoader())
 
     override val root = listview(prefModel.preferences) {
         selectionModel.selectedItemProperty().onChange {
@@ -20,7 +21,7 @@ class ClientPreferencesEditorFragment : Fragment("Client Preferences") {
         }
         cellCache {
             text("Client Preference ${it.id}") {
-                if(it.persisent) {
+                if (it.persisent) {
                     this.fill = Color.DARKRED
                 }
             }
@@ -29,12 +30,12 @@ class ClientPreferencesEditorFragment : Fragment("Client Preferences") {
 
     fun loadPreferences() {
         val cache = varModel.cache.get()
-        if(cache != null) {
+        if (cache != null) {
             val prefIds = cache.index(2).archive(19)?.fileIds() ?: intArrayOf()
             val list = mutableListOf<ClientVarDefinition>()
             for (prefId in prefIds) {
                 val data = cache.data(2, 19, prefId)
-                if(data != null) {
+                if (data != null) {
                     list.add(prefs.load(prefId, data))
                 }
             }

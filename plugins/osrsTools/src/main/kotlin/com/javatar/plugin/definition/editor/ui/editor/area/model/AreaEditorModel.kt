@@ -2,7 +2,8 @@ package com.javatar.plugin.definition.editor.ui.editor.area.model
 
 import com.displee.cache.CacheLibrary
 import com.javatar.osrs.definitions.impl.AreaDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.AreaLoader
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -49,7 +50,7 @@ class AreaEditorModel : ViewModel() {
     }
 
     private fun loadAreas() {
-        val areaDefs = OldSchoolDefinitionManager.areas
+        val areaDefs = ConfigDefinitionManager(AreaLoader())
         val cache = cache.get()
         if (cache != null) {
             val list = mutableListOf<AreaDefinition>()

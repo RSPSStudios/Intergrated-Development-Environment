@@ -6,10 +6,13 @@ import com.javatar.api.ui.models.AccountModel
 import com.javatar.osrs.definitions.impl.ClientVarDefinition
 import com.javatar.osrs.definitions.impl.VarbitDefinition
 import com.javatar.osrs.definitions.impl.VarpDefinition
+import com.javatar.osrs.definitions.loaders.ClientVariableLoader
+import com.javatar.osrs.definitions.loaders.VarbitLoader
+import com.javatar.osrs.definitions.loaders.VarpLoader
 import com.javatar.osrs.tools.variables.VariableTools
 import com.javatar.osrs.tools.variables.VariableTools.bitCount
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.NumberSpinnerValueFactory
 import com.javatar.plugin.definition.editor.ui.editor.cvars.cvars.ClientPreferencesEditorFragment
 import com.javatar.plugin.definition.editor.ui.editor.cvars.model.*
@@ -40,9 +43,9 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
     val account: AccountModel by di()
     val client: Client by di()
 
-    val varps = OldSchoolDefinitionManager.varps
-    val varbits = OldSchoolDefinitionManager.varbits
-    val preferences = OldSchoolDefinitionManager.preferences
+    val varps = ConfigDefinitionManager(VarpLoader())
+    val varbits = ConfigDefinitionManager(VarbitLoader())
+    val preferences = ConfigDefinitionManager(ClientVariableLoader())
 
     init {
         varModel.selectedVarp.onChange {
@@ -91,7 +94,9 @@ class VariableEditorFragment : Fragment("Variable Player Editor") {
                 when (it) {
                     VariableEditingType.PLAYER_VARIABLE -> items.setAll(*varpAndVarbitToolBar())
                     VariableEditingType.CLIENT_PREFERENCES -> items.setAll(*clientPreferencesToolbar())
-                    null -> { items.clear() }
+                    null -> {
+                        items.clear()
+                    }
                 }
             }
         }

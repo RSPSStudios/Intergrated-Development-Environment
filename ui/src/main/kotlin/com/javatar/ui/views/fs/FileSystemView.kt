@@ -5,6 +5,7 @@ import com.javatar.api.fs.directories.IndexDirectory
 import com.javatar.api.ui.fs.ArchiveContextMenuExtension
 import com.javatar.api.ui.fs.FileContextMenuExtension
 import com.javatar.api.ui.fs.IndexContextMenuExtension
+import com.javatar.api.ui.models.EventLogModel
 import com.javatar.api.ui.utilities.DataGrid
 import com.javatar.api.ui.utilities.contextmenu
 import com.javatar.api.ui.utilities.datagrid
@@ -20,6 +21,7 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.control.Menu
 import javafx.scene.control.TextInputDialog
 import javafx.stage.FileChooser
+import org.koin.core.component.inject
 import tornadofx.*
 import java.io.File
 
@@ -32,6 +34,8 @@ class FileSystemView : Fragment() {
     val clipboardModel: ClipboardModel by di()
 
     val pluginRepo: PluginRepositoryModel by di()
+
+    val events: EventLogModel by inject()
 
     val fileTypeManager = scope.typeManager
 
@@ -382,6 +386,8 @@ class FileSystemView : Fragment() {
             cache.index(indexId).add()
         }
         activeDir.activeNodes.add(FileSystemViewMeta(archive.id, FileSystemViewMeta.MetaType.ARCHIVE))
+        cache.index(indexId).update()
+        events log "Finished Saving archive ${archive.id} in index $indexId"
     }
 
     /**
@@ -405,6 +411,8 @@ class FileSystemView : Fragment() {
                     val file = archive.add(it.readBytes())
                     activeDir.activeNodes.add(FileSystemViewMeta(file.id, FileSystemViewMeta.MetaType.FILE))
                 }
+                cache.index(indexId).update()
+                events log "Finished Saving archive ${archive.id} in index $indexId"
             }
         }
     }

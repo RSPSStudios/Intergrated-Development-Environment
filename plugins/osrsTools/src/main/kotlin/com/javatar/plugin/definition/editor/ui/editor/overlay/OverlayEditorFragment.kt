@@ -6,9 +6,10 @@ import com.javatar.api.ui.models.AccountModel
 import com.javatar.osrs.definitions.impl.OverlayDefinition
 import com.javatar.osrs.definitions.impl.SpriteDefinition
 import com.javatar.osrs.definitions.impl.TextureDefinition
+import com.javatar.osrs.definitions.loaders.OverlayLoader
 import com.javatar.osrs.tools.SpriteTools.toImage
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.managers.SpriteProvider
 import com.javatar.plugin.definition.editor.managers.TextureProvider
 import com.javatar.plugin.definition.editor.ui.editor.overlay.model.OverlayEditorModel
@@ -27,7 +28,7 @@ class OverlayEditorFragment : Fragment("Overlay Editor") {
 
     val overlayModel: OverlayEditorModel by inject()
 
-    val overlays = OldSchoolDefinitionManager.overlays
+    val overlays = ConfigDefinitionManager(OverlayLoader())
 
     val account: AccountModel by di()
     val client: Client by di()
@@ -60,12 +61,16 @@ class OverlayEditorFragment : Fragment("Overlay Editor") {
                             emit(byteArrayOf())
                         }
                         .onEach {
-                            if(it.isNotEmpty()) {
+                            if (it.isNotEmpty()) {
                                 val cache = overlayModel.cache.get()
-                                if(cache != null) {
+                                if (cache != null) {
                                     cache.put(2, 4, overlay.id, it)
                                     cache.index(2).update()
-                                    alert(Alert.AlertType.INFORMATION, "Overlay Packing", "Successfully packed overlay.")
+                                    alert(
+                                        Alert.AlertType.INFORMATION,
+                                        "Overlay Packing",
+                                        "Successfully packed overlay."
+                                    )
                                 }
                             }
                         }
@@ -126,7 +131,7 @@ class OverlayEditorFragment : Fragment("Overlay Editor") {
                                 }
                                 button("Set Texture").action {
                                     val cache = overlayModel.cache.get()
-                                    if(cache != null) {
+                                    if (cache != null) {
                                         val scope = TextureSelectScope(cache)
                                         val stf = find<SelectTextureFragment>(scope)
                                         stf.openModal(block = true)

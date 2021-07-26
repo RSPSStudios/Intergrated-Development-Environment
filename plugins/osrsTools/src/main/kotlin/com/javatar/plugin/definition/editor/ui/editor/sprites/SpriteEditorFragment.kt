@@ -3,11 +3,11 @@ package com.javatar.plugin.definition.editor.ui.editor.sprites
 import com.javatar.api.ui.utilities.datagrid
 import com.javatar.osrs.definitions.impl.SpriteDefinition
 import com.javatar.osrs.definitions.impl.SpriteGroupDefinition
+import com.javatar.osrs.definitions.loaders.SpriteLoader
 import com.javatar.osrs.tools.SpriteSaver
 import com.javatar.osrs.tools.SpriteTools
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.sprites.models.SpriteGridModel
-import javafx.application.Platform
 import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
 import javafx.embed.swing.SwingFXUtils
@@ -28,7 +28,7 @@ class SpriteEditorFragment : Fragment("Sprite Editor") {
 
     val spriteModel: SpriteGridModel by inject()
 
-    val sprites = OldSchoolDefinitionManager.sprites
+    val sprites = ConfigDefinitionManager(SpriteLoader())
 
     val encoder = SpriteSaver()
 
@@ -118,7 +118,7 @@ class SpriteEditorFragment : Fragment("Sprite Editor") {
                             val g = SpriteTools.fromFXImage(group, image)
                             sprites.add(g)
                             spriteModel.sprites.add(g)
-                            if(cache != null) {
+                            if (cache != null) {
                                 val bytes = encoder.save(g)
                                 cache.put(8, g.groupId, bytes)
                                 cache.index(8).update()
@@ -129,9 +129,9 @@ class SpriteEditorFragment : Fragment("Sprite Editor") {
             },
             button("Delete Sprite") {
                 val cache = spriteModel.cache.get()
-                if(cache != null) {
+                if (cache != null) {
                     val group = spriteModel.selectedSprite.get()
-                    if(group != null) {
+                    if (group != null) {
                         spriteModel.sprites.remove(group)
                         sprites.remove(group)
                         cache.remove(8, group.groupId)

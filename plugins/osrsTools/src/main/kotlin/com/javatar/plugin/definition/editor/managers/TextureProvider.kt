@@ -3,7 +3,7 @@ package com.javatar.plugin.definition.editor.managers
 import com.displee.cache.CacheLibrary
 import com.javatar.osrs.definitions.definition.DefinitionProvider
 import com.javatar.osrs.definitions.impl.TextureDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.TextureLoader
 
 /**
  * @author David Schlachter <davidschlachter96@gmail.com>
@@ -12,7 +12,7 @@ import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 
 class TextureProvider(val cache: CacheLibrary) : DefinitionProvider<TextureDefinition> {
 
-    val textures = OldSchoolDefinitionManager.textures
+    val textures = ConfigDefinitionManager(TextureLoader())
 
     override fun getDefinition(id: Int): TextureDefinition {
         val data = cache.data(9, 0, id)

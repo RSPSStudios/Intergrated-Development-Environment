@@ -5,18 +5,14 @@ import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
 import com.javatar.osrs.definitions.impl.SpriteGroupDefinition
 import com.javatar.osrs.definitions.loaders.SpriteLoader
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.managers.SpriteProvider
-import com.javatar.plugin.definition.editor.managers.TextureProvider
-import com.sun.javafx.iio.ImageStorage
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.ImageView
-import javafx.scene.image.PixelFormat
-import javafx.scene.image.WritableImage
 import java.awt.image.BufferedImage
-import java.nio.IntBuffer
 
-class SpriteFileType : DefinitionFileType<SpriteGroupDefinition, SpriteLoader>(-1, 8, OldSchoolDefinitionManager.sprites, "sprites") {
+class SpriteFileType :
+    DefinitionFileType<SpriteGroupDefinition, SpriteLoader>(-1, 8, ConfigDefinitionManager(SpriteLoader()), "sprites") {
     override fun identifier(file: JFile, root: RootDirectory): String {
         return "Sprite Group"
     }

@@ -3,8 +3,10 @@ package com.javatar.plugin.definition.editor.ui.selectors
 import com.javatar.api.ui.utilities.datagrid
 import com.javatar.osrs.definitions.impl.SpriteDefinition
 import com.javatar.osrs.definitions.impl.TextureDefinition
+import com.javatar.osrs.definitions.loaders.SpriteLoader
+import com.javatar.osrs.definitions.loaders.TextureLoader
 import com.javatar.osrs.tools.SpriteTools.toImage
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.selectors.models.TextureSelectModel
 import com.javatar.plugin.definition.editor.ui.selectors.scope.TextureSelectScope
 import javafx.geometry.Pos
@@ -16,8 +18,8 @@ class SelectTextureFragment : Fragment("Select Texture") {
 
     val selectModel: TextureSelectModel by inject(scope)
 
-    val sprites = OldSchoolDefinitionManager.sprites
-    val textures = OldSchoolDefinitionManager.textures
+    val sprites = ConfigDefinitionManager(SpriteLoader())
+    val textures = ConfigDefinitionManager(TextureLoader())
 
     init {
         loadTextures()
@@ -78,7 +80,7 @@ class SelectTextureFragment : Fragment("Select Texture") {
         }
         hbox {
             spacing = 5.0
-            button("Use"){
+            button("Use") {
                 disableWhen(selectModel.selected.isNull)
             }.action {
                 close()
@@ -90,10 +92,10 @@ class SelectTextureFragment : Fragment("Select Texture") {
 
     }
 
-    private fun getSprite(spriteId: Int) : SpriteDefinition {
+    private fun getSprite(spriteId: Int): SpriteDefinition {
         val cache = scope.cache
         val data = cache.data(8, spriteId)
-        if(data != null) {
+        if (data != null) {
             return sprites.load(spriteId, data).sprites[0]
         }
         val sprite = SpriteDefinition()

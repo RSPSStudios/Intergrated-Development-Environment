@@ -1,7 +1,9 @@
 package com.javatar.plugin.definition.editor.ui.selectors
 
 import com.javatar.osrs.definitions.impl.VarpDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.VarbitLoader
+import com.javatar.osrs.definitions.loaders.VarpLoader
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.selectors.models.VarpSelectModel
 import com.javatar.plugin.definition.editor.ui.selectors.scope.SelectVarpScope
 import javafx.scene.input.MouseEvent
@@ -16,8 +18,8 @@ class VarpSelectorFragment : Fragment("Select Variable Player") {
 
     val selectModel: VarpSelectModel by inject(scope)
 
-    val varps = OldSchoolDefinitionManager.varps
-    val varbits = OldSchoolDefinitionManager.varbits
+    val varps = ConfigDefinitionManager(VarpLoader())
+    val varbits = ConfigDefinitionManager(VarbitLoader())
 
     init {
         loadVarps()

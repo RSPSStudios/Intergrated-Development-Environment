@@ -6,17 +6,17 @@ import com.javatar.api.fs.extensions.ArchiveTypeExtension
 import com.javatar.api.fs.extensions.FileTypeExtension
 import com.javatar.osrs.definitions.impl.*
 import com.javatar.osrs.definitions.loaders.*
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
 import com.javatar.plugin.definition.editor.fs.types.files.DefinitionFileType
 import com.javatar.plugin.definition.editor.fs.types.files.SpriteFileType
 import com.javatar.plugin.definition.editor.fs.types.files.TextureFileType
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import org.pf4j.Extension
 
 @Extension
 class ObjectsFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<ObjectDefinition, ObjectLoader>(
-            6, 2, OldSchoolDefinitionManager.objects, "objects"
+            6, 2, ConfigDefinitionManager(ObjectLoader()), "objects"
         )
     }
 }
@@ -25,7 +25,7 @@ class ObjectsFileTypeExtension : FileTypeExtension {
 class NpcsFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<NpcDefinition, NpcLoader>(
-            9, 2, OldSchoolDefinitionManager.npcs, "npcs"
+            9, 2, ConfigDefinitionManager(NpcLoader()), "npcs"
         )
     }
 }
@@ -34,7 +34,7 @@ class NpcsFileTypeExtension : FileTypeExtension {
 class AnimationFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<SequenceDefinition, SequenceLoader>(
-            12, 2, OldSchoolDefinitionManager.animations, "anims"
+            12, 2, ConfigDefinitionManager(SequenceLoader()), "anims"
         )
     }
 }
@@ -43,7 +43,7 @@ class AnimationFileTypeExtension : FileTypeExtension {
 class AreaFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<AreaDefinition, AreaLoader>(
-            35, 2, OldSchoolDefinitionManager.areas, "areas"
+            35, 2, ConfigDefinitionManager(AreaLoader()), "areas"
         )
     }
 }
@@ -52,7 +52,7 @@ class AreaFileTypeExtension : FileTypeExtension {
 class EnumFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<EnumDefinition, EnumLoader>(
-            8, 2, OldSchoolDefinitionManager.enums, "enums"
+            8, 2, ConfigDefinitionManager(EnumLoader()), "enums"
         )
     }
 }
@@ -61,7 +61,7 @@ class EnumFileTypeExtension : FileTypeExtension {
 class HitSplatFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<HitSplatDefinition, HitSplatLoader>(
-            32, 2, OldSchoolDefinitionManager.hitsplats, "hits"
+            32, 2, ConfigDefinitionManager(HitSplatLoader()), "hits"
         )
     }
 }
@@ -70,7 +70,7 @@ class HitSplatFileTypeExtension : FileTypeExtension {
 class InterfaceFileTypeExtension : ArchiveTypeExtension {
     override fun createArchiveType(): ArchiveType {
         return DefinitionFileType<InterfaceDefinition, InterfaceLoader>(
-            -1, 3, OldSchoolDefinitionManager.widgets, "interfaces"
+            -1, 3, ConfigDefinitionManager(InterfaceLoader()), "interfaces"
         )
     }
 }
@@ -79,7 +79,7 @@ class InterfaceFileTypeExtension : ArchiveTypeExtension {
 class InventoryFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<InventoryDefinition, InventoryLoader>(
-            5, 2, OldSchoolDefinitionManager.inventories, "inventories"
+            5, 2, ConfigDefinitionManager(InventoryLoader()), "inventories"
         )
     }
 }
@@ -88,7 +88,7 @@ class InventoryFileTypeExtension : FileTypeExtension {
 class IdentityKitFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<KitDefinition, KitLoader>(
-            3, 2, OldSchoolDefinitionManager.playerKit, "kits"
+            3, 2, ConfigDefinitionManager(KitLoader()), "kits"
         )
     }
 }
@@ -97,7 +97,7 @@ class IdentityKitFileTypeExtension : FileTypeExtension {
 class OverlayFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<OverlayDefinition, OverlayLoader>(
-            4, 2, OldSchoolDefinitionManager.overlays, "overlays"
+            4, 2, ConfigDefinitionManager(OverlayLoader()), "overlays"
         )
     }
 }
@@ -106,7 +106,7 @@ class OverlayFileTypeExtension : FileTypeExtension {
 class ParamFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<ParamDefinition, ParamLoader>(
-            11, 2, OldSchoolDefinitionManager.params, "params"
+            11, 2, ConfigDefinitionManager(ParamLoader()), "params"
         )
     }
 }
@@ -115,7 +115,7 @@ class ParamFileTypeExtension : FileTypeExtension {
 class ScriptFileTypeExtension : ArchiveTypeExtension {
     override fun createArchiveType(): ArchiveType {
         return DefinitionFileType<ScriptDefinition, ScriptLoader>(
-            -1, 12, OldSchoolDefinitionManager.scripts, "cs2"
+            -1, 12, ConfigDefinitionManager(ScriptLoader()), "cs2"
         )
     }
 }
@@ -124,7 +124,7 @@ class ScriptFileTypeExtension : ArchiveTypeExtension {
 class GraphicFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<SpotAnimDefinition, SpotAnimLoader>(
-            13, 2, OldSchoolDefinitionManager.graphics, "graphics"
+            13, 2, ConfigDefinitionManager(SpotAnimLoader()), "graphics"
         )
     }
 }
@@ -140,7 +140,7 @@ class SpriteGroupFileTypeExtension : ArchiveTypeExtension {
 class StructFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<StructDefinition, StructLoader>(
-            34, 2, OldSchoolDefinitionManager.structs, "structs"
+            34, 2, ConfigDefinitionManager(StructLoader()), "structs"
         )
     }
 }
@@ -156,7 +156,7 @@ class TextureFileTypeExtension : FileTypeExtension {
 class UnderlayFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<UnderlayDefinition, UnderlayLoader>(
-            1, 2, OldSchoolDefinitionManager.underlays, "underlays"
+            1, 2, ConfigDefinitionManager(UnderlayLoader()), "underlays"
         )
     }
 }
@@ -165,7 +165,7 @@ class UnderlayFileTypeExtension : FileTypeExtension {
 class VarbitFileTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<VarbitDefinition, VarbitLoader>(
-            14, 2, OldSchoolDefinitionManager.varbits, "varbits"
+            14, 2, ConfigDefinitionManager(VarbitLoader()), "varbits"
         )
     }
 }
@@ -174,7 +174,7 @@ class VarbitFileTypeExtension : FileTypeExtension {
 class WorldmapTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<WorldMapDefinition, WorldMapLoader>(
-            -1, 16, OldSchoolDefinitionManager.worldmap, "worldmap"
+            -1, 16, ConfigDefinitionManager(WorldMapLoader()), "worldmap"
         )
     }
 }
@@ -183,7 +183,7 @@ class WorldmapTypeExtension : FileTypeExtension {
 class HealthBarTypeExtension : FileTypeExtension {
     override fun createFileType(): FileType {
         return DefinitionFileType<HealthBarDefinition, HealthBarLoader>(
-            33, 2, OldSchoolDefinitionManager.healthbars, "healthbars"
+            33, 2, ConfigDefinitionManager(HealthBarLoader()), "healthbars"
         )
     }
 }

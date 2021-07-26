@@ -3,27 +3,27 @@ package com.javatar.plugin.definition.editor.managers
 import com.displee.cache.CacheLibrary
 import com.javatar.osrs.definitions.definition.DefinitionProvider
 import com.javatar.osrs.definitions.impl.ItemDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.ItemLoader
 
 class ItemProvider(val cache: CacheLibrary) : DefinitionProvider<ItemDefinition> {
 
-    val items = OldSchoolDefinitionManager.items
+    val items = ConfigDefinitionManager(ItemLoader())
 
     override fun getDefinition(id: Int): ItemDefinition {
-        if(!items.definitions.containsKey(id)) {
+        if (!items.definitions.containsKey(id)) {
             val data = cache.data(2, 10, id)
-            if(data != null) {
+            if (data != null) {
 
                 val def = items.load(id, data)
 
-                if(def.id == 3) {
+                if (def.id == 3) {
                     println(def.colorFind.toTypedArray().contentDeepToString())
                     println(def.colorReplace.toTypedArray().contentDeepToString())
                 }
 
                 return def
             }
-        } else if(items.definitions.containsKey(id)) {
+        } else if (items.definitions.containsKey(id)) {
             return items[id]!!
         }
         return ItemDefinition(-1)

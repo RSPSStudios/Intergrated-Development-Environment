@@ -5,8 +5,10 @@ import com.javatar.api.http.StringBody
 import com.javatar.api.ui.models.AccountModel
 import com.javatar.osrs.definitions.impl.ItemDefinition
 import com.javatar.osrs.definitions.impl.SequenceDefinition
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.ItemLoader
+import com.javatar.osrs.definitions.loaders.SequenceLoader
 import com.javatar.plugin.definition.editor.OsrsDefinitionEditor.Companion.gson
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.editor.animations.model.AnimationEditorModel
 import com.javatar.plugin.definition.editor.ui.selectors.SelectItemFragment
 import com.javatar.plugin.definition.editor.ui.selectors.scope.ItemSelectScope
@@ -26,8 +28,8 @@ class AnimationEditorFragment : Fragment("Animation Editor") {
 
     val animModel: AnimationEditorModel by inject()
 
-    val anims = OldSchoolDefinitionManager.animations
-    val items = OldSchoolDefinitionManager.items
+    val anims = ConfigDefinitionManager(SequenceLoader())
+    val items = ConfigDefinitionManager(ItemLoader())
 
     val accountModel: AccountModel by di()
     val client: Client by di()
@@ -48,7 +50,7 @@ class AnimationEditorFragment : Fragment("Animation Editor") {
                 action {
                     val cache = animModel.cache.get()
                     val creds = accountModel.activeCredentials.get()
-                    if(cache != null && creds != null) {
+                    if (cache != null && creds != null) {
                         animModel.commitAnimation()
                         val anim = animModel.selected.get()
                         if (anim != null) {
@@ -59,10 +61,14 @@ class AnimationEditorFragment : Fragment("Animation Editor") {
                                     emit(byteArrayOf())
                                 }
                                 .onEach {
-                                    if(it.isNotEmpty()) {
+                                    if (it.isNotEmpty()) {
                                         cache.put(2, 12, anim.id, it)
                                         cache.index(2).update()
-                                        alert(Alert.AlertType.INFORMATION, "Packing Animation", "Successfully packed animation.")
+                                        alert(
+                                            Alert.AlertType.INFORMATION,
+                                            "Packing Animation",
+                                            "Successfully packed animation."
+                                        )
                                     }
                                 }.launchIn(CoroutineScope(Dispatchers.JavaFx))
                         }
@@ -71,7 +77,11 @@ class AnimationEditorFragment : Fragment("Animation Editor") {
             },
             button("Add Animation") {
                 action {
-                    alert(Alert.AlertType.WARNING, "Animation Creation not supported", "Please duplicate an existing animation.")
+                    alert(
+                        Alert.AlertType.WARNING,
+                        "Animation Creation not supported",
+                        "Please duplicate an existing animation."
+                    )
                 }
             },
             button("Duplicate Animation") {
@@ -107,7 +117,7 @@ class AnimationEditorFragment : Fragment("Animation Editor") {
                     )
 
                     val cache = animModel.cache.get()
-                    if(cache != null && confirm.result === ButtonType.YES) {
+                    if (cache != null && confirm.result === ButtonType.YES) {
                         val anim = animModel.selected.get()
                         anims.remove(anim)
                         animModel.animations.remove(anim)
@@ -154,7 +164,7 @@ class AnimationEditorFragment : Fragment("Animation Editor") {
                         label {
                             textProperty().bind(Bindings.createStringBinding({
                                 val item = getItem(animModel.leftHandItem.get())
-                                if(item != null && item.name != "null") {
+                                if (item != null && item.name != "null") {
                                     item.name
                                 } else "Unknown"
                             }, animModel.leftHandItem))
@@ -169,7 +179,7 @@ class AnimationEditorFragment : Fragment("Animation Editor") {
                         label {
                             textProperty().bind(Bindings.createStringBinding({
                                 val item = getItem(animModel.leftHandItem.get())
-                                if(item != null && item.name != "null") {
+                                if (item != null && item.name != "null") {
                                     item.name
                                 } else "Unknown"
                             }, animModel.leftHandItem))

@@ -2,8 +2,9 @@ package com.javatar.plugin.definition.editor.ui.selectors
 
 import com.javatar.api.ui.utilities.datagrid
 import com.javatar.osrs.definitions.impl.SpriteDefinition
+import com.javatar.osrs.definitions.loaders.SpriteLoader
 import com.javatar.osrs.tools.SpriteTools.toImage
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import com.javatar.plugin.definition.editor.ui.selectors.models.SpriteSelectModel
 import com.javatar.plugin.definition.editor.ui.selectors.scope.SpriteSelectScope
 import javafx.geometry.Pos
@@ -15,7 +16,7 @@ class SelectSpriteFragment : Fragment("Select Sprite") {
 
     val selectModel: SpriteSelectModel by inject(scope)
 
-    val sprites = OldSchoolDefinitionManager.sprites
+    val sprites = ConfigDefinitionManager(SpriteLoader())
 
     init {
         loadSprites()
@@ -71,9 +72,9 @@ class SelectSpriteFragment : Fragment("Select Sprite") {
         val list = mutableListOf<SpriteDefinition>()
         for (spriteId in spriteIds) {
             val data = cache.data(8, spriteId)
-            if(data != null) {
+            if (data != null) {
                 val def = sprites.load(spriteId, data)
-                if(def.sprites.size == 1) {
+                if (def.sprites.size == 1) {
                     list.add(def.sprites[0])
                 }
             }

@@ -3,7 +3,8 @@ package com.javatar.plugin.definition.editor.fs.types.archives
 import com.javatar.api.fs.ArchiveType
 import com.javatar.api.fs.JFile
 import com.javatar.api.fs.directories.RootDirectory
-import com.javatar.plugin.definition.editor.OldSchoolDefinitionManager
+import com.javatar.osrs.definitions.loaders.ObjectLoader
+import com.javatar.plugin.definition.editor.managers.ConfigDefinitionManager
 import javafx.scene.control.TabPane
 import javafx.scene.image.ImageView
 
@@ -11,7 +12,7 @@ class ObjectArchiveType : ArchiveType {
     override val indexId: Int = 2
     override val archiveId: Int = 6
 
-    private val manager = OldSchoolDefinitionManager.objects
+    private val manager = ConfigDefinitionManager(ObjectLoader())
 
     override fun cache(jfiles: List<JFile>, root: RootDirectory) {
     }
